@@ -3,6 +3,6 @@ node_modules/
 dist/
 .netlify
 _data
-frontend/public/generated-*
+# frontend/public/generated-*
 # .env
 .env.local
