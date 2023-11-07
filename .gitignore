@@ -1,0 +1,8 @@
+node_modules/
+.DS_Store
+dist/
+.netlify
+_data
+frontend/public/generated-*
+# .env
+.env.local

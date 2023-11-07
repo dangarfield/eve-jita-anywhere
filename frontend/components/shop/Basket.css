@@ -1,0 +1,12 @@
+.bi-x {
+    /* color: red; */
+    opacity: 0;
+    cursor: pointer;
+}
+.basket-item:hover .bi-x {
+    /* color: blue; */
+    opacity: 1;
+}
+.basket-item-price-line {
+    line-height: 19px;
+}

@@ -1,0 +1,49 @@
+.width-32 {
+    width: 32px;
+    min-width: 32px;
+    max-width: 32px;
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
+}
+ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+li {
+    cursor: pointer;
+}
+li .content {
+    min-height: 40px;
+}
+li .content:hover {
+    background-color: #303030;
+}
+.nested {
+    display: none;
+}
+.active {
+    display: block;
+}
+ul > li > .content {
+    padding-left: 0px;
+}
+ul > li > ul > li > .content {
+    padding-left: 25px;
+}
+ul > li > ul > li > ul > li > .content {
+    padding-left: 50px;
+}
+ul > li > ul > li > ul > li > ul > li > .content {
+    padding-left: 75px;
+}
+ul > li > ul > li > ul > li > ul > li > ul > li > .content {
+    padding-left: 100px;
+}
+ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .content {
+    padding-left: 125px;
+}
+ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .content {
+    padding-left: 150px;
+}

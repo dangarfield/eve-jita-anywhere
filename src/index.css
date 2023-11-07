@@ -1,0 +1,73 @@
+@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons.min.css";
+
+@font-face {
+    font-family: Shentox;
+    font-display: swap;
+    src: url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Shentox-SemiBold.woff2) format('woff2'),url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Shentox-SemiBold.woff) format('woff');
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: Shentox;
+    font-display: swap;
+    src: url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Shentox-Medium.woff2) format('woff2'),url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Shentox-Medium.woff) format('woff');
+    font-weight: 500;
+    font-style: normal
+}
+@font-face {
+    font-family: Shentox;
+    font-display: swap;
+    src: url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Shentox-Regular.woff2) format('woff2'),url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Shentox-Regular.woff) format('woff');
+    font-weight: 400;
+    font-style: normal
+}
+@font-face {
+    font-family: Shentox;
+    font-display: swap;
+    src: url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Shentox-Light.woff2) format('woff2'),url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Shentox-Light.woff) format('woff');
+    font-weight: 300;
+    font-style: normal
+}
+@font-face {
+    font-family: Rogan;
+    font-display: swap;
+    src: url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Rogan-SemiBold.woff2) format('woff2'),url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Rogan-SemiBold.woff) format('woff');
+    font-weight: 600;
+    font-style: normal
+}
+@font-face {
+    font-family: Rogan;
+    font-display: swap;
+    src: url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Rogan-Light.woff2) format('woff2'),url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Rogan-Light.woff) format('woff');
+    font-weight: 300;
+    font-style: normal
+}
+@font-face {
+    font-family: Rogan;
+    font-display: swap;
+    src: url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Rogan-Medium.woff2) format('woff2'),url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Rogan-Medium.woff) format('woff');
+    font-weight: 500;
+    font-style: normal
+}
+@font-face {
+    font-family: Rogan;
+    font-display: swap;
+    src: url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Rogan-Regular.woff2) format('woff2'),url(https://web.ccpgamescdn.com/aws/webfonts/shentox/webfonts-2.0/Rogan-Regular.woff) format('woff');
+    font-weight: 400;
+    font-style: normal
+}
+body {
+    color: #ffffff;
+    font-family: 'Shentox', 'Rogan', sans-serif;
+    /* background-image: url(https://images.ctfassets.net/7lhcm73ukv5p/1mv6Tg8PUsMWyGauWckSOo/5be5f00d5fb6d445f420b7a1c669fd26/star-bg.jpg?w=2400&q=75&fm=webp); */
+}
+
+.width-32 {
+    width: 32px;
+    min-width: 32px;
+    max-width: 32px;
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
+}
