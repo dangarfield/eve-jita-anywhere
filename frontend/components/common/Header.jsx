@@ -1,16 +1,20 @@
+import { A } from '@solidjs/router'
 import { Image, Nav, Navbar } from 'solid-bootstrap'
 
 const Header = () => {
   return (
     <Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>
       <div class='container-fluid px-0'>
-        <Navbar.Brand href='/'>Jita Anywhere</Navbar.Brand>
+        {/* <Navbar.Brand href='/'>Jita Anywhere</Navbar.Brand> */}
+        <A href='/' class='navbar-brand'>Jita Anywhere</A>
         <Navbar.Toggle aria-controls='responsive-navbar-nav' />
         <Navbar.Collapse id='responsive-navbar-nav'>
           <Nav class='me-auto'>
-            <Nav.Link href='/info'>Info</Nav.Link>
+            {/* <Nav.Link href='/info'>Info</Nav.Link>
             <Nav.Link href='/shop'>Shop</Nav.Link>
-            <Nav.Link href='/agents'>Agents</Nav.Link>
+            <Nav.Link href='/agents'>Agents</Nav.Link> */}
+            <A href='/info' class='nav-link' activeClass='active'>Info</A>
+            <A href='/shop' class='nav-link' activeClass='active'>Shop</A>
             {/* <NavDropdown title='Dropdown' id='collasible-nav-dropdown'>
               <NavDropdown.Item href='#action/3.1'>Action</NavDropdown.Item>
               <NavDropdown.Item href='#action/3.2'>Another action</NavDropdown.Item>

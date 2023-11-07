@@ -9,6 +9,10 @@ import ShopPage from './components/shop/ShopPage'
 import { StaticDataProvider } from './stores/StaticDataProvider'
 import { BasketProvider } from './stores/BasketProvider'
 
+import { Navigate, Route, Router, Routes } from '@solidjs/router' // 👈 Import the router
+import HomePage from './components/pages/HomePage'
+import InfoPage from './components/pages/InfoPage'
+
 const AllTodos = () => {
   return (
     <section>
@@ -45,14 +49,14 @@ function App () {
   return (
     <StaticDataProvider>
       <BasketProvider>
-        <div class='container-fluid'>
-          <div class='row'>
-            <div class='col'>
-              <Header />
-            </div>
-          </div>
-          <ShopPage />
-        </div>
+        <Router>
+          <Routes>
+            {/* <Route path='/' component={HomePage} /> */}
+            <Route path='/' element={<Navigate href='/shop' />} />
+            <Route path='/info' component={InfoPage} />
+            <Route path='/shop' component={ShopPage} />
+          </Routes>
+        </Router>
       </BasketProvider>
     </StaticDataProvider>
   )
