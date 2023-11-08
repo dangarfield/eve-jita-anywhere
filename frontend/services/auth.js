@@ -6,8 +6,8 @@ const SSO_CONFIG = window.location.href.includes('localhost')
       redirectUri: 'http://localhost:8888/sso-return'
     }
   : {
-      clientId: '63adc68f3b214e63a79b2b612e4c4a10',
-      redirectUri: 'https://abyssboard.space/login/return/'
+      clientId: 'd216c1de59c54644bb3729e89ea19bb9',
+      redirectUri: 'https://jita-anywhere.netlify.app/sso-return'
     }
 
 export const triggerLoginFlow = async () => {
