@@ -22,7 +22,6 @@ export const triggerLoginFlow = async () => {
 }
 export const triggerReturnFlow = async () => {
   console.log('triggerReturnFlow')
-
   try {
     const returnURL = window.localStorage.getItem('jita-anywhere-return-url')
     const codeVerifier = window.localStorage.getItem('jita-anywhere-code-verifier')
