@@ -51,9 +51,9 @@ const Basket = (props) => {
           <For each={basket}>
             {(basketItem) => (
               <>
-                <div class='d-flex flex-columns align-items-center mb-2'>
+                <div class='d-flex flex-columns align-items-center mb-2 basket-item'>
                   <div class='col-md-5'>
-                    <div class='d-flex align-items-center basket-item'>
+                    <div class='d-flex align-items-center'>
                       <EveTypeIcon type={staticData().types[basketItem.typeID]} />
                       <a class='ps-1 link-light link-underline link-underline-opacity-0 link-underline-opacity-100-hover' href='' onClick={(e) => e.preventDefault() & props.setSelectedType(basketItem.typeID)}>{staticData().types[basketItem.typeID].name}</a>
                       <i class='ms-auto bi bi-x' onClick={() => removeBasketItem(basketItem.typeID)} />

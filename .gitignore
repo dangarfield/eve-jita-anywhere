@@ -4,5 +4,5 @@ dist/
 .netlify
 _data
 # frontend/public/generated-*
-# .env
+.env
 .env.local
