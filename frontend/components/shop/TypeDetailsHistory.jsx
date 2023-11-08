@@ -1,7 +1,7 @@
 import { onMount } from 'solid-js'
-import { Chart, Title, Tooltip, Legend, Colors } from 'chart.js'
+import { Chart, registerables } from 'chart.js'
 import { Scatter } from 'solid-chartjs'
-import zoomPlugin from 'chartjs-plugin-zoom'
+// import zoomPlugin from 'chartjs-plugin-zoom'
 
 const movingAverage = (data, period) => {
   const result = []
@@ -27,7 +27,7 @@ const movingAverage = (data, period) => {
 
 const TypeDetailsHistory = (props) => {
   onMount(() => {
-    Chart.register(Title, Tooltip, Legend, Colors, zoomPlugin)
+    Chart.register(...registerables)
   })
   const dates = props.history().map(h => h.date)
   const medianDayPrice = props.history().map(h => h.average)
