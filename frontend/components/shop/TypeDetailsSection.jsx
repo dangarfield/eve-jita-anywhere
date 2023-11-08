@@ -1,6 +1,6 @@
-import { Show, createEffect, createMemo, createResource } from 'solid-js'
+import { Show, createMemo, createResource } from 'solid-js'
 import { useStaticData } from '../../stores/StaticDataProvider'
-import { Alert, Tab, Tabs } from 'solid-bootstrap'
+import { Alert } from 'solid-bootstrap'
 import { getJitaSellOrders, getRegionHistory } from '../../services/esi'
 import Loading from '../common/Loading'
 import TypeDetailsActions from './TypeDetailsActions'
@@ -10,10 +10,10 @@ import TypeDetailsHistory from './TypeDetailsHistory'
 
 const TypeDetailsSection = (props) => {
   const [staticData] = useStaticData()
-  console.log('TypeDetails props', props)
-  createEffect(() => {
-    console.log('Market Types Data:', staticData)
-  })
+  // console.log('TypeDetails props', props)
+  // createEffect(() => {
+  //   console.log('Market Types Data:', staticData)
+  // })
   const [orders] = createResource(props.selectedType, getJitaSellOrders)
   const [history] = createResource(props.selectedType, getRegionHistory)
 

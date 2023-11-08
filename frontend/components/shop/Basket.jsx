@@ -14,7 +14,7 @@ const Basket = (props) => {
 
   const basketData = createMemo(() => {
     const totalMaterialCost = Math.ceil(basket?.reduce((total, basketItem) => total + (basketItem.quantity * basketItem.price), 0))
-    console.log('totalMaterialCost memo', basket, totalMaterialCost)
+    // console.log('totalMaterialCost memo', basket, totalMaterialCost)
     const brokersFee = Math.ceil(totalMaterialCost * brokerFeePerc)
     const shopFee = Math.ceil((totalMaterialCost + brokersFee) * shopFeePerc)
     const total = totalMaterialCost + brokersFee + shopFee
@@ -31,7 +31,7 @@ const Basket = (props) => {
     if (isNaN(newValue) || newValue <= 0) {
       newValue = 1
     }
-    console.log('handleQuantityInputChange', event.target.value, newValue, basketItem, updateBasketQuantity)
+    // console.log('handleQuantityInputChange', event.target.value, newValue, basketItem, updateBasketQuantity)
     event.target.value = newValue
     updateBasketQuantity(basketItem.typeID, newValue)
     return newValue
@@ -116,11 +116,20 @@ const Basket = (props) => {
 
         <hr />
 
+        <Alert variant='border border-danger text-danger text-center'>TODO - Add delivery services</Alert>
+
+        <hr />
+
+        <Alert variant='border border-danger text-danger text-center'>TODO - Add your balance</Alert>
+
+        <hr />
+
         <div class='d-flex justify-content-between gap-2'>
           <Button class='w-100' variant='btn btn-outline-secondary' onClick={clearBasket}>Clear Basket</Button>
           <Button class='w-100' variant='btn btn-outline-primary' onClick={updatePrices}>Check Prices</Button>
-          <Button class='w-100'>Purchase</Button>
+          <Button class='w-100' onClick={() => window.alert('TODO - Not implemented yet')}>Purchase</Button>
         </div>
+
       </Show>
 
     </>

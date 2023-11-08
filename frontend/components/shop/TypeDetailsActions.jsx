@@ -16,14 +16,14 @@ const TypeDetailsActions = (props) => {
       newValue = 1
     }
     setQuantity(newValue)
-    console.log('handleQuantityInputChange', event.target.value, newValue, quantity())
+    // console.log('handleQuantityInputChange', event.target.value, newValue, quantity())
     event.target.value = newValue
   }
   const handleAddToBasket = (event) => {
     event.preventDefault()
     const type = props.selectedType()
     const item = { typeID: type.type_id, name: type.name, quantity: quantity(), price: price() }
-    console.log('handleAddToBasket', item)
+    // console.log('handleAddToBasket', item)
     if (price() > 0) {
       addToBasket(item)
     }

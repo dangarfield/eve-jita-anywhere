@@ -23,7 +23,7 @@ export function BasketProvider (props) {
     {
       addToBasket (item) {
         setBasket((basket) => {
-          console.log('addToBasket item', item)
+          // console.log('addToBasket item', item)
           const newBasket = cloneBasket(basket)
           const existingItem = newBasket.find((basketItem) => basketItem.typeID === item.typeID)
           if (existingItem) {
@@ -33,7 +33,7 @@ export function BasketProvider (props) {
             newBasket.push(item)
           }
           sortBasket(newBasket)
-          console.log('addToBasket end', item, newBasket)
+          // console.log('addToBasket end', item, newBasket)
           return newBasket
         })
       },
@@ -42,7 +42,7 @@ export function BasketProvider (props) {
       },
       removeBasketItem (typeID) {
         setBasket((basket) => {
-          console.log('removeBasketItem typeID', typeID)
+          // console.log('removeBasketItem typeID', typeID)
           const newBasket = cloneBasket(basket)
           const index = newBasket.findIndex((basketItem) => basketItem.typeID === typeID)
           if (index !== -1) {
@@ -50,17 +50,17 @@ export function BasketProvider (props) {
           }
           sortBasket(newBasket)
           setBasket(newBasket)
-          console.log('removeBasketItem end', typeID, newBasket)
+          // console.log('removeBasketItem end', typeID, newBasket)
           return newBasket
         })
       },
       clearBasket () {
-        console.log('clearBasket')
+        // console.log('clearBasket')
         setBasket([])
       },
       async updatePrices () {
         const newBasket = cloneBasket(basket)
-        console.log('updatePrices', basket, newBasket)
+        // console.log('updatePrices', basket, newBasket)
         const promises = newBasket.map(async (basketItem) => {
           const orders = await getJitaSellOrders(basketItem.typeID)
           if (orders.sell.length > 0) {
@@ -69,7 +69,7 @@ export function BasketProvider (props) {
         })
         await Promise.all(promises)
         setBasket((basket) => {
-          console.log('updatePrices end', newBasket)
+          // console.log('updatePrices end', newBasket)
           return newBasket
         })
       }

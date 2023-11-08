@@ -1,6 +1,6 @@
 import Header from '../common/Header'
 
-const HomePage = () => {
+const MyOrdersPage = () => {
   return (
     <div class='container-fluid'>
       <div class='row'>
@@ -10,11 +10,11 @@ const HomePage = () => {
       </div>
       <div class='row'>
         <div class='col'>
-          <h1>Home Page</h1>
+          <h1>My Orders Page</h1>
           <p>tbc</p>
         </div>
       </div>
     </div>
   )
 }
-export default HomePage
+export default MyOrdersPage

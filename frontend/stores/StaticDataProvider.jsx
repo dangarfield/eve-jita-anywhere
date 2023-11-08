@@ -27,7 +27,7 @@ const createStaticDataResource = () => {
     // const data = jsonData
     setStaticData('staticData', data) // Update the store with the fetched data
     // await sleep(30000)
-    console.log('jsonData', data)
+    // console.log('jsonData', data)
     return data
   })
 

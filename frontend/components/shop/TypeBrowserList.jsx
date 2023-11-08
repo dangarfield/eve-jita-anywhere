@@ -7,7 +7,7 @@ import { Alert, Button, FormControl, InputGroup } from 'solid-bootstrap'
 
 const createItem = (item, setSelectedType) => {
   const handleClick = () => {
-    console.log('click item', item)
+    // console.log('click item', item)
     setSelectedType(item.type_id)
   }
 
@@ -60,17 +60,17 @@ const TypeBrowserList = (props) => {
     const searchText = event.target.value.toLowerCase()
 
     const filteredTypes = Object.values(staticData().types).filter(t => t.name.toLowerCase().includes(searchText))
-    console.log('searchText', searchText, filteredTypes)
+    // console.log('searchText', searchText, filteredTypes)
 
     if (searchText.length >= 3 && filteredTypes.length < 20) {
-      console.log('setSearchResults', searchText, filteredTypes)
+      // console.log('setSearchResults', searchText, filteredTypes)
       setSearchResults(filteredTypes)// .sort((a, b) => a.typeID - b.typeID))
     } else {
       setSearchResults(null)
     }
   }
 
-  console.log('props', props, staticData)
+  // console.log('props', props, staticData)
   return (
     <>
       <InputGroup class='mb-3'>

@@ -11,6 +11,7 @@ const InfoPage = () => {
       <div class='row'>
         <div class='col'>
           <h1>Info Page</h1>
+          <p>tbc</p>
         </div>
       </div>
     </div>

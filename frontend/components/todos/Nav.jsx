@@ -6,10 +6,7 @@ const Nav = ({ setView, view }) => {
   return (
     <section class={styles.Nav}>
       {menuOptions.map((option) => (
-        <button
-          style={{ 'font-weight': `${view() === option ? 'bold' : ''}` }}
-          onClick={() => setView(option)}
-        >
+        <button style={{ 'font-weight': `${view() === option ? 'bold' : ''}` }} onClick={() => setView(option)}>
           {option}
         </button>
       ))}

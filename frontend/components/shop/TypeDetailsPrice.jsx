@@ -1,11 +1,11 @@
-import { For, Show, createEffect } from 'solid-js'
+import { For, Show } from 'solid-js'
 import Loading from '../common/Loading'
 import { Alert } from 'solid-bootstrap'
 
 const TypeDetailsPrice = (props) => {
-  createEffect(() => {
-    console.log('sellOrders updated', props.orders()?.sell)
-  })
+  // createEffect(() => {
+  // console.log('sellOrders updated', props.orders()?.sell)
+  // })
   return (
     <Show when={props.orders()} fallback={<Loading />}>
       <div class='row mb-5'>

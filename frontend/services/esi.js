@@ -1,4 +1,4 @@
-import { sleep } from './utils'
+// import { sleep } from './utils'
 
 export const getJitaSellOrders = async (itemID) => {
   let maxPages = 1
@@ -9,7 +9,7 @@ export const getJitaSellOrders = async (itemID) => {
     const res = await window.fetch(`https://esi.evetech.net/latest/markets/10000002/orders/?datasource=tranquility&order_type=all&page=${page}&type_id=${itemID}`)
     maxPages = parseInt(res.headers.get('x-pages'))
     const orders = await res.json()
-    console.log('orders', page, maxPages, orders)
+    // console.log('orders', page, maxPages, orders)
     for (const order of orders) {
       if (order.location_id === 60003760) {
         if (order.is_buy_order) {
@@ -22,7 +22,7 @@ export const getJitaSellOrders = async (itemID) => {
   } while (page < maxPages)
   jitaOrders.buy.sort((a, b) => b.price - a.price)
   jitaOrders.sell.sort((a, b) => a.price - b.price)
-  console.log('jitaOrders', jitaOrders)
+  // console.log('jitaOrders', jitaOrders)
   //   await sleep(1000)
   return jitaOrders
 }
