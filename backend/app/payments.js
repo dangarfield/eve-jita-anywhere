@@ -1,5 +1,5 @@
 import { paymentCollection } from './db'
-import { getEvePaymentJournal } from './eve-api'
+import { getEvePaymentJournal, sendMail } from './eve-api'
 
 const PAYMENT_REASONS = ['deposit', 'withdraw']
 const cleanReason = r => r.replace('balance', 'deposit')
@@ -21,7 +21,11 @@ export const updatePaymentsFromCorpJournal = async () => {
     if (result.upsertedCount > 0) {
       console.log('INSERTED')
       // Document was inserted
-      // sendMail();
+      const body = `
+<font size="14" color="#bfffffff">
+Thanks for choosing Jita Anywhere.<br><br>
+We've updated your balance to include your ${cleanReason(entry.type)} of ${entry.amount.toLocaleString()} ISK<br/><br/></font>`.replace(/\n/g, '')
+      sendMail(entry.characterID, 'Jita Anywhere - Deposit ', body)
     }
   }
   //   paymentCollection

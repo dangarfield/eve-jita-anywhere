@@ -44,6 +44,7 @@ export function UserProvider (props) {
       },
       logout () {
         window.localStorage.removeItem('jita-anywhere-user')
+        window.localStorage.removeItem('jita-anywhere-basket')
         setUser(null)
         console.log('logout', user)
         window.location.reload() // For some reason setUser above does not actually clear the user

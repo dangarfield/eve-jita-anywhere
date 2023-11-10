@@ -10,7 +10,7 @@ import TopUpInfoModal, { openTopUpInfoModal } from '../common/TopUpInfoModal'
 const Basket = (props) => {
   const [basket, { clearBasket, updatePrices, removeBasketItem, updateBasketQuantity }] = useBasket()
   const [staticData] = useStaticData()
-  const [user, { userBalance, triggerDataUpdate }] = useUser()
+  const [user, { userBalance, triggerDataUpdate, isLoggedIn }] = useUser()
 
   const [confirmCheckout, setConfirmCheckout] = createSignal(false)
   const [orderCreationInProgress, setOrderCreationInProgress] = createSignal(false)
@@ -68,14 +68,13 @@ const Basket = (props) => {
 
       <h3>Basket</h3>
       <Show
-        when={basket.length > 0} fallback={
+        when={isLoggedIn() && basket.length > 0} fallback={
           <>
             <Alert variant='dark'>Basket empty</Alert>
             <Show
-              when={userBalance && userBalance.balance > 0} fallback={
-
+              when={isLoggedIn() && userBalance() && userBalance().balance > 0} fallback={
                 <Alert variant='border border-danger text-danger text-center'>
-                  <p>Account Balance - {userBalance().balance.toLocaleString()} ISK</p>
+                  <p>Account Balance - {userBalance() ? userBalance().balance.toLocaleString() : 0} ISK</p>
                   <Button class='ms-2' variant='outline-primary' onClick={openTopUpInfoModal}>Top up your balance</Button>
                 </Alert>
             }
@@ -83,7 +82,7 @@ const Basket = (props) => {
               <div class='d-flex'>
                 <span class='col-4'>Account Balance</span>
                 <Button size='sm' variant='outline-primary' onClick={openTopUpInfoModal}><span class='opacity-50xx'>Top up</span></Button>
-                <span class='ms-auto'>{userBalance().balance.toLocaleString()} ISK</span>
+                <span class='ms-auto'>{userBalance() ? userBalance().balance.toLocaleString() : 0} ISK</span>
               </div>
             </Show>
           </>

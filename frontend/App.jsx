@@ -22,6 +22,7 @@ import AdminPage from './components/admin/AdminPage'
 import AdminConfigForms from './components/admin/AdminConfigForms'
 import AdminJournal from './components/admin/AdminJournal'
 import AdminBalances from './components/admin/AdminBalances'
+import MyBalancePage from './components/pages/MyBalancePage'
 
 // const AllTodos = () => {
 //   return (
@@ -68,6 +69,7 @@ function App () {
               <Route path='/shop' component={ShopPage} />
               <Route path='/agents' component={AgentsPage} />
               <Route path='/settings' component={SettingsPage} />
+              <Route path='/my-balance' component={MyBalancePage} />
               <Route path='/my-orders' component={MyOrdersPage} />
               <Route path='/sso-return' component={SSOReturnPage} />
               <Route path='/admin' component={AdminPage}>

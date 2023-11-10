@@ -2,9 +2,11 @@ import { Show, createMemo, createSignal } from 'solid-js'
 import Loading from '../common/Loading'
 import { useBasket } from '../../stores/BasketProvider'
 import { useStaticData } from '../../stores/StaticDataProvider'
+import { useUser } from '../../stores/UserProvider'
 
 const TypeDetailsActions = (props) => {
-  const [basket, { addToBasket, updateBasket }] = useBasket()
+  const [basket, { addToBasket }] = useBasket()
+  const [user, { isLoggedIn }] = useUser()
   const [staticData] = useStaticData()
 
   const price = createMemo(() => {
@@ -66,7 +68,7 @@ const TypeDetailsActions = (props) => {
             </div>
             <div class='row g-3 align-items-center mb-2'>
               <div class='col-md-2 offset-md-4'>
-                <button type='submit' class='btn btn-primary w-100' disabled={price() === 0}>Add to basket</button>
+                <button type='submit' class='btn btn-primary w-100' disabled={price() === 0 || !isLoggedIn()}>{isLoggedIn() ? 'Add to basket' : 'Login to add to basket'}</button>
               </div>
               <div class='col-md-6'>
                 <span class='form-text'>

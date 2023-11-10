@@ -19,9 +19,10 @@ const Header = () => {
           <Nav class='me-auto'>
             <A href='/info' class='nav-link' activeClass='active'>Info</A>
             <A href='/shop' class='nav-link' activeClass='active'>Shop</A>
-            {/* <Show when={isLoggedIn()}> */}
-            <A href='/my-orders' class='nav-link' activeClass='active'>My Orders</A>
-            {/* </Show> */}
+            <Show when={isLoggedIn()}>
+              <A href='/my-balance' class='nav-link' activeClass='active'>My Balance</A>
+              <A href='/my-orders' class='nav-link' activeClass='active'>My Orders</A>
+            </Show>
           </Nav>
           <Nav>
             <Show when={isLoggedIn()} fallback={<Button class='nav-link' variant='' onClick={beginLoginProcess}><Image src='https://web.ccpgamescdn.com/eveonlineassets/developers/eve-sso-login-white-small.png' /></Button>}>
