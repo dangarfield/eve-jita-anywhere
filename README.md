@@ -16,8 +16,7 @@ User Checkout
 ```mermaid
 flowchart TD
 
-    b1[User] -- Add to cart --> b2[Cart
-    90m mats & broker fee, 5m agent, 5m P4G, 10m shipping];
+    b1[User] -- Add to cart --> b2[Cart 90m mats & broker fee, 5m agent, 5m P4G, 10m shipping];
     b2 -- Create Order --> b3[User JA balance decrease - 'reserved' 110m - 90+5+5+10];
     b2 -- Create Order --> b4[Order available to agents];
     b2 -- Status update --> b5[Order Status: Available];
