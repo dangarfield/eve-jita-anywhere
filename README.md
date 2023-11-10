@@ -18,8 +18,7 @@ flowchart TD
 
     b1[User] -- Add to cart --> b2[Cart
     90m mats & broker fee, 5m agent, 5m P4G, 10m shipping];
-    b2 -- Create Order --> b3[User JA balance decrease - 'reserved'
-    110m - 90+5+5+10];
+    b2 -- Create Order --> b3[User JA balance decrease - 'reserved' 110m - 90+5+5+10];
     b2 -- Create Order --> b4[Order available to agents];
     b2 -- Status update --> b5[Order Status: Available];
     b4 -- Notify agents --> b7[Agents];
@@ -53,20 +52,15 @@ flowchart TD
     c12 -- Notify --> c12a[Agent];
     c5 -- OK price --> c7[Agent on JA Website];
     c7 -- Update status --> c15[Order Status: In Progress];
-    c15 -- Notify user
-    Order in now non-cancelleable  --> c15a[User];
-    c15 -- Agent buys & ships 
-    100m --> c16[Agent EVE Client];
+    c15 -- Notify user order in now non-cancelleable  --> c15a[User];
+    c15 -- Agent buys & ships 100m --> c16[Agent EVE Client];
     c16 -- Create contract --> c17[User EVE Client];
     c17 -- Accept contract --> c18[User goods delivered];
     c18 -- Agent accepts contract --> c19[Agent on JA website];
     c19 -- Updates status --> c20[Order Status: Complete];
-    c20 -- Balance update 
-    110m --> c21[User JA balance reserved turns to paid];
-    c20 -- Balance update 
-    105m --> c22[Agent JA balance increase];
-    c20 -- Balance update 
-    5m --> c23[I4G JA balance increase];
+    c20 -- Balance update 110m --> c21[User JA balance reserved turns to paid];
+    c20 -- Balance update 105m --> c22[Agent JA balance increase];
+    c20 -- Balance update 5m --> c23[I4G JA balance increase];
     c20 -- Notify --> c25[Agent]
 
     c16-- Dispute --> c24[Dispute process];
