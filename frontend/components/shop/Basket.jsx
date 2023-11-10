@@ -6,6 +6,7 @@ import { Alert, Button } from 'solid-bootstrap'
 import './Basket.css'
 import { useUser } from '../../stores/UserProvider'
 import TopUpInfoModal, { openTopUpInfoModal } from '../common/TopUpInfoModal'
+import Delivery from './Delivery'
 
 const Basket = (props) => {
   const [basket, { clearBasket, updatePrices, removeBasketItem, updateBasketQuantity }] = useBasket()
@@ -133,7 +134,7 @@ const Basket = (props) => {
         </div>
 
         <Alert variant='border border-info text-info text-center mt-1'>TODO - Add delivery services</Alert>
-
+        <Delivery />
         <hr />
         <div class='d-flex'>
           <span class='col-4'>Materials Total</span>

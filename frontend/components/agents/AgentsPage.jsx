@@ -1,3 +1,4 @@
+import { Alert } from 'solid-bootstrap'
 import Header from '../common/Header'
 
 const AgentsPage = () => {
@@ -9,9 +10,8 @@ const AgentsPage = () => {
         </div>
       </div>
       <div class='row'>
-        <div class='col'>
-          <h1>Agents Page</h1>
-          <p>tbc</p>
+        <div class='col-4'>
+          <Alert variant='border border-info text-info text-center mt-1'>Coming Soon: Agents</Alert>
         </div>
       </div>
     </div>

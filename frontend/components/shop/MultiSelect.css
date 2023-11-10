@@ -1,0 +1,11 @@
+.highlightOption {
+    background: #0d6efd;
+    color: #fff !important;
+}
+.multiSelectContainer li {
+    color: black;
+}
+.multiSelectContainer li:hover {
+    background: #0d6efd;
+    color: #fff;
+}

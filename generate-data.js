@@ -195,12 +195,83 @@ const generateTypeData = async () => {
     }
   })
 }
+
+async function findFiles (directory) {
+  const files = []
+
+  async function traverse (currentPath) {
+    try {
+      const entries = fs.readdirSync(currentPath, { withFileTypes: true })
+
+      for (const entry of entries) {
+        const fullPath = path.join(currentPath, entry.name)
+
+        if (entry.isDirectory()) {
+          await traverse(fullPath)
+        } else if (entry.isFile() && entry.name === 'solarsystem.staticdata') {
+          files.push(fullPath)
+        }
+      }
+    } catch (error) {
+      console.error('Error reading directory:', currentPath, error)
+    }
+  }
+
+  await traverse(directory)
+  return files
+}
+
+const generateSystemListData = async () => {
+  const files = await findFiles('_data/sde/fsd/universe/eve')
+  const systems = await Promise.all(files.map(async (filePath) => {
+    try {
+      const lines = fs.readFileSync(filePath, 'utf-8').split('\n')
+      const systemIDLine = lines.find(line => line.includes('solarSystemID'))
+      const systemIDMatch = systemIDLine.match(/\d+/)
+      const systemID = systemIDMatch ? parseInt(systemIDMatch[0]) : null
+
+      const fSplit = filePath.split('/')
+      const systemName = fSplit[fSplit.length - 2]
+
+      return {
+        // path: filePath,
+        systemName,
+        systemID,
+        stations: []
+      }
+    } catch (error) {
+      console.error('Error reading file:', filePath, error)
+      return null
+    }
+  }))
+
+  const lines = fs.readFileSync('_data/sde/bsd/staStations.yaml', 'utf-8').split('\n')
+  // console.log('lines', lines)
+  let systemID = ''
+  let stationName = ''
+  for (const line of lines) {
+    if (line.startsWith('    solarSystemID')) systemID = parseInt(line.replace('    solarSystemID: ', ''))
+    if (line.startsWith('    stationName')) {
+      stationName = line.replace('    stationName: ', '')
+      const system = systems.find(s => s.systemID === systemID)
+      if (system) {
+        system.stations.push(stationName)
+      }
+    }
+  }
+  // console.log('systemID', systemID)
+  // console.log('stationName', stationName)
+  console.log('systems', systems.length)
+  fs.writeFileSync('frontend/public/generated-data/system-stations.json', JSON.stringify(systems))
+}
 const init = async () => {
   // await downloadAndUnzip('https://eve-static-data-export.s3-eu-west-1.amazonaws.com/tranquility/sde.zip', './_data', 'sde')
   // await downloadAndUnzip('https://web.ccpgamescdn.com/aws/developers/Uprising_V21.03_Icons.zip', './_data', 'icons_icosn')
   // // await downloadAndUnzip('https://web.ccpgamescdn.com/aws/developers/Uprising_V21.03_Types.zip', './_data', 'icons_types')
 
   // await downloadTar('https://data.everef.net/reference-data/reference-data-latest.tar.xz', './_data/reference-data')
-  await generateTypeData()
+  // await generateTypeData()
+
+  await generateSystemListData()
 }
 init()

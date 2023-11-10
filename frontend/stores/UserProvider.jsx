@@ -25,6 +25,7 @@ export function UserProvider (props) {
       } else {
         getUserBalance(user, setUser).then((balance) => {
           console.log('userBalance', balance)
+          balance.characterName = characterName
           setUserBalance(balance)
         })
       }

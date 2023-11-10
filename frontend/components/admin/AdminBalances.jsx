@@ -1,8 +1,9 @@
 import { For, Show, createResource } from 'solid-js'
 import Loading from '../common/Loading'
 import { getAdmin } from '../../services/utils'
-import { Badge, Col, ListGroup } from 'solid-bootstrap'
+import { Col } from 'solid-bootstrap'
 import { addCharacterNames } from '../../services/esi'
+import BalanceList from '../common/BalanceList'
 const getBalances = async () => {
   const balances = await getAdmin('/api/balances')
   await addCharacterNames(balances)
@@ -17,26 +18,9 @@ const AdminBalances = () => {
         {/* <p>{JSON.stringify(balances())}</p> */}
         <Col sm={6}>
           <For each={balances()}>
-            {(user, i) =>
+            {(userBalance) =>
               <>
-                <ListGroup class='mb-3'>
-                  <ListGroup.Item variant='light'>
-                    <div class='w-100 d-flex flex-row align-items-justify' data-character-id={user.characterID}>
-                      <h3>{user.characterName}</h3>
-                      <Badge class='ms-auto fs-4'>{user.balance.toLocaleString()} ISK</Badge>
-                    </div>
-                  </ListGroup.Item>
-                  <For each={user.entries}>
-                    {(entry) =>
-                      <ListGroup.Item>
-                        <div class='w-100 d-flex flex-row justify-content-between'>
-                          <p class='mb-0'>{entry.date}</p>
-                          <p class='mb-0'>{entry.type}</p>
-                          <p class='mb-0'>{entry.amount.toLocaleString()} ISK</p>
-                        </div>
-                      </ListGroup.Item>}
-                  </For>
-                </ListGroup>
+                <BalanceList userBalance={userBalance} />
               </>}
           </For>
         </Col>

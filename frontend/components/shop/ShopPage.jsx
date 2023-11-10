@@ -1,13 +1,11 @@
 import { Show, createSignal } from 'solid-js'
 
-import ShopDescription from './ShopDescription'
 import TypeBrowserSection from './TypeBrowserSection'
 import TypeDetailsSection from './TypeDetailsSection'
 import Basket from './Basket'
 import { useStaticData } from '../../stores/StaticDataProvider'
 import Loading from '../common/Loading'
 import Header from '../common/Header'
-
 const ShopPage = () => {
   const [selectedType, setSelectedType] = createSignal(27912) // Temporarily set it for debugging to 27912, otherwise null
   const [staticData] = useStaticData()
@@ -20,11 +18,6 @@ const ShopPage = () => {
       </div>
       <Show when={staticData()} fallback={<Loading />}>
         <div>
-          <div class='row'>
-            <div class='col'>
-              <ShopDescription />
-            </div>
-          </div>
           <div class='row'>
             <div class='col-md-3'>
               <TypeBrowserSection setSelectedType={setSelectedType} />
