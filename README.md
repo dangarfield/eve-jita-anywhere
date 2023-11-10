@@ -17,13 +17,12 @@ User Checkout
 flowchart TD
 
     b1[User] -- Add to cart --> b2[Cart
-    90m mats & broker fee, 5m agent, 5m P4G, 10m shipping
-    ]
+    90m mats & broker fee, 5m agent, 5m P4G, 10m shipping];
     b2 -- Create Order --> b3[User JA balance decrease - 'reserved'
-    110m - 90+5+5+10]
+    110m - 90+5+5+10];
     b2 -- Create Order --> b4[Order available to agents];
     b2 -- Status update --> b5[Order Status: Available];
-    b4 -- Notify agents --> b7[Agents]
+    b4 -- Notify agents --> b7[Agents];
 
 ```
 
@@ -37,9 +36,9 @@ flowchart TD
     c1[Agent] -- Views --> c2[Order list];
     c1[Agent] -- Selects --> c3[Order];
     c3 -- Status update --> c4[Order Status: Selected];
-    c4 -- Checks in game prices --> c5{Agent EVE Client}
+    c4 -- Checks in game prices --> c5{Agent EVE Client};
     c5 -- Too expensive --> c6[Agent on JA website];
-    c6 -- Fills in 'in game' price details --> c8[Order Status: Price increase]
+    c6 -- Fills in 'in game' price details --> c8[Order Status: Price increase];
     c8 -- Notify user --> c9{User with fresh price info};
 
     c9 -- User says no --> c10[Order Status: Cancelled];
@@ -61,7 +60,7 @@ flowchart TD
     c16 -- Create contract --> c17[User EVE Client];
     c17 -- Accept contract --> c18[User goods delivered];
     c18 -- Agent accepts contract --> c19[Agent on JA website];
-    c19 -- Updates status --> c20[Order Status: Complete]
+    c19 -- Updates status --> c20[Order Status: Complete];
     c20 -- Balance update 
     110m --> c21[User JA balance reserved turns to paid];
     c20 -- Balance update 
@@ -70,8 +69,8 @@ flowchart TD
     5m --> c23[I4G JA balance increase];
     c20 -- Notify --> c25[Agent]
 
-    c16-- Dispute --> c24[Dispute process]
-    c17 -- Dispute --> c24
+    c16-- Dispute --> c24[Dispute process];
+    c17 -- Dispute --> c24;
 
 ```
 Fund withdrawal
@@ -79,6 +78,6 @@ Fund withdrawal
 ```mermaid
 flowchart TD
 
-    t --> b --> c
+    t --> b --> c;
     
 ```
