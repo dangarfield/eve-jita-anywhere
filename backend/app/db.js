@@ -11,9 +11,11 @@ const client = new MongoClient(process.env.MONGO_URI, {
 const db = client.db('jitaanywhere')
 
 export const configCollection = db.collection('config')
+export const paymentCollection = db.collection('payment')
+
 // export const inventoryCollection = db.collection('inventory')
 // export const contractsCollection = db.collection('contracts')
-// export const paymentCollection = db.collection('payment')
+
 // export const sellersCollection = db.collection('sellers')
 
 // TODO - Ensure indexes

@@ -2,22 +2,15 @@ import { Button, Col, Form, Row } from 'solid-bootstrap'
 import { Show, createSignal } from 'solid-js'
 import Loading from '../common/Loading'
 import { password, setPassword } from './PasswordSignal'
+import { get, post } from '../../services/utils'
 
-const ConfigForms = () => {
+const AdminConfigForms = () => {
   const [appConfig, setAppConfig] = createSignal()
   const [authConfig, setAuthConfig] = createSignal()
 
   const fetchAppConfig = async (potentialPassword) => {
     console.log('potentialPassword', potentialPassword)
-    const req = await window.fetch('/api/app-config/admin', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json, text/plain, */*',
-        'Content-Type': 'application/json',
-        Authorization: potentialPassword
-      }
-    })
-    const res = await req.json()
+    const res = await get('/api/app-config/admin', potentialPassword)
     console.log('fetchAppConfig', res)
     if (!res.error) {
       setPassword(potentialPassword)
@@ -26,29 +19,12 @@ const ConfigForms = () => {
     return res
   }
   const saveAppConfig = async (newAppConfig) => {
-    const req = await window.fetch('/api/app-config', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json, text/plain, */*',
-        'Content-Type': 'application/json',
-        Authorization: password()
-      },
-      body: JSON.stringify(newAppConfig)
-    })
-    const res = await req.json()
+    const res = await post('/api/app-config', newAppConfig, password())
     console.log('saveAppConfig', res, password())
     setAppConfig(res)
   }
   const fetchAuthConfig = async (potentialPassword) => {
-    const req = await window.fetch('/api/app-auth', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json, text/plain, */*',
-        'Content-Type': 'application/json',
-        Authorization: potentialPassword
-      }
-    })
-    const res = await req.json()
+    const res = await get('/api/app-auth', potentialPassword)
     console.log('fetchAuthConfig', res)
     if (!res.error) {
       setAuthConfig(res)
@@ -58,23 +34,17 @@ const ConfigForms = () => {
 
   const handleSaveAdminConfig = (e) => {
     e.preventDefault()
+    const brokerPercent = parseFloat(e.target.querySelector('#brokerPercent').value)
     const agentPercent = parseFloat(e.target.querySelector('#agentPercent').value)
-    const iskForGoodPercent = parseFloat(e.target.querySelector('#iskForGoodPercent').value)
-    console.log('handleSaveAdminConfig', agentPercent, iskForGoodPercent)
-    saveAppConfig({ agentPercent, iskForGoodPercent })
+    const plexForGoodPercent = parseFloat(e.target.querySelector('#plexForGoodPercent').value)
+    const minOrder = parseFloat(e.target.querySelector('#minOrder').value)
+    console.log('handleSaveAdminConfig', brokerPercent, agentPercent, plexForGoodPercent)
+    saveAppConfig({ brokerPercent, agentPercent, plexForGoodPercent, minOrder })
   }
   const handleSSOAdminLogin = async (e) => {
     e.preventDefault()
     console.log('handleSaveAuthConfig')
-    const req = await window.fetch('/api/sso/login', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json, text/plain, */*',
-        'Content-Type': 'application/json',
-        Authorization: password()
-      }
-    })
-    const res = await req.json()
+    const res = await get('/api/sso/login', password())
     console.log('handleSSOAdminLogin', res)
     window.location.assign(res.loginUrl)
   }
@@ -89,21 +59,33 @@ const ConfigForms = () => {
         {/* <p>{JSON.stringify(appConfig())}</p> */}
 
         <Form onSubmit={handleSaveAdminConfig}>
+          <Form.Group class='mb-3' controlId='brokerPercent' as={Row}>
+            <Form.Label column sm={2}>Broker Percent</Form.Label>
+            <Col sm={4}>
+              <Form.Control type='text' placeholder='Agent Percent' value={appConfig().brokerPercent} />
+            </Col>
+          </Form.Group>
           <Form.Group class='mb-3' controlId='agentPercent' as={Row}>
             <Form.Label column sm={2}>Agent Percent</Form.Label>
             <Col sm={4}>
               <Form.Control type='text' placeholder='Agent Percent' value={appConfig().agentPercent} />
             </Col>
           </Form.Group>
-          <Form.Group class='mb-3' controlId='iskForGoodPercent' as={Row}>
+          <Form.Group class='mb-3' controlId='plexForGoodPercent' as={Row}>
             <Form.Label column sm={2}>Isk For Good Percent</Form.Label>
             <Col sm={4}>
-              <Form.Control type='text' placeholder='Agent Percent' value={appConfig().iskForGoodPercent} />
+              <Form.Control type='text' placeholder='Agent Percent' value={appConfig().plexForGoodPercent} />
+            </Col>
+          </Form.Group>
+          <Form.Group class='mb-3' controlId='minOrder' as={Row}>
+            <Form.Label column sm={2}>Minimum Order</Form.Label>
+            <Col sm={4}>
+              <Form.Control type='text' placeholder='Agent Percent' value={appConfig().minOrder} />
             </Col>
           </Form.Group>
           <Form.Group class='mb-3' controlId='formBasicPassword' as={Row}>
-            <Col sm={{ span: 4, offset: 2 }}>
-              <Button variant='primary' type='submit'>Save Admin Config</Button>
+            <Col sm={{ span: 2, offset: 4 }}>
+              <Button variant='primary' type='submit' class='w-100'>Save Admin Config</Button>
             </Col>
           </Form.Group>
         </Form>
@@ -150,8 +132,11 @@ const ConfigForms = () => {
             </Col>
           </Form.Group>
           <Form.Group class='mb-3' controlId='formBasicPassword' as={Row}>
-            <Col sm={{ span: 4, offset: 2 }}>
-              <Button variant='primary' type='submit'>SSO Auth Config</Button>
+            <Col sm={{ span: 2, offset: 2 }}>
+              <Button variant='outline-primary' type='submit' class='w-100 button-outline-primary'>SSO Auth Config</Button>
+            </Col>
+            <Col sm={{ span: 2 }}>
+              <Button variant='primary' type='button' class='w-100' onclick={() => get('/api/admin-task', password())}>Trigger Admin Function</Button>
             </Col>
           </Form.Group>
         </Form>
@@ -159,4 +144,4 @@ const ConfigForms = () => {
     </>
   )
 }
-export default ConfigForms
+export default AdminConfigForms

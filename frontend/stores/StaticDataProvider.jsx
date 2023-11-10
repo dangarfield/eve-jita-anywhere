@@ -1,5 +1,6 @@
 import { createContext, useContext, createResource } from 'solid-js'
 import { createStore } from 'solid-js/store'
+import { get } from '../services/utils'
 
 const StaticDataContext = createContext()
 
@@ -21,13 +22,13 @@ const createStaticDataResource = () => {
   const [staticData, setStaticData] = createStore({ marketTypes: 'initial' })
 
   const resource = createResource(async () => {
-    const response = await fetch('/generated-data/market-types.json')
-    const jsonData = await response.json()
-    const data = { marketTypes: jsonData, types: gatherTypeObjects({ child_groups: jsonData }) }
+    const jsonData = await get('/generated-data/market-types.json')
+    const appConfig = await get('/api/app-config')
+    const data = { marketTypes: jsonData, types: gatherTypeObjects({ child_groups: jsonData }), appConfig }
     // const data = jsonData
     setStaticData('staticData', data) // Update the store with the fetched data
     // await sleep(30000)
-    // console.log('jsonData', data)
+    // console.log('data', data)
     return data
   })
 

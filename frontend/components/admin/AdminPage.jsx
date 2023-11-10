@@ -3,6 +3,7 @@ import Header from '../common/Header'
 import { Button, Form } from 'solid-bootstrap'
 import { A, Outlet } from '@solidjs/router'
 import { password, setPassword } from './PasswordSignal'
+import { get } from '../../services/utils'
 
 const AdminPage = () => {
   createEffect(() => {
@@ -16,15 +17,7 @@ const AdminPage = () => {
     e.preventDefault()
     const potentialPassword = e.target.querySelector('[type="password"]').value
     console.log('potentialPassword', potentialPassword)
-    const req = await window.fetch('/api/app-config/admin', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json, text/plain, */*',
-        'Content-Type': 'application/json',
-        Authorization: potentialPassword
-      }
-    })
-    const res = await req.json()
+    const res = await get('/api/app-config/admin', potentialPassword)
     console.log('fetchAppConfig', res)
     if (!res.error) {
       setPassword(potentialPassword)
@@ -39,8 +32,6 @@ const AdminPage = () => {
       </div>
       <div class='row'>
         <div class='col'>
-          <h1>Admin Page</h1>
-
           <Show
             when={password()} fallback={
               <Form onSubmit={handleEnterPassword}>

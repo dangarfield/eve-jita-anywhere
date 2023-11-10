@@ -19,7 +19,7 @@ import SettingsPage from './components/pages/SettingsPage'
 import MyOrdersPage from './components/pages/MyOrdersPage'
 import NotFoundPage from './components/pages/NotFoundPage'
 import AdminPage from './components/admin/AdminPage'
-import ConfigForms from './components/admin/ConfigForms'
+import AdminConfigForms from './components/admin/AdminConfigForms'
 import AdminJournal from './components/admin/AdminJournal'
 import AdminBalances from './components/admin/AdminBalances'
 
@@ -71,7 +71,7 @@ function App () {
               <Route path='/my-orders' component={MyOrdersPage} />
               <Route path='/sso-return' component={SSOReturnPage} />
               <Route path='/admin' component={AdminPage}>
-                <Route path='/' component={ConfigForms} />
+                <Route path='/' component={AdminConfigForms} />
                 <Route path='/journal' component={AdminJournal} />
                 <Route path='/balances' component={AdminBalances} />
               </Route>

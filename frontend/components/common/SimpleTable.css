@@ -1,0 +1,11 @@
+
+.table th.sortable {
+    background-color: #000;
+    color: white;
+}
+.table th.sortable .header {
+    display: inline;
+}
+.table th.sortable .sort-icon {
+    padding-left: 20px;
+}

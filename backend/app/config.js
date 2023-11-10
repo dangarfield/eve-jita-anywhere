@@ -5,16 +5,10 @@ const ID_APP_AUTH = 'authConfig'
 
 const appConfigDefault = {
   _id: ID_APP_CONFIG,
+  brokerPercent: 0.0175,
   agentPercent: 0.05,
-  iskForGoodPercent: 0.05
-  // listingPercentage: 0.01,
-  // listingFeeThreshold: 1000000000,
-  // listingFeeCap: 10000000,
-  // storefrontFee: 500000000,
-  // premiumListing: 100000000,
-  // discordUrl: 'https://discord.gg/PfecDHkBRP',
-  // corpDivisionId: 2, // Private
-  // corpDivisionName: 'Abyss Board Payments'
+  plexForGoodPercent: 0.05,
+  minOrder: 100000
 }
 const appAuthDefault = {
   _id: ID_APP_AUTH,

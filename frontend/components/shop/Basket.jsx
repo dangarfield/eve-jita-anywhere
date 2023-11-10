@@ -1,40 +1,65 @@
-import { For, Show, createMemo } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
 import { useBasket } from '../../stores/BasketProvider'
 import { useStaticData } from '../../stores/StaticDataProvider'
 import EveTypeIcon from '../common/EveTypeIcon'
 import { Alert, Button } from 'solid-bootstrap'
 import './Basket.css'
+import { useUser } from '../../stores/UserProvider'
+import TopUpInfoModal, { openTopUpInfoModal } from '../common/TopUpInfoModal'
 
 const Basket = (props) => {
   const [basket, { clearBasket, updatePrices, removeBasketItem, updateBasketQuantity }] = useBasket()
   const [staticData] = useStaticData()
+  const [user, { userBalance, triggerDataUpdate }] = useUser()
 
-  const brokerFeePerc = 0.0175
-  const shopFeePerc = 0.05
+  const [confirmCheckout, setConfirmCheckout] = createSignal(false)
+  const [orderCreationInProgress, setOrderCreationInProgress] = createSignal(false)
 
+  createEffect(() => {
+    console.log('Basket createEffect')
+    triggerDataUpdate() // This causes it to load twice on the first page, but it does ensure that it gets the latest data on this page, which works for now
+    setConfirmCheckout(false)
+  })
+
+  const purchaseButtonText = createMemo(() => {
+    let text = 'Purchase'
+    if (confirmCheckout()) text = 'Prices updated\nAre you sure?'
+    if (orderCreationInProgress()) text = 'Creating order'
+    return text
+  })
   const basketData = createMemo(() => {
     const totalMaterialCost = Math.ceil(basket?.reduce((total, basketItem) => total + (basketItem.quantity * basketItem.price), 0))
     // console.log('totalMaterialCost memo', basket, totalMaterialCost)
-    const brokersFee = Math.ceil(totalMaterialCost * brokerFeePerc)
-    const shopFee = Math.ceil((totalMaterialCost + brokersFee) * shopFeePerc)
-    const total = totalMaterialCost + brokersFee + shopFee
+    const brokersFee = Math.ceil(totalMaterialCost * staticData().appConfig.brokerPercent)
+    const agentFee = Math.ceil((totalMaterialCost + brokersFee) * staticData().appConfig.agentPercent)
+    const p4gFee = Math.ceil((totalMaterialCost + brokersFee) * staticData().appConfig.plexForGoodPercent)
+    const total = totalMaterialCost + brokersFee + agentFee + p4gFee
     const totalVolume = Math.ceil(basket.reduce((total, basketItem) => {
       const item = staticData().types[basketItem.typeID]
       return total + (basketItem.quantity * item.volume)
     }, 0))
-    return { totalMaterialCost, brokersFee, shopFee, total, totalVolume }
+    const aboveMinimumOrder = total > staticData().appConfig.minOrder
+    return { totalMaterialCost, brokersFee, agentFee, p4gFee, total, totalVolume, aboveMinimumOrder }
   })
-  // const totalMaterialCost = Math.ceil(basket.reduce((total, basketItem) => total + (basketItem.quantity * basketItem.price), 0))
-
   const handleQuantityInputChange = (event, basketItem) => {
     let newValue = parseInt(event.target.value)
     if (isNaN(newValue) || newValue <= 0) {
       newValue = 1
     }
-    // console.log('handleQuantityInputChange', event.target.value, newValue, basketItem, updateBasketQuantity)
     event.target.value = newValue
     updateBasketQuantity(basketItem.typeID, newValue)
     return newValue
+  }
+  const handlePurchaseClick = () => {
+    console.log('handlePurchaseClick', confirmCheckout())
+    updatePrices()
+    if (!confirmCheckout()) {
+      setConfirmCheckout(true)
+    } else {
+      setOrderCreationInProgress(true)
+      // TODO - Handle Order creation
+      window.alert('TODO - Handle Order Creation')
+    }
   }
   return (
     <>
@@ -42,10 +67,33 @@ const Basket = (props) => {
       {/* <p>Basket: {JSON.stringify(basket)}</p> */}
 
       <h3>Basket</h3>
-      <Show when={basket.length > 0} fallback={<Alert variant='dark'>Basket empty</Alert>}>
+      <Show
+        when={basket.length > 0} fallback={
+          <>
+            <Alert variant='dark'>Basket empty</Alert>
+            <Show
+              when={userBalance && userBalance.balance > 0} fallback={
+
+                <Alert variant='border border-danger text-danger text-center'>
+                  <p>Account Balance - {userBalance().balance.toLocaleString()} ISK</p>
+                  <Button class='ms-2' variant='outline-primary' onClick={openTopUpInfoModal}>Top up your balance</Button>
+                </Alert>
+            }
+            >
+              <div class='d-flex'>
+                <span class='col-4'>Account Balance</span>
+                <Button size='sm' variant='outline-primary' onClick={openTopUpInfoModal}><span class='opacity-50xx'>Top up</span></Button>
+                <span class='ms-auto'>{userBalance().balance.toLocaleString()} ISK</span>
+              </div>
+            </Show>
+          </>
+        }
+      >
         <p class='opacity-50'>
-          Our agents will attempt to buy the cheapest price for you, however, if the displayed price is available, they will spend a maximum of 10% more per item.
-          If the price still exceeds 10%, the order will return back to you.
+          Our agents will attempt to buy the cheapest price for you, however, every ISK above these current ESI prizes, they will lose out.
+        </p>
+        <p class='opacity-50'>
+          If the order becomes too espensive, it will return back to you and you can choose to accept the updated prices.
         </p>
         <div class='d-flex flex-column'>
           <For each={basket}>
@@ -77,6 +125,16 @@ const Basket = (props) => {
             )}
           </For>
         </div>
+
+        <hr />
+
+        <div class='d-flex justify-content-between'>
+          <span class=''>Total Volume</span>
+          <span class=''>{basketData().totalVolume.toLocaleString()} m<sup>3</sup></span>
+        </div>
+
+        <Alert variant='border border-info text-info text-center mt-1'>TODO - Add delivery services</Alert>
+
         <hr />
         <div class='d-flex'>
           <span class='col-4'>Materials Total</span>
@@ -86,14 +144,20 @@ const Basket = (props) => {
 
         <div class='d-flex'>
           <span class='col-4'>Broker Fee</span>
-          <span class='opacity-50'>{(brokerFeePerc * 100).toFixed(2)} %</span>
+          <span class='opacity-50'>{(staticData().appConfig.brokerPercent * 100).toFixed(2)} %</span>
           <span class='ms-auto'>{basketData().brokersFee.toLocaleString()} ISK</span>
         </div>
 
         <div class='d-flex'>
-          <span class='col-4'>Shop Fee</span>
-          <span class='opacity-50'>{(shopFeePerc * 100).toFixed(0)} %</span>
-          <span class='ms-auto'>{basketData().shopFee.toLocaleString()} ISK</span>
+          <span class='col-4'>Agent Fee</span>
+          <span class='opacity-50'>{(staticData().appConfig.agentPercent * 100).toFixed()} %</span>
+          <span class='ms-auto'>{basketData().agentFee.toLocaleString()} ISK</span>
+        </div>
+
+        <div class='d-flex'>
+          <span class='col-4'>Plex For Good Fee</span>
+          <span class='opacity-50'>{(staticData().appConfig.plexForGoodPercent * 100).toFixed()} %</span>
+          <span class='ms-auto'>{basketData().agentFee.toLocaleString()} ISK</span>
         </div>
 
         <hr />
@@ -103,35 +167,43 @@ const Basket = (props) => {
           <span class=''>{basketData().total.toLocaleString()} ISK</span>
         </div>
 
-        <div class='d-flex justify-content-between'>
-          <span class='col-4'>Max Total</span>
-          <span class='opacity-50'>+10 % contingency</span>
-          <span class='ms-auto'>{Math.ceil(basketData().total * 1.1).toLocaleString()} ISK</span>
-        </div>
-
-        <div class='d-flex justify-content-between'>
-          <span class=''>Total Volume</span>
-          <span class=''>{basketData().totalVolume.toLocaleString()} m<sup>3</sup></span>
-        </div>
+        <Show when={!basketData().aboveMinimumOrder}>
+          <hr />
+          <Alert variant='border border-danger text-danger text-center'>Not above minimum order of {staticData().appConfig.minOrder.toLocaleString()} ISK</Alert>
+        </Show>
 
         <hr />
 
-        <Alert variant='border border-danger text-danger text-center'>TODO - Add delivery services</Alert>
-
-        <hr />
-
-        <Alert variant='border border-danger text-danger text-center'>TODO - Add your balance</Alert>
+        {/* <p>{userBalance().balance} - {basketData().total}</p> */}
+        <Show
+          when={userBalance().balance > basketData().total} fallback={
+            <Alert variant='border border-danger text-danger text-center'>
+              <p>Your balance is too loo - {userBalance().balance.toLocaleString()} ISK</p>
+              <Button class='ms-2' onClick={openTopUpInfoModal}>Top up your balance</Button>
+            </Alert>
+        }
+        >
+          <div class='d-flex'>
+            <span class='col-4'>Account Balance</span>
+            <Button size='sm' variant='outline-primary' onClick={openTopUpInfoModal}><span class='opacity-50xx'>Top up</span></Button>
+            <span class='ms-auto'>{userBalance().balance.toLocaleString()} ISK</span>
+          </div>
+          <div class='d-flex justify-content-between'>
+            <span class=''>End Balance</span>
+            <span class=''>{(userBalance().balance - basketData().total).toLocaleString()} ISK</span>
+          </div>
+        </Show>
 
         <hr />
 
         <div class='d-flex justify-content-between gap-2'>
           <Button class='w-100' variant='btn btn-outline-secondary' onClick={clearBasket}>Clear Basket</Button>
           <Button class='w-100' variant='btn btn-outline-primary' onClick={updatePrices}>Check Prices</Button>
-          <Button class='w-100' onClick={() => window.alert('TODO - Not implemented yet')}>Purchase</Button>
+          <Button class='w-100' onClick={handlePurchaseClick} disabled={!basketData().aboveMinimumOrder || userBalance().balance < basketData().total || orderCreationInProgress()}>{purchaseButtonText}</Button>
         </div>
 
       </Show>
-
+      <TopUpInfoModal />
     </>
   )
 }

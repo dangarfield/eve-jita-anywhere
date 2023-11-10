@@ -32,3 +32,15 @@ export const getRegionHistory = async (itemID) => {
   // await sleep(2000)
   return history
 }
+export const addCharacterNames = async (objects) => {
+  for (const object of objects) {
+    if (object.characterID) {
+      object.characterName = await getCharacterName(object.characterID)
+    }
+  }
+}
+export const getCharacterName = async (characterID) => {
+  const res = await window.fetch(`https://esi.evetech.net/latest/characters/${characterID}/?datasource=tranquility`)
+  const character = await res.json()
+  return character.name
+}

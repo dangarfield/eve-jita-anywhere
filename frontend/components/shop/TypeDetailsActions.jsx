@@ -1,9 +1,11 @@
 import { Show, createMemo, createSignal } from 'solid-js'
 import Loading from '../common/Loading'
 import { useBasket } from '../../stores/BasketProvider'
+import { useStaticData } from '../../stores/StaticDataProvider'
 
 const TypeDetailsActions = (props) => {
   const [basket, { addToBasket, updateBasket }] = useBasket()
+  const [staticData] = useStaticData()
 
   const price = createMemo(() => {
     return props.orders() && props.orders().sell.length > 0 ? props.orders().sell[0].price : 0
@@ -58,7 +60,7 @@ const TypeDetailsActions = (props) => {
               </div>
               <div class='col-md-6'>
                 <span class='form-text'>
-                  We only book if the price is less than a 10% increase
+                  Agents will only book if the price is less than {staticData().appConfig.agentPercent * 100}% more
                 </span>
               </div>
             </div>
@@ -68,8 +70,16 @@ const TypeDetailsActions = (props) => {
               </div>
               <div class='col-md-6'>
                 <span class='form-text'>
-                  Estimated price <span class='text-white'>{Math.ceil(price() * quantity()).toLocaleString()} ISK</span> plus taxes & fees<br />
-                  No more than <span class='text-white'>{Math.ceil(price() * quantity() * 1.1).toLocaleString()} ISK</span> plus taxes & fees<br />
+                  Estimated price <span class='text-white'>{Math.ceil(price() * quantity()).toLocaleString()} ISK</span> plus broker fees<br />
+                  You pay
+                  <span class='text-white'> {
+                    (
+                      Math.ceil((Math.ceil(Math.ceil(price() * quantity()) + Math.ceil(Math.ceil(price() * quantity()) * (staticData().appConfig.brokerPercent))))) + // mats + broken
+                      Math.ceil((Math.ceil(Math.ceil(price() * quantity()) + Math.ceil(Math.ceil(price() * quantity()) * (staticData().appConfig.brokerPercent)))) * staticData().appConfig.agentPercent) + // agent fee
+                      Math.ceil((Math.ceil(Math.ceil(price() * quantity()) + Math.ceil(Math.ceil(price() * quantity()) * (staticData().appConfig.brokerPercent)))) * staticData().appConfig.plexForGoodPercent) // plex fee
+                    ).toLocaleString()
+                    } ISK
+                  </span> total<br />
                 </span>
               </div>
             </div>

@@ -20,6 +20,7 @@ export const verifyAdmin = (req, res, next) => {
 
 export const verifyToken = async (req, res, next) => {
   const bearerHeader = req.headers.authorization
+  console.log('verifyToken', 'bearerHeader', bearerHeader)
   if (typeof bearerHeader === 'undefined') {
     res.status(403).json({ error: 'missing-token' })
     return
