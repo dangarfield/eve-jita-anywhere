@@ -40,7 +40,9 @@ const Basket = (props) => {
       return total + (basketItem.quantity * item.volume)
     }, 0))
     const aboveMinimumOrder = total > staticData().appConfig.minOrder
-    return { totalMaterialCost, brokersFee, agentFee, p4gFee, total, totalVolume, aboveMinimumOrder }
+    let balance = 0
+    if (userBalance()) balance = userBalance().balance
+    return { totalMaterialCost, brokersFee, agentFee, p4gFee, total, totalVolume, aboveMinimumOrder, balance }
   })
   const handleQuantityInputChange = (event, basketItem) => {
     let newValue = parseInt(event.target.value)
@@ -73,9 +75,9 @@ const Basket = (props) => {
           <>
             <Alert variant='dark'>Basket empty</Alert>
             <Show
-              when={isLoggedIn() && userBalance() && userBalance().balance > 0} fallback={
+              when={isLoggedIn() && basketData().balance > 0} fallback={
                 <Alert variant='border border-danger text-danger text-center'>
-                  <p>Account Balance - {userBalance() ? userBalance().balance.toLocaleString() : 0} ISK</p>
+                  <p>Account Balance - {basketData().balance.toLocaleString()} ISK</p>
                   <Button class='ms-2' variant='outline-primary' onClick={openTopUpInfoModal}>Top up your balance</Button>
                 </Alert>
             }
@@ -83,7 +85,7 @@ const Basket = (props) => {
               <div class='d-flex'>
                 <span class='col-4'>Account Balance</span>
                 <Button size='sm' variant='outline-primary' onClick={openTopUpInfoModal}><span class='opacity-50xx'>Top up</span></Button>
-                <span class='ms-auto'>{userBalance() ? userBalance().balance.toLocaleString() : 0} ISK</span>
+                <span class='ms-auto'>{basketData().balance.toLocaleString()} ISK</span>
               </div>
             </Show>
           </>
@@ -174,11 +176,11 @@ const Basket = (props) => {
 
         <hr />
 
-        {/* <p>{userBalance().balance} - {basketData().total}</p> */}
+        {/* <p>{basketData().balance} - {basketData().total}</p> */}
         <Show
-          when={userBalance().balance > basketData().total} fallback={
+          when={basketData().balance > basketData().total} fallback={
             <Alert variant='border border-danger text-danger text-center'>
-              <p>Your balance is too loo - {userBalance().balance.toLocaleString()} ISK</p>
+              <p>Your balance is too loo - {basketData().balance.toLocaleString()} ISK</p>
               <Button class='ms-2' onClick={openTopUpInfoModal}>Top up your balance</Button>
             </Alert>
         }
@@ -186,11 +188,11 @@ const Basket = (props) => {
           <div class='d-flex'>
             <span class='col-4'>Account Balance</span>
             <Button size='sm' variant='outline-primary' onClick={openTopUpInfoModal}><span class='opacity-50xx'>Top up</span></Button>
-            <span class='ms-auto'>{userBalance().balance.toLocaleString()} ISK</span>
+            <span class='ms-auto'>{basketData().balance.toLocaleString()} ISK</span>
           </div>
           <div class='d-flex justify-content-between'>
             <span class=''>End Balance</span>
-            <span class=''>{(userBalance().balance - basketData().total).toLocaleString()} ISK</span>
+            <span class=''>{(basketData().balance - basketData().total).toLocaleString()} ISK</span>
           </div>
         </Show>
 
@@ -199,7 +201,7 @@ const Basket = (props) => {
         <div class='d-flex justify-content-between gap-2'>
           <Button class='w-100' variant='btn btn-outline-secondary' onClick={clearBasket}>Clear Basket</Button>
           <Button class='w-100' variant='btn btn-outline-primary' onClick={updatePrices}>Check Prices</Button>
-          <Button class='w-100' onClick={handlePurchaseClick} disabled={!basketData().aboveMinimumOrder || userBalance().balance < basketData().total || orderCreationInProgress()}>{purchaseButtonText}</Button>
+          <Button class='w-100' onClick={handlePurchaseClick} disabled={!basketData().aboveMinimumOrder || basketData().balance < basketData().total || orderCreationInProgress()}>{purchaseButtonText}</Button>
         </div>
 
       </Show>
