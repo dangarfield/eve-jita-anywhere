@@ -230,13 +230,32 @@ const generateSystemListData = async () => {
       const systemIDMatch = systemIDLine.match(/\d+/)
       const systemID = systemIDMatch ? parseInt(systemIDMatch[0]) : null
 
+      const securityLine = lines.find(line => line.includes('security'))
+      const securityMatch = securityLine.match(/-?\d+\.\d+/)
+      const security = securityMatch ? parseFloat(securityMatch[0]) : null
+
+      const stargates = lines.filter(line => line.includes('    5')).map(stargateLine => {
+        const stargateMatch = stargateLine.match(/\d+/)
+        const stargate = stargateMatch ? parseInt(stargateMatch[0]) : null
+        return stargate
+      })
+      const stargateDestinations = lines.filter(line => line.includes('destination')).map(stargateLine => {
+        const stargateMatch = stargateLine.match(/\d+/)
+        const stargate = stargateMatch ? parseInt(stargateMatch[0]) : null
+        return stargate
+      })
+
       const fSplit = filePath.split('/')
       const systemName = fSplit[fSplit.length - 2]
 
+      // console.log(systemName, 'security', security)
       return {
         // path: filePath,
         systemName,
         systemID,
+        security,
+        stargates,
+        stargateDestinations,
         stations: []
       }
     } catch (error) {
@@ -259,10 +278,39 @@ const generateSystemListData = async () => {
       }
     }
   }
+  const connectionsNames = []
+  const connections = []
+  const connectionsHighSec = []
+
+  systems.forEach(system => {
+    system.stargateDestinations.forEach(stargate => {
+      const dest = systems.find(s => s.stargates.includes(stargate))
+      const edgeName = system.systemName.localeCompare(dest.systemName) < 0 ? [system.systemName, dest.systemName] : [dest.systemName, system.systemName]
+      const edge = system.systemID < dest.systemID ? [system.systemID, dest.systemID] : [dest.systemID, system.systemID]
+      if (!connections.some(existingEdge => existingEdge[0] === edge[0] && existingEdge[1] === edge[1])) {
+        // connectionsNames.push(edgeName)
+        connections.push(edge)
+      }
+      if (system.security >= 0.45 && dest.security >= 0.45) {
+        if (!connectionsHighSec.some(existingEdge => existingEdge[0] === edge[0] && existingEdge[1] === edge[1])) {
+          connectionsNames.push(edgeName)
+          connectionsHighSec.push(edge)
+        }
+      }
+    })
+  })
+
   // console.log('systemID', systemID)
   // console.log('stationName', stationName)
+  // console.log('debug', systems.find(s => s.systemID === 30001647))
+  // console.log('debug', systems.find(s => s.systemName === 'Mesybier'))
+  console.log('debug', systems.find(s => s.systemName === 'Airaken'))
+  // 30000185
+  console.log('connections', connectionsNames.length, connectionsNames.filter(c => c[0] === 'Hykkota'), connectionsNames.filter(c => c[1] === 'Hykkota'))
+  console.log('connections', connections.length, connections.filter(c => c[0] === 30000185), connections.filter(c => c[1] === 30000185))
+  console.log('connectionsHighSec', connectionsHighSec.length, connectionsHighSec.filter(c => c[0] === 30000185), connectionsHighSec.filter(c => c[1] === 30000185))
   console.log('systems', systems.length)
-  fs.writeFileSync('frontend/public/generated-data/system-stations.json', JSON.stringify(systems))
+  fs.writeFileSync('frontend/public/generated-data/system-stations.json', JSON.stringify({ systems, connections, connectionsHighSec }))
 }
 const init = async () => {
   // await downloadAndUnzip('https://eve-static-data-export.s3-eu-west-1.amazonaws.com/tranquility/sde.zip', './_data', 'sde')
