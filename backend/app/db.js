@@ -11,7 +11,8 @@ const client = new MongoClient(process.env.MONGO_URI, {
 const db = client.db('jitaanywhere')
 
 export const configCollection = db.collection('config')
-export const paymentCollection = db.collection('payment')
+export const paymentsCollection = db.collection('payments')
+export const ordersCollection = db.collection('orders')
 
 // export const inventoryCollection = db.collection('inventory')
 // export const contractsCollection = db.collection('contracts')

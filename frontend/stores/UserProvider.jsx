@@ -11,7 +11,7 @@ export function UserProvider (props) {
   const [userBalance, setUserBalance] = createSignal(null)
 
   createEffect(() => {
-    console.log('createEffect UserProvider')
+    // console.log('createEffect UserProvider')
     window.localStorage.setItem('jita-anywhere-user', JSON.stringify(user))
     triggerDataUpdate()
   })
@@ -34,6 +34,7 @@ export function UserProvider (props) {
 
   const characterID = createMemo(() => user?.character_id)
   const characterName = createMemo(() => user?.payload?.name)
+  const accessToken = createMemo(() => user?.access_token)
   const isLoggedIn = createMemo(() => !!user.character_id)
 
   // console.log('localUser', localUser, user, characterID(), characterName())
@@ -52,6 +53,7 @@ export function UserProvider (props) {
       },
       characterID,
       characterName,
+      accessToken,
       isLoggedIn,
       triggerDataUpdate,
       userBalance

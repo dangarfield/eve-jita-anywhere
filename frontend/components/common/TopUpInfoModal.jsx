@@ -1,23 +1,27 @@
 import { Button, Modal } from 'solid-bootstrap'
 import { useStaticData } from '../../stores/StaticDataProvider'
-import { createSignal } from 'solid-js'
+import { Show, createSignal } from 'solid-js'
+import Loading from './Loading'
 
 const [show, setShow] = createSignal(false)
 export const openTopUpInfoModal = () => setShow(true)
 const handleClose = () => setShow(false)
 
 export const topUpInfoText = (staticData) => (
-  <>
-    <p>In game, search for and right click on the <code>{staticData().appConfig.corpName}</code> corporation, then click 'Give Money'. Fill in the details as follows:</p>
-    <div class='alert alert-info fade show col-lg-8 offset-lg-2' role='alert'>
-      <p class='mb-0 d-flex justify-content-between'><b>Amount:</b> <code>100000000</code></p>
-      <p class='mb-0 d-flex justify-content-between'><b>Reason:</b> <code>deposit</code></p>
-    </div>
-    <p><i>Note: Amount can be however much you like, 100,000,000 ISK above is just an example</i></p>
-    <p>Please be careful to fill this information in carefully</p>
-    <p>It may take up to 1 hour for the transation to be registered and your balance to be updated, but you will be notified in game</p>
-    <p>You can request to withdraw your entire balance at any point</p>
-  </>
+  <Show when={staticData()} fallback={<Loading />}>
+    <>
+      <p>In game, search for and right click on the <code>{staticData().appConfig.corpName}</code> corporation, then click 'Give Money'. Fill in the details as follows:</p>
+      <div class='alert alert-info fade show col-lg-8 offset-lg-2' role='alert'>
+        <p class='mb-0 d-flex justify-content-between'><b>Amount:</b> <code>100000000</code></p>
+        <p class='mb-0 d-flex justify-content-between'><b>Reason:</b> <code>deposit</code></p>
+      </div>
+      <p><i>Note: Amount can be however much you like, 100,000,000 ISK above is just an example</i></p>
+      <p>Please be careful to fill this information in carefully</p>
+      <p>It may take up to 1 hour for the transation to be registered and your balance to be updated, but you will be notified in game</p>
+      <p>You can request to withdraw your entire balance at any point</p>
+    </>
+  </Show>
+
 )
 const TopUpInfoModal = () => {
   const [staticData] = useStaticData()

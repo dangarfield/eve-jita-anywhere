@@ -17,14 +17,6 @@ const MyBalancePage = () => {
           <Header />
         </div>
       </div>
-      {/* <div class='row'>
-        <div class='col-4'>
-          <Alert variant='border border-info text-info text-center mt-1'>Coming Soon: My Balance</Alert>
-          <p>Show balance and transaction history</p>
-          <p>Show top up instructions</p>
-          <p>Request withdrawal</p>
-        </div>
-      </div> */}
       <div class='row'>
         <div class='col-6'>
           <h3>Your balance</h3>

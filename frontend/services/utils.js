@@ -15,7 +15,7 @@ export const get = async (url, password) => {
     }
   }
   if (password) {
-    options.headers.Authorization = password
+    options.headers.Authorization = `Bearer ${password}`
   }
   const req = await window.fetch(url, options)
   const res = await req.json()
@@ -31,7 +31,7 @@ export const post = async (url, bodyObject, password) => {
     body: JSON.stringify(bodyObject)
   }
   if (password) {
-    options.headers.Authorization = password
+    options.headers.Authorization = `Bearer ${password}`
   }
   const req = await window.fetch(url, options)
   const res = await req.json()

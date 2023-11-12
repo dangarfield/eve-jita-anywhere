@@ -66,6 +66,11 @@ const Delivery = (props) => {
         //   console.log('route not available in whole graph')
           // TODO - Compare if deliveryCharges is the same then only envoke if it is
           //   props.setDeliveryCharges({ error: 'No route available' })
+          const estimate = { error: 'No route available' }
+          if (JSON.stringify(estimate) !== JSON.stringify(props.deliveryCharges())) {
+            console.log('setDeliveryCharges', estimate)
+            props.setDeliveryCharges(estimate)
+          }
           return { station }
         }
       }
@@ -78,7 +83,7 @@ const Delivery = (props) => {
       // const route = await get(`https://esi.evetech.net/latest/route/30000142/${selectedStation.systemID}/?datasource=tranquility&flag=shortest`)
 
       // const systemsHigh = routeHigh.map(s => systemStations().systems.find(sS => sS.systemID === s))
-      const systems = route.map(s => systemStations().systems.find(sS => sS.systemID === s))
+      //   const systems = route.map(s => systemStations().systems.find(sS => sS.systemID === s))
 
       // console.log('systemsHigh', systemsHigh)
       //   console.log('systems', systems)
@@ -106,6 +111,9 @@ const Delivery = (props) => {
       //   console.log('totalMaterialCost', props.totalMaterialCost)
       const estimate = getDeliveryCharges(route.length + 1, security.highSec, security.lowSec, security.nullSec, props.totalVolume, props.totalMaterialCost)
       estimate.jumps = security
+      estimate.station = station
+      console.log('station', station)
+      //   estimate.route = selectedRoute()
       //   console.log('estimate')
       //   console.log(JSON.stringify(estimate))
       //   console.log(JSON.stringify(props.deliveryCharges()))
@@ -114,9 +122,8 @@ const Delivery = (props) => {
 
       //   if (props.deliveryCharges() === undefined) {
       if (JSON.stringify(estimate) !== JSON.stringify(props.deliveryCharges())) {
-        // setTimeout(function () {
+        console.log('setDeliveryCharges', estimate)
         props.setDeliveryCharges(estimate)
-        // }, 1000)
       }
 
       return { station, security }
@@ -130,6 +137,7 @@ const Delivery = (props) => {
       window.localStorage.setItem('jita-anywhere-station', null)
       //   console.log('No station selected')
       props.setDeliveryCharges({ error: 'No station selected' })
+      props.setDeliverySelectedValue('None')
       return
     }
     // console.log('selectedStations', selectedStations)

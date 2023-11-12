@@ -1,8 +1,12 @@
-import { paymentCollection } from './db'
+import { paymentsCollection } from './db'
 import { getEvePaymentJournal, sendMail } from './eve-api'
 
-const PAYMENT_REASONS = ['deposit', 'withdraw']
+export const PAYMENT_TYPES = { DEPOSIT: 'deposit', WITHDRAWAL: 'withdrawal', RESERVE: 'reserve' }
+
+const PAYMENT_REASONS = ['deposit', 'withdrawal']
+
 const cleanReason = r => r.replace('balance', 'deposit')
+
 export const updatePaymentsFromCorpJournal = async () => {
   const journal = (await getEvePaymentJournal()).journal.data
   console.log('updatePaymentsFromCorpJournal START', journal)
@@ -12,7 +16,7 @@ export const updatePaymentsFromCorpJournal = async () => {
   for (const entry of entries) {
     console.log('entry', entry)
 
-    const result = await paymentCollection.updateOne(
+    const result = await paymentsCollection.updateOne(
       { _id: entry._id },
       { $set: entry },
       { upsert: true }
@@ -28,7 +32,7 @@ We've updated your balance to include your ${cleanReason(entry.type)} of ${entry
       sendMail(entry.characterID, 'Jita Anywhere - Deposit ', body)
     }
   }
-  //   paymentCollection
+  //   paymentsCollection
   console.log('updatePaymentsFromCorpJournal END')
 }
 export const getBalance = async (characterID) => {
@@ -55,7 +59,7 @@ export const getBalance = async (characterID) => {
     }
   ]
 
-  const balances = await paymentCollection.aggregate(pipeline).toArray()
+  const balances = await paymentsCollection.aggregate(pipeline).toArray()
   if (balances.length < 1) {
     return { entries: [], balance: 0, characterID }
   }
@@ -86,7 +90,7 @@ export const getAllBalances = async () => {
     }
   ]
 
-  const balances = await paymentCollection.aggregate(pipeline).toArray()
+  const balances = await paymentsCollection.aggregate(pipeline).toArray()
   for (const b of balances) {
     b.characterID = b._id
     delete b._id
@@ -94,4 +98,7 @@ export const getAllBalances = async () => {
   console.log('balances', balances)
 
   return balances
+}
+export const createReservePayment = async (reservePayment) => {
+  await paymentsCollection.insertOne(reservePayment)
 }

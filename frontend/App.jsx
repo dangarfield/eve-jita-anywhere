@@ -23,6 +23,7 @@ import AdminConfigForms from './components/admin/AdminConfigForms'
 import AdminJournal from './components/admin/AdminJournal'
 import AdminBalances from './components/admin/AdminBalances'
 import MyBalancePage from './components/pages/MyBalancePage'
+import InfoModal from './components/common/InfoModal'
 
 // const AllTodos = () => {
 //   return (
@@ -80,6 +81,7 @@ function App () {
               <Route path='*' component={NotFoundPage} />
             </Routes>
           </Router>
+          <InfoModal />
         </UserProvider>
       </BasketProvider>
     </StaticDataProvider>

@@ -7,11 +7,15 @@ import './Basket.css'
 import { useUser } from '../../stores/UserProvider'
 import TopUpInfoModal, { openTopUpInfoModal } from '../common/TopUpInfoModal'
 import Delivery from './Delivery'
+import { post } from '../../services/utils'
+import { setContent, openInfoModal } from '../common/InfoModal'
+import { useNavigate } from '@solidjs/router'
 
 const Basket = (props) => {
+  const navigate = useNavigate()
   const [basket, { clearBasket, updatePrices, removeBasketItem, updateBasketQuantity }] = useBasket()
   const [staticData] = useStaticData()
-  const [user, { userBalance, triggerDataUpdate, isLoggedIn }] = useUser()
+  const [user, { userBalance, triggerDataUpdate, isLoggedIn, characterID, characterName, accessToken }] = useUser()
 
   const [confirmCheckout, setConfirmCheckout] = createSignal(false)
   const [orderCreationInProgress, setOrderCreationInProgress] = createSignal(false)
@@ -67,14 +71,61 @@ const Basket = (props) => {
     updateBasketQuantity(basketItem.typeID, newValue)
     return newValue
   }
-  const handlePurchaseClick = () => {
+  const handlePurchaseClick = async () => {
     console.log('handlePurchaseClick', confirmCheckout())
     updatePrices()
     if (!confirmCheckout()) {
       setConfirmCheckout(true)
     } else {
       setOrderCreationInProgress(true)
-      window.alert('TBC Handle Order Creation')
+      console.log('basket', basket)
+      console.log('basketData', basketData())
+      console.log('deliveryCharges', deliveryCharges())
+      console.log('deliverySelectedValue', deliverySelectedValue(), deliverySelectedValue() !== 'None')
+      const order = {
+        characterID: characterID(),
+        characterName: characterName(),
+        items: basket.map(b => b), // Still contains proxy
+        totals: {
+          totalMaterialCost: basketData().totalMaterialCost,
+          brokersFee: basketData().brokersFee,
+          deliveryFee: basketData().deliveryCharge,
+          agentFee: basketData().p4gFee,
+          total: basketData().total,
+          totalVolume: basketData().totalVolume
+        }
+      }
+      if (deliverySelectedValue() !== 'None') {
+        order.delivery = {
+          station: deliveryCharges().station,
+          serviceType: deliveryCharges().serviceType,
+          jumps: deliveryCharges().jumps,
+          isRush: deliverySelectedValue() === 'Rush'
+        }
+      }
+      console.log('Handle Order Creation')
+      console.log('order', order)
+      console.log('credentials', user, accessToken())
+      // triggerDataUpdate()
+      const res = await post('/api/orders', order, accessToken())
+      console.log('order creation res', res)
+      if (res.error) {
+        setContent(
+          <>
+            <p>Something went wrong creating your order:</p>
+            <p>{res.error}</p>
+          </>)
+        openInfoModal()
+        setConfirmCheckout(false)
+        setOrderCreationInProgress(false)
+      } else {
+        // Clear basket
+        clearBasket()
+        // Ensure the cached balance is updated
+        triggerDataUpdate()
+        // Redirect to /my-orders
+        navigate('/my-orders')
+      }
     }
   }
   return (
