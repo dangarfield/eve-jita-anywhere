@@ -20,7 +20,7 @@ const Basket = (props) => {
   const [deliverySelectedValue, setDeliverySelectedValue] = createSignal('None')
 
   createEffect(() => {
-    console.log('Basket createEffect')
+    // console.log('Basket createEffect')
     triggerDataUpdate() // This causes it to load twice on the first page, but it does ensure that it gets the latest data on this page, which works for now
     setConfirmCheckout(false)
   })
@@ -33,7 +33,7 @@ const Basket = (props) => {
   })
   const basketData = createMemo(() => {
     const totalMaterialCost = Math.ceil(basket?.reduce((total, basketItem) => total + (basketItem.quantity * basketItem.price), 0))
-    console.log('basketData memo deliveryCharge 1', deliveryCharges(), deliverySelectedValue())
+    // console.log('basketData memo deliveryCharge 1', deliveryCharges(), deliverySelectedValue())
     // const deliveryCharge = deliveryCharges() && deliveryCharges.charge ? deliveryCharges().charge : 0 // TODO - This ends up being repeated
     let deliveryCharge = 0
     if (deliveryCharges() && deliveryCharges().charge) {
@@ -43,7 +43,7 @@ const Basket = (props) => {
         deliveryCharge = deliveryCharges().charge + deliveryCharges().rush
       }
     }
-    console.log('basketData memo deliveryCharge 2', deliveryCharge)
+    // console.log('basketData memo deliveryCharge 2', deliveryCharge)
     const brokersFee = Math.ceil(totalMaterialCost * staticData().appConfig.brokerPercent)
     const agentFee = Math.ceil((totalMaterialCost + brokersFee + deliveryCharge) * staticData().appConfig.agentPercent)
     const p4gFee = Math.ceil((totalMaterialCost + brokersFee + deliveryCharge) * staticData().appConfig.plexForGoodPercent)
@@ -95,7 +95,7 @@ const Basket = (props) => {
                 </Alert>
             }
             >
-              <div class='d-flex'>
+              <div class='d-flex align-items-center'>
                 <span class='col-4'>Account Balance</span>
                 <Button size='sm' variant='outline-primary' onClick={openTopUpInfoModal}><span class='opacity-50xx'>Top up</span></Button>
                 <span class='ms-auto'>{basketData().balance.toLocaleString()} ISK</span>
@@ -166,7 +166,7 @@ const Basket = (props) => {
 
         <div class='d-flex'>
           <span class='col-4'>Delivery Fee</span>
-          <span class='opacity-50'>None / Normal / Rush</span>
+          <span class='opacity-50'>{deliverySelectedValue()}</span>
           <span class='ms-auto'>{basketData().deliveryCharge.toLocaleString()} ISK</span>
         </div>
 
@@ -205,7 +205,7 @@ const Basket = (props) => {
             </Alert>
         }
         >
-          <div class='d-flex'>
+          <div class='d-flex align-items-center'>
             <span class='col-4'>Account Balance</span>
             <Button size='sm' variant='outline-primary' onClick={openTopUpInfoModal}><span class='opacity-50xx'>Top up</span></Button>
             <span class='ms-auto'>{basketData().balance.toLocaleString()} ISK</span>

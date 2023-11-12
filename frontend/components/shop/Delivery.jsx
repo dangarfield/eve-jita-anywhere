@@ -15,7 +15,7 @@ const getSystemStations = async () => {
     stations.map(station => ({ systemName, systemID, station, security }))
   )
   stations.sort((a, b) => a.systemName.localeCompare(b.systemName) || a.station.localeCompare(b.station))
-  console.log('stations', stations)
+  //   console.log('stations', stations)
 
   const gH = createGraph()
   for (const con of systemsData.connectionsHighSec) {
@@ -28,7 +28,7 @@ const getSystemStations = async () => {
     g.addLink(con[0], con[1])
   }
   const pathFinder = path.aStar(g)
-  console.log('connections', systemsData.connections.length, systemsData.connectionsHighSec.length, g.getNodeCount(), gH.getNodeCount())
+  //   console.log('connections', systemsData.connections.length, systemsData.connectionsHighSec.length, g.getNodeCount(), gH.getNodeCount())
   return { stations, systems: systemsData.systems, pathFinder, pathFinderHighSec }
 }
 const Delivery = (props) => {
@@ -47,23 +47,23 @@ const Delivery = (props) => {
 
   const selectedRoute = createMemo(() => {
     if (systemStations()) {
-      console.log('calculate selectedRoute')
+    //   console.log('calculate selectedRoute')
       const stationName = selectedStationName()
-      console.log('stationName', stationName, systemStations())
+      //   console.log('stationName', stationName, systemStations())
       const station = systemStations().stations.find(s => s.station === stationName)
-      console.log('station', station)
+      //   console.log('station', station)
 
       let route = null
       try {
         route = systemStations().pathFinderHighSec.find(30000142, station.systemID).map(n => n.id).reverse()
-        console.log('highsec route chosen')
+        // console.log('highsec route chosen')
       } catch (error) {
-        console.log('route not available in high sec')
+        // console.log('route not available in high sec')
         try {
           route = systemStations().pathFinder.find(30000142, station.systemID).map(n => n.id).reverse()
-          console.log('whole graph route chosen')
+        //   console.log('whole graph route chosen')
         } catch (error) {
-          console.log('route not available in whole graph')
+        //   console.log('route not available in whole graph')
           // TODO - Compare if deliveryCharges is the same then only envoke if it is
           //   props.setDeliveryCharges({ error: 'No route available' })
           return { station }
@@ -71,7 +71,7 @@ const Delivery = (props) => {
       }
 
       // console.log('routeHigh', routeHigh)
-      console.log('route', route)
+      //   console.log('route', route)
       // TODO - error when no route found
 
       // TODO - This route is really not the shortest, implement properly myself another time
@@ -81,7 +81,7 @@ const Delivery = (props) => {
       const systems = route.map(s => systemStations().systems.find(sS => sS.systemID === s))
 
       // console.log('systemsHigh', systemsHigh)
-      console.log('systems', systems)
+      //   console.log('systems', systems)
       const securityValues = route.map(s => systemStations().systems.find(sS => sS.systemID === s).security)
       const security = securityValues.reduce(
         (acc, security) => {
@@ -98,18 +98,18 @@ const Delivery = (props) => {
         { all: 0, highSec: 0, lowSec: 0, nullSec: 0 }
       )
 
-      console.log('security', security)
+      //   console.log('security', security)
       //   console.log('basket', props.basketData())
-      console.log('selectedRoute security', security)
+      //   console.log('selectedRoute security', security)
 
-      console.log('totalVolume', props.totalVolume)
-      console.log('totalMaterialCost', props.totalMaterialCost)
+      //   console.log('totalVolume', props.totalVolume)
+      //   console.log('totalMaterialCost', props.totalMaterialCost)
       const estimate = getDeliveryCharges(route.length + 1, security.highSec, security.lowSec, security.nullSec, props.totalVolume, props.totalMaterialCost)
       estimate.jumps = security
-      console.log('estimate')
-      console.log(JSON.stringify(estimate))
-      console.log(JSON.stringify(props.deliveryCharges()))
-      console.log('match', JSON.stringify(estimate) === JSON.stringify(props.deliveryCharges()))
+      //   console.log('estimate')
+      //   console.log(JSON.stringify(estimate))
+      //   console.log(JSON.stringify(props.deliveryCharges()))
+      //   console.log('match', JSON.stringify(estimate) === JSON.stringify(props.deliveryCharges()))
       // TODO - Compare if deliveryCharges is the same then only envoke if it is
 
       //   if (props.deliveryCharges() === undefined) {
@@ -123,21 +123,21 @@ const Delivery = (props) => {
     }
   })
   const handleSelectStation = async (selectedStations) => {
-    console.log('handleSelectStation', selectedStations)
+    // console.log('handleSelectStation', selectedStations)
     if (selectedStations.length === 0) {
-      console.log('handleSelectStation length 0', selectedStations)
+    //   console.log('handleSelectStation length 0', selectedStations)
       setSelectedStationName(null)
       window.localStorage.setItem('jita-anywhere-station', null)
-      console.log('No station selected')
+      //   console.log('No station selected')
       props.setDeliveryCharges({ error: 'No station selected' })
       return
     }
-    console.log('selectedStations', selectedStations)
+    // console.log('selectedStations', selectedStations)
     const selectedStation = selectedStations[0]
-    console.log('selectedStation', selectedStation)
+    // console.log('selectedStation', selectedStation)
     window.localStorage.setItem('jita-anywhere-station', selectedStation.station)
     setSelectedStationName(selectedStation.station)
-    console.log('selectedStation', selectedStation, selectedStationName())
+    // console.log('selectedStation', selectedStation, selectedStationName())
   }
 
   return (
@@ -146,11 +146,12 @@ const Delivery = (props) => {
         {/* <p class='text-info'>{selectedStationName()}</p>
         <p class='text-info'>{JSON.stringify(selectedRoute())}</p> */}
         {/* <p class='text-info'>{JSON.stringify(props.deliveryCharges())}</p> */}
-        <p class='mb-1'>Select delivery station:</p>
+        {/* <p class='mb-1'>Select delivery station:</p> */}
         <div class='mb-3'>
 
           <MultiSelect
-            loadingMessage='loading'
+            placeholder='Select station'
+            loadingMessage='Loading'
             style={{ notFound: { color: 'black' } }}
             emptyRecordMsg='No stations found'
             selectedValues={selectedRoute().station ? [selectedRoute().station] : null}
@@ -160,11 +161,22 @@ const Delivery = (props) => {
             onSelect={handleSelectStation}
             onRemove={handleSelectStation}
             singleSelect
+            // closeIcon='circle2'
+            // showArrow='false'
+            // customCloseIcon='https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Angle_down_font_awesome.svg/600px-Angle_down_font_awesome.svg.png'
+            customCloseIcon={<p>CLOSE</p>}
           />
         </div>
       </Show>
 
-      <Show when={props.deliveryCharges()} fallback={<Loading />}>
+      <Show
+        when={props.deliveryCharges()} fallback={
+          <div class='d-flex'>
+            <span class='col-4'>Delivery</span>
+            <span class='ms-auto'>No station selected</span>
+          </div>
+}
+      >
         <Show
           when={props.deliveryCharges().error === undefined} fallback={(
             // <p>Note: {props.deliveryCharges().error}</p>
