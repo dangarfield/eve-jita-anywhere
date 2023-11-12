@@ -6,12 +6,14 @@ export const getDeliveryCharges = (noOfWarps, noOfWarpsHighsec, noOfWarpsLowSec,
 
   const getServiceType = (noOfWarpsHighsec, noOfWarpsLowSec, noOfWarpsNullSec, volume, collateral) => {
     if (noOfWarpsNullSec > 0 && volume <= 360000 && collateral <= 50e9) return SERVICE_TYPES.JF
-    if (noOfWarpsLowSec > 0 && volume <= 125000 && collateral <= 5e9) return SERVICE_TYPES.BR
-    if (noOfWarpsLowSec > 0 && volume <= 360000 && collateral <= 50e9) return SERVICE_TYPES.JF
-    if (volume <= 12500 && collateral <= 30e9) return SERVICE_TYPES.BR
-    if (volume <= 62500 && collateral <= 10e9) return SERVICE_TYPES.DST
-    if (volume <= 1126500 && collateral <= 3e9) return SERVICE_TYPES.Freighter
-    if (volume <= 360000 && collateral <= 50e9) return SERVICE_TYPES.JF
+
+    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec > 0 && volume <= 125000 && collateral <= 5e9) return SERVICE_TYPES.BR
+    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec > 0 && volume <= 360000 && collateral <= 50e9) return SERVICE_TYPES.JF
+
+    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec === 0 && volume <= 12500 && collateral <= 30e9) return SERVICE_TYPES.BR
+    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec === 0 && volume <= 62500 && collateral <= 10e9) return SERVICE_TYPES.DST
+    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec === 0 && volume <= 1126500 && collateral <= 3e9) return SERVICE_TYPES.Freighter
+    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec === 0 && volume <= 360000 && collateral <= 50e9) return SERVICE_TYPES.JF
     return null
   }
 

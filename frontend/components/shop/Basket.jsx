@@ -16,6 +16,9 @@ const Basket = (props) => {
   const [confirmCheckout, setConfirmCheckout] = createSignal(false)
   const [orderCreationInProgress, setOrderCreationInProgress] = createSignal(false)
 
+  const [deliveryCharges, setDeliveryCharges] = createSignal()
+  const [deliverySelectedValue, setDeliverySelectedValue] = createSignal('None')
+
   createEffect(() => {
     console.log('Basket createEffect')
     triggerDataUpdate() // This causes it to load twice on the first page, but it does ensure that it gets the latest data on this page, which works for now
@@ -30,11 +33,21 @@ const Basket = (props) => {
   })
   const basketData = createMemo(() => {
     const totalMaterialCost = Math.ceil(basket?.reduce((total, basketItem) => total + (basketItem.quantity * basketItem.price), 0))
-    // console.log('totalMaterialCost memo', basket, totalMaterialCost)
+    console.log('basketData memo deliveryCharge 1', deliveryCharges(), deliverySelectedValue())
+    // const deliveryCharge = deliveryCharges() && deliveryCharges.charge ? deliveryCharges().charge : 0 // TODO - This ends up being repeated
+    let deliveryCharge = 0
+    if (deliveryCharges() && deliveryCharges().charge) {
+      if (deliverySelectedValue() === 'Normal') {
+        deliveryCharge = deliveryCharges().charge
+      } else if (deliverySelectedValue() === 'Rush') {
+        deliveryCharge = deliveryCharges().charge + deliveryCharges().rush
+      }
+    }
+    console.log('basketData memo deliveryCharge 2', deliveryCharge)
     const brokersFee = Math.ceil(totalMaterialCost * staticData().appConfig.brokerPercent)
-    const agentFee = Math.ceil((totalMaterialCost + brokersFee) * staticData().appConfig.agentPercent)
-    const p4gFee = Math.ceil((totalMaterialCost + brokersFee) * staticData().appConfig.plexForGoodPercent)
-    const total = totalMaterialCost + brokersFee + agentFee + p4gFee
+    const agentFee = Math.ceil((totalMaterialCost + brokersFee + deliveryCharge) * staticData().appConfig.agentPercent)
+    const p4gFee = Math.ceil((totalMaterialCost + brokersFee + deliveryCharge) * staticData().appConfig.plexForGoodPercent)
+    const total = totalMaterialCost + brokersFee + deliveryCharge + agentFee + p4gFee
     const totalVolume = Math.ceil(basket.reduce((total, basketItem) => {
       const item = staticData().types[basketItem.typeID]
       return total + (basketItem.quantity * item.volume)
@@ -42,7 +55,8 @@ const Basket = (props) => {
     const aboveMinimumOrder = total > staticData().appConfig.minOrder
     let balance = 0
     if (userBalance()) balance = userBalance().balance
-    return { totalMaterialCost, brokersFee, agentFee, p4gFee, total, totalVolume, aboveMinimumOrder, balance }
+
+    return { totalMaterialCost, brokersFee, deliveryCharge, agentFee, p4gFee, total, totalVolume, aboveMinimumOrder, balance }
   })
   const handleQuantityInputChange = (event, basketItem) => {
     let newValue = parseInt(event.target.value)
@@ -60,8 +74,7 @@ const Basket = (props) => {
       setConfirmCheckout(true)
     } else {
       setOrderCreationInProgress(true)
-      // TODO - Handle Order creation
-      window.alert('TODO - Handle Order Creation')
+      window.alert('TBC Handle Order Creation')
     }
   }
   return (
@@ -130,8 +143,14 @@ const Basket = (props) => {
 
         <hr />
 
-        {/* <Alert variant='border border-info text-info text-center mt-1'>TODO - Add delivery services</Alert> */}
-        <Delivery totalVolume={basketData().totalVolume} totalMaterialCost={basketData().totalMaterialCost} />
+        <Delivery
+          totalVolume={basketData().totalVolume}
+          totalMaterialCost={basketData().totalMaterialCost}
+          deliveryCharges={deliveryCharges}
+          setDeliveryCharges={setDeliveryCharges}
+          deliverySelectedValue={deliverySelectedValue}
+          setDeliverySelectedValue={setDeliverySelectedValue}
+        />
         <hr />
         <div class='d-flex'>
           <span class='col-4'>Materials Total</span>
@@ -143,6 +162,12 @@ const Basket = (props) => {
           <span class='col-4'>Broker Fee</span>
           <span class='opacity-50'>{(staticData().appConfig.brokerPercent * 100).toFixed(2)} %</span>
           <span class='ms-auto'>{basketData().brokersFee.toLocaleString()} ISK</span>
+        </div>
+
+        <div class='d-flex'>
+          <span class='col-4'>Delivery Fee</span>
+          <span class='opacity-50'>None / Normal / Rush</span>
+          <span class='ms-auto'>{basketData().deliveryCharge.toLocaleString()} ISK</span>
         </div>
 
         <div class='d-flex'>
