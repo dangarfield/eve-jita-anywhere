@@ -130,13 +130,8 @@ const Basket = (props) => {
 
         <hr />
 
-        <div class='d-flex justify-content-between'>
-          <span class=''>Total Volume</span>
-          <span class=''>{basketData().totalVolume.toLocaleString()} m<sup>3</sup></span>
-        </div>
-
-        <Alert variant='border border-info text-info text-center mt-1'>TODO - Add delivery services</Alert>
-        <Delivery />
+        {/* <Alert variant='border border-info text-info text-center mt-1'>TODO - Add delivery services</Alert> */}
+        <Delivery totalVolume={basketData().totalVolume} totalMaterialCost={basketData().totalMaterialCost} />
         <hr />
         <div class='d-flex'>
           <span class='col-4'>Materials Total</span>
