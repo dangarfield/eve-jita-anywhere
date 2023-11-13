@@ -14,10 +14,10 @@ const InfoModal = () => {
         onHide={handleClose}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Info</Modal.Title>
+          <Modal.Title>{content().title !== undefined ? content().title : 'Info'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {content()}
+          {content().content !== undefined ? content().content : content()}
         </Modal.Body>
         <Modal.Footer>
           <Button variant='secondary' onClick={handleClose}>Close</Button>

@@ -4,10 +4,22 @@ import { refreshTokenAndGetNewUserAccessToken, triggerLoginFlow } from '../servi
 import { getUserBalance } from '../services/ja-api'
 
 const UserContext = createContext()
+const localUser = window.localStorage.getItem('jita-anywhere-user')
+const [user, setUser] = createStore(localUser ? JSON.parse(localUser) : null)
 
+export const ensureAccessTokenIsValid = async () => {
+  if (user && user.access_token) {
+    const isExpired = (new Date().getTime() / 1000) > user.payload.exp
+    if (isExpired) {
+      const accessToken = await refreshTokenAndGetNewUserAccessToken(user, setUser)
+      return accessToken
+    } else {
+      return user.access_token
+    }
+  }
+  return null
+}
 export function UserProvider (props) {
-  const localUser = window.localStorage.getItem('jita-anywhere-user')
-  const [user, setUser] = createStore(localUser ? JSON.parse(localUser) : null)
   const [userBalance, setUserBalance] = createSignal(null)
 
   createEffect(() => {
@@ -34,7 +46,6 @@ export function UserProvider (props) {
 
   const characterID = createMemo(() => user?.character_id)
   const characterName = createMemo(() => user?.payload?.name)
-  const accessToken = createMemo(() => user?.access_token)
   const isLoggedIn = createMemo(() => !!user.character_id)
 
   // console.log('localUser', localUser, user, characterID(), characterName())
@@ -53,10 +64,10 @@ export function UserProvider (props) {
       },
       characterID,
       characterName,
-      accessToken,
       isLoggedIn,
       triggerDataUpdate,
-      userBalance
+      userBalance,
+      ensureAccessTokenIsValid
     }
   ]
 

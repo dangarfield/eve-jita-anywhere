@@ -42,7 +42,7 @@ export const getBalance = async (characterID) => {
       $match: { characterID }
     },
     {
-      $sort: { date: 1 }
+      $sort: { date: -1 }
     },
     {
       $group: {
@@ -73,7 +73,7 @@ export const getBalance = async (characterID) => {
 export const getAllBalances = async () => {
   const pipeline = [
     {
-      $sort: { date: 1 }
+      $sort: { date: -1 }
     },
     {
       $group: {

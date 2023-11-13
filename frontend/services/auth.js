@@ -46,4 +46,5 @@ export const refreshTokenAndGetNewUserAccessToken = async (user, setUser) => {
   newToken.character_id = newToken.payload.sub.replace('CHARACTER:EVE:', '')
   console.log('newToken', newToken)
   setUser(newToken)
+  return newToken.access_token
 }

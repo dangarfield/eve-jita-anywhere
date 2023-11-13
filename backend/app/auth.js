@@ -3,7 +3,7 @@ export const verifyAdmin = (req, res, next) => {
   if (req.query && req.query.token === PASSWORD) {
     next()
   } else {
-    const bearerHeader = req.headers.authorization
+    const bearerHeader = req.headers.authorization.replace('Bearer ', '')
     // console.log('bearerHeader', bearerHeader)
     if (typeof bearerHeader === 'undefined') {
       res.status(403).json({ error: 'bad-password' })

@@ -2,6 +2,7 @@ import { A } from '@solidjs/router'
 import { Button, Image, Nav, NavDropdown, Navbar } from 'solid-bootstrap'
 import { useUser } from '../../stores/UserProvider'
 import { Show } from 'solid-js'
+import { connectedUsers } from '../../services/notifications'
 
 const Header = () => {
   const [user, { beginLoginProcess, logout, characterID, characterName, isLoggedIn }] = useUser()
@@ -26,11 +27,19 @@ const Header = () => {
           </Nav>
           <Nav>
             <Show when={isLoggedIn()} fallback={<Button class='nav-link' variant='' onClick={beginLoginProcess}><Image src='https://web.ccpgamescdn.com/eveonlineassets/developers/eve-sso-login-white-small.png' /></Button>}>
-              <A href='/agents' class='nav-link' activeClass='active'>Agents</A>
+              <A href='/agents' class='nav-link position-relative me-2' activeClass='active' title={`${connectedUsers()} users online`}>
+                Agents
+                {/* <Show when={connectedUsers() && connectedUsers() !== 0}> */}
+                <span class='position-absolute top-75 start-100 translate-middle badge rounded-pill bg-primary'>
+                  {connectedUsers() !== 0 ? connectedUsers() : ''}
+                </span>
+                {/* </Show> */}
+
+              </A>
               <NavDropdown
                 title={
                   <>
-                    <img src={`https://image.eveonline.com/Character/${characterID()}_32.jpg`} class='rounded' />
+                    <img src={`https://image.eveonline.com/Character/${characterID()}_32.jpg`} class='rounded width-32' />
                     <span class='ps-2 text-light'>{characterName}</span>
                   </>
               }

@@ -7,10 +7,10 @@ import Loading from '../common/Loading'
 import OrderCard from '../common/OrderCard'
 
 const MyOrdersPage = () => {
-  const [user, { accessToken }] = useUser()
+  const [user, { ensureAccessTokenIsValid }] = useUser()
 
   const fetchMyOrders = async (id) => {
-    const ordersRes = await get('/api/orders/@me', accessToken())
+    const ordersRes = await get('/api/orders/@me', await ensureAccessTokenIsValid())
     console.log('fetchMyOrders', ordersRes)
     return ordersRes
   }
@@ -24,18 +24,18 @@ const MyOrdersPage = () => {
         </div>
       </div>
       <div class='row'>
-        <div class='col-4'>
-          <Alert variant='border border-info text-info text-center mt-1'>Coming Soon: My Orders</Alert>
-          <Show when={orders()} fallback={<Loading />}>
-            <For each={orders()}>
-              {(order, i) =>
-                <>
-                  <OrderCard order={order} />
-                </>}
-            </For>
+        <div class='col-4' />
+      </div>
+      <div class='row'>
+        <Show when={orders()} fallback={<Loading />}>
+          <For each={orders()} fallback={<div class='col'><Alert variant='border border-light text-center mt-1'>You have no orders</Alert></div>}>
+            {(order) =>
+              <div class='col-3'>
+                <OrderCard order={order} />
+              </div>}
+          </For>
 
-          </Show>
-        </div>
+        </Show>
       </div>
     </div>
   )

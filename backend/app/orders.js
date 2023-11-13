@@ -1,4 +1,5 @@
 import { ordersCollection } from './db'
+import { sendOnSiteNotification } from './notifications'
 import { PAYMENT_TYPES, createReservePayment, getBalance } from './payments'
 import { nanoid } from 'nanoid'
 
@@ -25,7 +26,7 @@ export const createOrder = async (characterId, order) => {
   order.characterId = characterId
   order.creationDate = new Date()
   order.status = ORDER_STATUS.AVAILABLE
-  order.statusHistory = [{ status: ORDER_STATUS.AVAILABLE, date: order.date }]
+  order.statusHistory = [{ status: ORDER_STATUS.AVAILABLE, date: order.creationDate }]
   console.log('createOrder', order)
 
   const result = await ordersCollection.insertOne(order)
@@ -43,7 +44,7 @@ export const createOrder = async (characterId, order) => {
   await createReservePayment(reservePayment)
 
   // Notify Agents of new order
-  // TODO
+  await sendOnSiteNotification('orders', 'New order available for agents')
 
   return { success: true }
 }

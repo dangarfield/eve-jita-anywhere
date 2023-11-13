@@ -24,7 +24,8 @@ import AdminJournal from './components/admin/AdminJournal'
 import AdminBalances from './components/admin/AdminBalances'
 import MyBalancePage from './components/pages/MyBalancePage'
 import InfoModal from './components/common/InfoModal'
-
+import './services/notifications'
+import { Toaster } from 'solid-toast'
 // const AllTodos = () => {
 //   return (
 //     <section>
@@ -82,6 +83,7 @@ function App () {
             </Routes>
           </Router>
           <InfoModal />
+          <Toaster />
         </UserProvider>
       </BasketProvider>
     </StaticDataProvider>

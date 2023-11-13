@@ -15,7 +15,7 @@ const Basket = (props) => {
   const navigate = useNavigate()
   const [basket, { clearBasket, updatePrices, removeBasketItem, updateBasketQuantity }] = useBasket()
   const [staticData] = useStaticData()
-  const [user, { userBalance, triggerDataUpdate, isLoggedIn, characterID, characterName, accessToken }] = useUser()
+  const [user, { userBalance, triggerDataUpdate, isLoggedIn, characterID, characterName, ensureAccessTokenIsValid }] = useUser()
 
   const [confirmCheckout, setConfirmCheckout] = createSignal(false)
   const [orderCreationInProgress, setOrderCreationInProgress] = createSignal(false)
@@ -90,7 +90,8 @@ const Basket = (props) => {
           totalMaterialCost: basketData().totalMaterialCost,
           brokersFee: basketData().brokersFee,
           deliveryFee: basketData().deliveryCharge,
-          agentFee: basketData().p4gFee,
+          agentFee: basketData().agentFee,
+          p4gFee: basketData().p4gFee,
           total: basketData().total,
           totalVolume: basketData().totalVolume
         }
@@ -105,9 +106,8 @@ const Basket = (props) => {
       }
       console.log('Handle Order Creation')
       console.log('order', order)
-      console.log('credentials', user, accessToken())
-      // triggerDataUpdate()
-      const res = await post('/api/orders', order, accessToken())
+      console.log('credentials', user, await ensureAccessTokenIsValid())
+      const res = await post('/api/orders', order, await ensureAccessTokenIsValid())
       console.log('order creation res', res)
       if (res.error) {
         setContent(
