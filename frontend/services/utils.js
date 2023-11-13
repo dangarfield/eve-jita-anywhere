@@ -7,28 +7,26 @@ export const getAdmin = async (url) => {
   return get(url, password())
 }
 export const get = async (url, password) => {
-  const options = {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
-    }
-  }
-  if (password) {
-    options.headers.Authorization = `Bearer ${password}`
-  }
-  const req = await window.fetch(url, options)
-  const res = await req.json()
-  return res
+  return executeFetch('GET', url, undefined, password)
 }
 export const post = async (url, bodyObject, password) => {
+  return executeFetch('POST', url, bodyObject, password)
+}
+export const patch = async (url, bodyObject, password) => {
+  return executeFetch('PATCH', url, bodyObject, password)
+}
+
+const executeFetch = async (method, url, bodyObject, password) => {
   const options = {
-    method: 'POST',
+    method,
     headers: {
       Accept: 'application/json, text/plain, */*',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(bodyObject)
+  }
+  if (bodyObject) {
+    options.body = JSON.stringify(bodyObject)
   }
   if (password) {
     options.headers.Authorization = `Bearer ${password}`

@@ -4,7 +4,7 @@ import { ssoAdminLoginStart, ssoAdminReturn } from '../app/sso'
 import { getAppAuth, getAppConfig, setAppConfig } from '../app/config'
 import { getEvePaymentJournal } from '../app/eve-api'
 import { getAllBalances, getBalance, updatePaymentsFromCorpJournal } from '../app/payments'
-import { createOrder, getOrdersForCharacter } from '../app/orders'
+import { createOrder, getAvailableOrders, getOrdersForCharacter, modifyOrder } from '../app/orders'
 
 const app = API()
 
@@ -18,8 +18,8 @@ app.get('/api/journal', verifyAdmin, async (req, res) => {
   res.json(await getEvePaymentJournal())
 })
 app.get('/api/balances/@me', verifyToken, async (req, res) => {
-  console.log('/api/balances/@me', req.params.characterId, 'auth', req.auth.characterId, req.auth.characterName)
-  res.json(await getBalance(parseInt(req.auth.characterId)))
+  console.log('/api/balances/@me', 'auth', req.auth.characterID, req.auth.characterName)
+  res.json(await getBalance(parseInt(req.auth.characterID)))
 })
 app.get('/api/balances', verifyAdmin, async (req, res) => {
   res.json(await getAllBalances())
@@ -27,12 +27,21 @@ app.get('/api/balances', verifyAdmin, async (req, res) => {
 
 // Orders
 app.get('/api/orders/@me', verifyToken, async (req, res) => {
-  console.log('/api/orders/@me', req.params.characterId, 'auth', req.auth.characterId, req.auth.characterName)
-  res.json(await getOrdersForCharacter(parseInt(req.auth.characterId)))
+  console.log('/api/orders/@me', 'auth', req.auth.characterID, req.auth.characterName)
+  res.json(await getOrdersForCharacter(parseInt(req.auth.characterID)))
+})
+app.get('/api/available-orders', async (req, res) => {
+  console.log('/api/available-orders', 'auth', req.auth.characterID, req.auth.characterName)
+  res.json(await getAvailableOrders())
 })
 app.post('/api/orders', verifyToken, async (req, res) => {
-  console.log('/api/orders', req.params.characterId, 'auth', req.auth.characterId, req.auth.characterName)
-  res.json(await createOrder(parseInt(req.auth.characterId), req.body))
+  console.log('/api/orders', 'auth', req.auth.characterID, req.auth.characterName)
+  res.json(await createOrder(parseInt(req.auth.characterID), req.body))
+})
+
+app.patch('/api/orders/:orderID', verifyToken, async (req, res) => {
+  console.log('/api/orders/:orderID', req.params.orderID, 'auth', req.auth.characterID, req.auth.characterName)
+  res.json(await modifyOrder(req.auth.characterID, req.params.orderID, req.body))
 })
 
 // App Config

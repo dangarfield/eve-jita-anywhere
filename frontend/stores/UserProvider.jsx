@@ -5,6 +5,7 @@ import { getUserBalance } from '../services/ja-api'
 
 const UserContext = createContext()
 const localUser = window.localStorage.getItem('jita-anywhere-user')
+// console.log('localUser', localUser, '----', localUser ? JSON.parse(localUser) : null)
 const [user, setUser] = createStore(localUser ? JSON.parse(localUser) : null)
 
 export const ensureAccessTokenIsValid = async () => {
@@ -23,8 +24,13 @@ export function UserProvider (props) {
   const [userBalance, setUserBalance] = createSignal(null)
 
   createEffect(() => {
-    // console.log('createEffect UserProvider')
-    window.localStorage.setItem('jita-anywhere-user', JSON.stringify(user))
+    console.log('createEffect UserProvider', user)
+    if (user.access_token) {
+      window.localStorage.setItem('jita-anywhere-user', JSON.stringify(user))
+    } else {
+      window.localStorage.removeItem('jita-anywhere-user')
+    }
+
     triggerDataUpdate()
   })
 

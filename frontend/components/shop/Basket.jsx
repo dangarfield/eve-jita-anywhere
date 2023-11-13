@@ -251,7 +251,7 @@ const Basket = (props) => {
         <Show
           when={basketData().balance > basketData().total} fallback={
             <Alert variant='border border-danger text-danger text-center'>
-              <p>Your balance is too loo - {basketData().balance.toLocaleString()} ISK</p>
+              <p>Your balance is too low - {basketData().balance.toLocaleString()} ISK</p>
               <Button class='ms-2' onClick={openTopUpInfoModal}>Top up your balance</Button>
             </Alert>
         }

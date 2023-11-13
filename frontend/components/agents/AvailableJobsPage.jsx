@@ -7,16 +7,16 @@ import OrderCard from '../common/OrderCard'
 import ConfirmButton from '../common/ConfirmButton'
 import { openInfoModal, setContent } from '../common/InfoModal'
 
-const MyOrdersPage = () => {
+const AvailableJobsPage = () => {
   const [user, { ensureAccessTokenIsValid }] = useUser()
 
-  const fetchMyOrders = async (id) => {
-    const ordersRes = await get('/api/orders/@me', await ensureAccessTokenIsValid())
-    console.log('fetchMyOrders', ordersRes)
+  const fetchAvailableOrders = async (id) => {
+    const ordersRes = await get('/api/available-orders', await ensureAccessTokenIsValid())
+    console.log('fetchAvailableOrders', ordersRes)
     return ordersRes
   }
 
-  const [orders, { refetch }] = createResource(fetchMyOrders)
+  const [orders, { refetch }] = createResource(fetchAvailableOrders)
   const [filters, setFilters] = createSignal({})
 
   const filteredOrders = createMemo(() => {
@@ -69,7 +69,7 @@ const MyOrdersPage = () => {
     })
   }
 
-  const handleCancelOrderClick = async (order) => {
+  const handleSelectOrderClick = async (order) => {
     console.log('handleCancelOrderClick', order)
     const ordersRes = await patch(`/api/orders/${order.orderID}`, { status: 'CANCELLED' }, await ensureAccessTokenIsValid())
     console.log('handleCancelOrderClick res', ordersRes)
@@ -135,14 +135,13 @@ const MyOrdersPage = () => {
                             <div class='px-3'>
                               <div class='d-flex align-items-center'>
                                 <span class='ms-auto'>
-                                  <ConfirmButton variant='outline-danger' onClick={() => handleCancelOrderClick(order)}>Cancel Order</ConfirmButton>
+                                  <ConfirmButton variant='outline-primary' onClick={() => handleSelectOrderClick(order)}>Select Order</ConfirmButton>
                                 </span>
                               </div>
                             </div>
                           </>
                         </Match>
                       </Switch>
-
                       }
                   />
                 </div>}
@@ -153,4 +152,4 @@ const MyOrdersPage = () => {
     </Show>
   )
 }
-export default MyOrdersPage
+export default AvailableJobsPage

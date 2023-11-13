@@ -1,21 +1,12 @@
-// import styles from './App.module.css'
-// import TodoList from './components/todos/TodoList'
-// import { createSignal } from 'solid-js'
-// import TodosCompleted from './components/todos/TodosCompleted'
-// import Nav from './components/todos/Nav'
-// import { TodosProvider } from './TodosProvider'
-// import Header from './components/common/Header'
 import ShopPage from './components/shop/ShopPage'
 import { StaticDataProvider } from './stores/StaticDataProvider'
 import { BasketProvider } from './stores/BasketProvider'
 
-import { Navigate, Route, Router, Routes } from '@solidjs/router' // 👈 Import the router
-// import HomePage from './components/pages/HomePage'
+import { Navigate, Route, Router, Routes } from '@solidjs/router'
 import InfoPage from './components/pages/InfoPage'
-import AgentsPage from './components/agents/AgentsPage'
+import AvailableJobsPage from './components/agents/AvailableJobsPage'
 import { UserProvider } from './stores/UserProvider'
 import SSOReturnPage from './components/pages/SSOReturnPage'
-import SettingsPage from './components/pages/SettingsPage'
 import MyOrdersPage from './components/pages/MyOrdersPage'
 import NotFoundPage from './components/pages/NotFoundPage'
 import AdminPage from './components/admin/AdminPage'
@@ -26,64 +17,44 @@ import MyBalancePage from './components/pages/MyBalancePage'
 import InfoModal from './components/common/InfoModal'
 import './services/notifications'
 import { Toaster } from 'solid-toast'
-// const AllTodos = () => {
-//   return (
-//     <section>
-//       <TodoList />
-//       <TodosCompleted />
-//     </section>
-//   )
-// }
+import MyJobsPage from './components/agents/MyJobsPage'
+import Header from './components/common/Header'
 
 function App () {
-  // const [viewSelected, setViewSelected] = createSignal('all')
-  // const defaultTodos = {
-  //   items: [
-  //     { text: 'Finish SolidJS demo', completed: false },
-  //     { text: 'Write blog post about SolidJS', completed: false }
-  //   ]
-  // }
-
-  // return (
-  //   <TodosProvider todoItems={defaultTodos}>
-  //     <div class={styles.App}>
-  //       <Nav setView={setViewSelected} view={viewSelected} />
-  //       <Switch fallback={<AllTodos />}>
-  //         <Match when={viewSelected() === "to do"}>
-  //           <TodoList />
-  //         </Match>
-  //         <Match when={viewSelected() === "completed"}>
-  //           <TodosCompleted />
-  //         </Match>
-  //       </Switch>
-  //     </div>
-  //   </TodosProvider>
-  // );\
   return (
     <StaticDataProvider>
       <BasketProvider>
         <UserProvider>
           <Router>
-            <Routes>
-              {/* <Route path='/' component={HomePage} /> */}
-              <Route path='/' element={<Navigate href='/shop' />} />
-              <Route path='/info' component={InfoPage} />
-              <Route path='/shop' component={ShopPage} />
-              <Route path='/agents' component={AgentsPage} />
-              <Route path='/settings' component={SettingsPage} />
-              <Route path='/my-balance' component={MyBalancePage} />
-              <Route path='/my-orders' component={MyOrdersPage} />
-              <Route path='/sso-return' component={SSOReturnPage} />
-              <Route path='/admin' component={AdminPage}>
-                <Route path='/' component={AdminConfigForms} />
-                <Route path='/journal' component={AdminJournal} />
-                <Route path='/balances' component={AdminBalances} />
-              </Route>
-              <Route path='*' component={NotFoundPage} />
-            </Routes>
+            <div class='container-fluid'>
+              <div class='row'>
+                <div class='col'>
+                  <Header />
+                </div>
+              </div>
+
+              <Routes>
+                {/* <Route path='/' component={HomePage} /> */}
+                <Route path='/' element={<Navigate href='/shop' />} />
+                <Route path='/info' component={InfoPage} />
+                <Route path='/shop' component={ShopPage} />
+                <Route path='/available-jobs' component={AvailableJobsPage} />
+                <Route path='/my-jobs' component={MyJobsPage} />
+                <Route path='/my-balance' component={MyBalancePage} />
+                <Route path='/my-orders' component={MyOrdersPage} />
+                <Route path='/sso-return' component={SSOReturnPage} />
+                <Route path='/admin' component={AdminPage}>
+                  <Route path='/' component={AdminConfigForms} />
+                  <Route path='/journal' component={AdminJournal} />
+                  <Route path='/balances' component={AdminBalances} />
+                </Route>
+                <Route path='*' component={NotFoundPage} />
+              </Routes>
+
+              <InfoModal />
+              <Toaster />
+            </div>
           </Router>
-          <InfoModal />
-          <Toaster />
         </UserProvider>
       </BasketProvider>
     </StaticDataProvider>

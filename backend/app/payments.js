@@ -1,7 +1,7 @@
 import { paymentsCollection } from './db'
 import { getEvePaymentJournal, sendMail } from './eve-api'
 
-export const PAYMENT_TYPES = { DEPOSIT: 'deposit', WITHDRAWAL: 'withdrawal', RESERVE: 'reserve' }
+export const PAYMENT_TYPES = { DEPOSIT: 'deposit', WITHDRAWAL: 'withdrawal', RESERVE: 'reserve', RELEASE: 'release' }
 
 const PAYMENT_REASONS = ['deposit', 'withdrawal']
 
@@ -99,6 +99,6 @@ export const getAllBalances = async () => {
 
   return balances
 }
-export const createReservePayment = async (reservePayment) => {
+export const createPayment = async (reservePayment) => {
   await paymentsCollection.insertOne(reservePayment)
 }

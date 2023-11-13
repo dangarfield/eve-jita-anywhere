@@ -17,10 +17,11 @@ const BalanceList = (props) => {
       <For each={props.userBalance.entries}>
         {(entry) =>
           <ListGroup.Item>
-            <div class='w-100 d-flex flex-row justify-content-between'>
-              <p class='mb-0'>{entry.dateString}</p>
-              <p class='mb-0 text-uppercase'>{entry.type}</p>
-              <p class='mb-0'>{entry.amount.toLocaleString()} ISK</p>
+            {/* <div class='w-100 d-flex flex-row justify-content-between'> */}
+            <div class='row'>
+              <p class='col-5'>{entry.dateString}</p>
+              <p class='col text-uppercase'>{entry.type}</p>
+              <p class='col text-end'>{entry.amount.toLocaleString()} ISK</p>
             </div>
           </ListGroup.Item>}
       </For>

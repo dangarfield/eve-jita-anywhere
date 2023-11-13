@@ -1,6 +1,6 @@
 # Jita Anywhere
 
-Add funds
+Add funds - Complete
 ```mermaid
 flowchart TD
 
@@ -12,7 +12,7 @@ flowchart TD
 
 ```
 
-User Checkout
+User Checkout - Complete
 ```mermaid
 flowchart TD
 

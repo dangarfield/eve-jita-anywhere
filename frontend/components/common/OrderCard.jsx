@@ -1,18 +1,20 @@
 import { For, Show } from 'solid-js'
 import EveTypeIcon from './EveTypeIcon'
 import { Card } from 'solid-bootstrap'
-import { setContent, openInfoModal } from './InfoModal'
+// import { setContent, openInfoModal } from './InfoModal'
+import './OrderCard.css'
 
-const handleOrderCardClick = (order) => {
-  console.log('handleOrderCardClick', order)
-  setContent({ title: `Order: ${order._id}`, content: <p>LOTS OF CONTENT</p> })
-  openInfoModal()
-}
+// const handleOrderCardClick = (order) => {
+//   console.log('handleOrderCardClick', order)
+//   setContent({ title: `Order: ${order._id}`, content: <p>LOTS OF CONTENT</p> })
+//   openInfoModal()
+// }
 
 const OrderCard = (props) => {
   return (
     <>
-      <Card class='' onClick={() => handleOrderCardClick(props.order)}>
+      {/* <Card class='order-card-pointer' onClick={() => handleOrderCardClick(props.order)}> */}
+      <Card>
         <Card.Body class='px-0 order-card'>
           <div class='px-3'>
             <div class='d-flex align-items-center'>
@@ -26,6 +28,10 @@ const OrderCard = (props) => {
             <div class='d-flex align-items-center'>
               <span class='col-4'>Created</span>
               <span class='ms-auto'>{new Date(props.order.creationDate).toLocaleString()}</span>
+            </div>
+            <div class='d-flex align-items-center'>
+              <span class='col-4'>Total for Agent</span>
+              <span class='ms-auto'>{(props.order.totals.deliveryFee + props.order.totals.agentFee).toLocaleString()} ISK</span>
             </div>
           </div>
           <hr />
@@ -90,7 +96,7 @@ const OrderCard = (props) => {
               </div>
               <div class='d-flex align-items-center'>
                 <span class='col'>Station</span>
-                <span class='ms-auto text-end'>{props.order.delivery.station.station}</span>
+                <span class='ms-auto text-end ps-2'>{props.order.delivery.station.station}</span>
               </div>
               <div class='d-flex align-items-center'>
                 <span class='col'>Service Type</span>
@@ -111,6 +117,9 @@ const OrderCard = (props) => {
               </div>
             </Show>
           </div>
+          <Show when={props.actions}>
+            {props.actions}
+          </Show>
         </Card.Body>
       </Card>
 

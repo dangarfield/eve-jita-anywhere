@@ -1,5 +1,4 @@
 import { triggerReturnFlow } from '../../services/auth'
-import Header from '../common/Header'
 import Loading from '../common/Loading'
 
 const SSOReturnPage = () => {

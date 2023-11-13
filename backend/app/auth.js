@@ -20,13 +20,16 @@ export const verifyAdmin = (req, res, next) => {
 
 export const verifyToken = async (req, res, next) => {
   const bearerHeader = req.headers.authorization
-  console.log('verifyToken', 'bearerHeader', bearerHeader)
+  // console.log('verifyToken', 'bearerHeader', bearerHeader)
   if (typeof bearerHeader === 'undefined') {
     res.status(403).json({ error: 'missing-token' })
     return
   }
+
+  // TODO - Potentially allow verifyAdmin to work here too so that the API routes can be the same, just with different auth
+
   const token = bearerHeader.split(' ')[1]
-  console.log('verifyToken', token)
+  // console.log('verifyToken', token)
   try {
     const vReq = await fetch(`https://esi.evetech.net/verify/?token=${token}`)
     const vRes = await vReq.json()
@@ -40,7 +43,7 @@ export const verifyToken = async (req, res, next) => {
       res.status(403).json({ expired: 'token-expired' })
     } else {
       req.auth = {
-        characterId: vRes.CharacterID,
+        characterID: vRes.CharacterID,
         characterName: vRes.CharacterName
       }
       console.log('verifyToken ok')
