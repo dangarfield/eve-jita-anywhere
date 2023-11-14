@@ -32,7 +32,8 @@ Order fulfilment
 flowchart TD
 
     c1[Agent] -- Views --> c2[Order list];
-    c1[Agent] -- Claims --> c3[Order];
+    c2 -- Claims --> c3[Order];
+    c3a[Order Status: Available] -- Listed --> c3[Order];
     c3 -- Status update --> c4[Order Status: Claimed];
     c4 -- Checks in game prices --> c5{Agent EVE Client};
     c5 -- Too expensive --> c6[Agent on JA website];
@@ -47,7 +48,7 @@ flowchart TD
     c10 -- Reserved funds released --> c13[User JA balance increase];
 
     c12 -- Update balance --> c14[User JA balance decrease];
-    c12 -- Update status --> c4;
+    c12 -- Update status --> c3a;
     c12 -- Notify --> c12a[Agent];
     c5 -- Agent buys & ships 100m --> c16[Agent EVE Client];
     c16 -- Agent create contract --> c17[User EVE Client];
@@ -67,10 +68,28 @@ flowchart TD
 
     c19 -- Dispute --> c24[Dispute process];
     c20b -- Dispute --> c24[Dispute process];
-
-
 ```
-Fund withdrawal
+
+Dispute process
+```mermaid
+flowchart TD
+
+    t --> b --> c;
+    
+```
+
+
+Fund withdrawal, including plex for good
+
+```mermaid
+flowchart TD
+
+    t --> b --> c;
+    
+```
+
+
+Process of orders with no changes (unattractive orders, unresponsive agents, unresponsive users)
 
 ```mermaid
 flowchart TD

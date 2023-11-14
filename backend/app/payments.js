@@ -1,7 +1,8 @@
 import { paymentsCollection } from './db'
 import { getEvePaymentJournal, sendMail } from './eve-api'
 
-export const PAYMENT_TYPES = { DEPOSIT: 'deposit', WITHDRAWAL: 'withdrawal', RESERVE: 'reserve', RELEASE: 'release' }
+export const PLEX_FOR_GOOD_CHARACTER_ID = parseInt(process.env.PLEX_FOR_GOOD_CHARACTER_ID || 1)
+export const PAYMENT_TYPES = { DEPOSIT: 'deposit', WITHDRAWAL: 'withdrawal', RESERVE: 'reserve', RELEASE: 'release', JOB_COMPLETE: 'job_complete', PLEX_FOR_GOOD: 'plex_for_good' }
 
 const PAYMENT_REASONS = ['deposit', 'withdrawal']
 
@@ -11,8 +12,8 @@ export const updatePaymentsFromCorpJournal = async () => {
   const journal = (await getEvePaymentJournal()).journal.data
   console.log('updatePaymentsFromCorpJournal START', journal)
   const entries = journal
-    .filter(j => PAYMENT_REASONS.includes(cleanReason(j.reason)))
-    .map(j => { return { _id: j.id, date: j.date, characterID: j.first_party_id, type: cleanReason(j.reason), amount: j.amount } })
+    .filter(j => PAYMENT_REASONS.includes(cleanReason(j.reason.toLowerCase())))
+    .map(j => { return { _id: j.id, date: j.date, characterID: j.first_party_id, type: cleanReason(j.reason.toLowerCase()), amount: j.amount } })
   for (const entry of entries) {
     console.log('entry', entry)
 
@@ -34,6 +35,31 @@ We've updated your balance to include your ${cleanReason(entry.type)} of ${entry
   }
   //   paymentsCollection
   console.log('updatePaymentsFromCorpJournal END')
+}
+export const getPlexForTotal = async () => {
+  const result = await paymentsCollection.aggregate([
+    {
+      $match: {
+        characterID: PLEX_FOR_GOOD_CHARACTER_ID,
+        type: PAYMENT_TYPES.PLEX_FOR_GOOD
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: '$amount' }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        totalAmount: 1
+      }
+    }
+  ]).toArray()
+
+  // Extract the totalAmount from the result
+  return result.length > 0 ? result[0].totalAmount : 0
 }
 export const getBalance = async (characterID) => {
   console.log('getBalance', characterID)

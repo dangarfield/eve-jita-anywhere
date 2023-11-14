@@ -20,7 +20,7 @@ const BalanceList = (props) => {
             {/* <div class='w-100 d-flex flex-row justify-content-between'> */}
             <div class='row'>
               <p class='col-5'>{entry.dateString}</p>
-              <p class='col text-uppercase'>{entry.type}</p>
+              <p class='col text-uppercase'>{entry.type.replace(/_/g, ' ')}</p>
               <p class='col text-end'>{entry.amount.toLocaleString()} ISK</p>
             </div>
           </ListGroup.Item>}

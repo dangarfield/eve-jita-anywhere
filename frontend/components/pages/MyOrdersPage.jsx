@@ -39,8 +39,8 @@ const MyOrdersPage = () => {
     console.log('MyOrdersPage createEffect', orders)
 
     const uniqueStatusList = [...new Set(orders()?.map(item => item.status))].sort().map(key => ({ name: key, active: true }))
-    const cancelledOption = uniqueStatusList.find(f => f.name === 'CANCELLED')
-    if (cancelledOption) cancelledOption.active = false
+    uniqueStatusList.filter(option => ['CANCELLED', 'COMPLETE'].includes(option.name)).forEach(option => { option.active = false })
+
     console.log('uniqueStatusList', uniqueStatusList)
 
     const uniqueDeliveryList = [...new Set(orders()?.map(item => item.delivery === undefined ? 'None' : (item.delivery.isRush ? 'Rush' : 'Normal')))].sort().map(key => ({ name: key, active: true }))
@@ -128,6 +128,29 @@ const MyOrdersPage = () => {
       refetch()
     }
   }
+  const handleDisputeOrderClick = async (order) => {
+    console.log('handleDisputeOrderClick', order)
+    setContent({
+      title: 'Dispute process',
+      content: <div role='alert' class='alert alert-border border-info text-info text-center mt-1 fade show'>Dispute process coming soon</div>
+    })
+    openInfoModal()
+  }
+  const handleCompleteOrderClick = async (order) => {
+    console.log('handleCompleteOrderClick', order)
+    const ordersRes = await patch(`/api/orders/${order.orderID}`, { status: 'COMPLETE' }, await ensureAccessTokenIsValid())
+    console.log('handleCompleteOrderClick res', ordersRes)
+    if (ordersRes.error) {
+      setContent(
+        <>
+          <p>Something went wrong amending the order:</p>
+          <p>{ordersRes.error}</p>
+        </>)
+      openInfoModal()
+    } else {
+      refetch()
+    }
+  }
   return (
 
     <Show when={filteredOrders() && staticData()} fallback={<div class='row'><Loading /></div>}>
@@ -165,6 +188,17 @@ const MyOrdersPage = () => {
                               <div class='d-flex align-items-center gap-3'>
                                 <ConfirmButton variant='outline-danger w-100' onClick={() => handleCancelOrderClick(order)}>Cancel Order</ConfirmButton>
                                 <ConfirmButton variant='outline-primary w-100' onClick={() => handleUpdatePricesOrderClick(order)}>Accept Updated Prices</ConfirmButton>
+                              </div>
+                            </div>
+                          </>
+                        </Match>
+                        <Match when={order.status === 'DELIVERED'}>
+                          <>
+                            <hr />
+                            <div class='px-3'>
+                              <div class='d-flex align-items-center gap-3'>
+                                <ConfirmButton variant='outline-danger w-100' onClick={() => handleDisputeOrderClick(order)}>Dispute</ConfirmButton>
+                                <ConfirmButton variant='outline-primary w-100' onClick={() => handleCompleteOrderClick(order)}>Complete Order</ConfirmButton>
                               </div>
                             </div>
                           </>

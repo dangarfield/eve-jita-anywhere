@@ -8,11 +8,6 @@ import { createOrder, getAgentOrders, getAvailableOrders, getOrdersForCharacter,
 
 const app = API()
 
-app.get('/api', async function (req, res) {
-  console.log('API /api')
-  res.json({ hello: 'world' })
-})
-
 // Payments
 app.get('/api/journal', verifyAdmin, async (req, res) => {
   res.json(await getEvePaymentJournal())
@@ -66,7 +61,6 @@ app.get('/api/app-auth', verifyAdmin, async (req, res) => {
 app.get('/api/sso/login', verifyAdmin, async function (req, res) {
   const loginUrl = await ssoAdminLoginStart()
   res.json({ loginUrl })
-  // res.redirect(loginUrl)
 })
 app.get('/api/sso/return', async function (req, res) {
   await ssoAdminReturn(req.query.code, req.query.state)

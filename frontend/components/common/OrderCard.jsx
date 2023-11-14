@@ -9,6 +9,17 @@ import './OrderCard.css'
 import { getJitaSellOrders } from '../../services/esi'
 import { sleep } from '../../services/utils'
 
+// TODO - Links for helping with delivery - dotlan travel link
+// TODO - Links for helping with delivery - Open window in EVE
+
+// TODO - Links for helping with buying - EVEpraisal link
+// TODO - Links for helping with buying - Copy to in game multi-buy
+
+// TODO - Better UI, styling, colour separation and focus
+
+// TODO - Show disputes
+// TODO - Show status history
+
 const OrderCard = (props) => {
   const [staticData] = useStaticData()
   const [user, { userBalance }] = useUser()

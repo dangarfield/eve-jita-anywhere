@@ -1,7 +1,4 @@
-// import { useUser } from '../stores/UserProvider'
-
-// const [user] = useUser()
-export const getUserBalance = async (user, setUser) => {
+export const getUserBalance = async (user, setUser) => { // TODO - put this in the actual page / component
   const url = '/api/balances/@me'
   const res = await window.fetch(url, { // TODO retry?
     method: 'GET',
@@ -12,9 +9,5 @@ export const getUserBalance = async (user, setUser) => {
     }
   })
   const body = await res.json()
-  //   for (const p of body) {
-  //     p.creationDate = new Date(p.creationDate)
-  //   }
-  //   body.sort((a, b) => b.creationDate - a.creationDate)
   return body
 }

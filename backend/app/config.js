@@ -1,4 +1,5 @@
 import { configCollection } from './db.js'
+import { getPlexForTotal } from './payments.js'
 
 const ID_APP_CONFIG = 'appConfig'
 const ID_APP_AUTH = 'authConfig'
@@ -31,8 +32,8 @@ export const getAppConfig = async (showPrivateFields) => {
     // delete appConfig.corpDivisionId
     // delete appConfig.corpDivisionName
   }
-  const appAuth = await getAppAuth()
-  appConfig.corpName = appAuth.corpName
+  appConfig.corpName = (await getAppAuth()).corpName
+  appConfig.plexForGoodTotal = await getPlexForTotal()
   return appConfig
 }
 export const setAppConfig = async (newAppConfig) => {

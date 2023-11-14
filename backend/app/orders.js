@@ -1,6 +1,6 @@
 import { ordersCollection } from './db'
 import { sendOnSiteNotification } from './notifications'
-import { PAYMENT_TYPES, createPayment, getBalance } from './payments'
+import { PAYMENT_TYPES, createPayment, getBalance, PLEX_FOR_GOOD_CHARACTER_ID } from './payments'
 import { nanoid } from 'nanoid'
 
 const ORDER_STATUS = {
@@ -8,6 +8,7 @@ const ORDER_STATUS = {
   PRICE_INCREASE: 'PRICE_INCREASE',
   CANCELLED: 'CANCELLED',
   IN_PROGRESS: 'IN_PROGRESS',
+  DELIVERED: 'DELIVERED', // Why delivered? Allows opportunity for dispute management
   COMPLETE: 'COMPLETE'
 }
 
@@ -62,6 +63,7 @@ export const getAvailableOrders = async () => {
     order.orderID = order._id
     delete order._id
   }
+  // TODO - Remove any disputes or other data
   // console.log('getAvailableOrders', orders)
   return orders
 }
@@ -105,7 +107,7 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
     if (order.status === ORDER_STATUS.AVAILABLE && updateCommand.status === ORDER_STATUS.IN_PROGRESS) {
       await ordersCollection.updateOne(
         { _id: order._id },
-        { $set: { status: updateCommand.status, creationDate: nowDate, agent: characterID }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
+        { $set: { status: updateCommand.status, agent: characterID }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
       )
       // TODO - Somehow notify the user that this is now in progress
       return { success: true }
@@ -115,11 +117,12 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
     if (order.status === ORDER_STATUS.IN_PROGRESS && updateCommand.status === ORDER_STATUS.PRICE_INCREASE && order.agent === characterID) {
       await ordersCollection.updateOne(
         { _id: order._id },
-        { $set: { status: updateCommand.status, creationDate: nowDate }, $unset: { agent: '' }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
+        { $set: { status: updateCommand.status }, $unset: { agent: '' }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
       )
       // TODO - Somehow notify the user that this is now price_increase
       return { success: true }
     }
+    // Change status -> PRICE_INCREASE to AVAILABLE
     if (order.status === ORDER_STATUS.PRICE_INCREASE && updateCommand.status === ORDER_STATUS.AVAILABLE && order.characterID === characterID && updateCommand.items && updateCommand.totals) {
       const { balance } = await getBalance(characterID)
       console.log('verify balance', balance, order.totals.total)
@@ -162,6 +165,42 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
 
       await sendOnSiteNotification('orders', 'New order available for agents')
 
+      return { success: true }
+    }
+    // Change status -> IN_PROGRESS to DELIVERED
+    if (order.status === ORDER_STATUS.IN_PROGRESS && updateCommand.status === ORDER_STATUS.DELIVERED && order.agent === characterID) {
+      await ordersCollection.updateOne(
+        { _id: order._id },
+        { $set: { status: updateCommand.status }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
+      )
+      // TODO - Somehow notify the user that this is now delivered
+      return { success: true }
+    }
+    // Change status -> DELIVERED to COMPLETE
+    if (order.status === ORDER_STATUS.DELIVERED && updateCommand.status === ORDER_STATUS.COMPLETE && order.characterID === characterID) {
+      await ordersCollection.updateOne(
+        { _id: order._id },
+        { $set: { status: updateCommand.status }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
+      )
+      const releasePayment = {
+        _id: nanoid(10),
+        amount: order.totals.agentFee + order.totals.deliveryFee,
+        characterID: order.agent,
+        date: new Date(),
+        type: PAYMENT_TYPES.JOB_COMPLETE,
+        relatedOrderID: order._id
+      }
+      await createPayment(releasePayment)
+      const reservePayment = {
+        _id: nanoid(10),
+        amount: order.totals.p4gFee,
+        characterID: PLEX_FOR_GOOD_CHARACTER_ID,
+        date: new Date(),
+        type: PAYMENT_TYPES.PLEX_FOR_GOOD,
+        relatedOrderID: order._id
+      }
+      await createPayment(reservePayment)
+      // TODO - Somehow notify the agent that this is now complete
       return { success: true }
     }
   }
