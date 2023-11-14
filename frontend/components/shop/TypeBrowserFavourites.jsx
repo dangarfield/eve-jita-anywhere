@@ -12,18 +12,16 @@ const TypeBrowserFavourites = (props) => {
   })
   return (
     <>
-      {/* <Alert variant='border border-info text-info text-center mt-1'>Favourites</Alert> */}
       <ul class='favourites'>
         <For each={items()} fallback={<Alert variant='dark'>No favourites set</Alert>}>
           {(item) => (
-            //   <p>Fav: {JSON.stringify(item)}</p>
             <li class='text-start' data-type-id={item.type_id} data-parent-group-id={item.parent_group_id}>
               <span class='content w-100 h-100 d-block d-flex align-items-center' onClick={() => props.setSelectedType(item.type_id)}>
                 <span class='px-1'>
                   <EveTypeIcon type={item} />
                 </span>
                 <span>{item.name}</span>
-                <i class='ms-auto bi bi-x pe-3' onClick={() => console.log('asdasd', item.type_id)} />
+                <i class='ms-auto bi bi-x pe-3' onClick={() => props.toggleFavourites(item.type_id)} />
               </span>
             </li>
           )}

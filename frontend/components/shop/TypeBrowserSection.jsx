@@ -9,7 +9,7 @@ const TypeBrowserSection = (props) => {
         <TypeBrowserList setSelectedType={props.setSelectedType} />
       </Tab>
       <Tab eventKey='favourites' title='Favourites'>
-        <TypeBrowserFavourites setSelectedType={props.setSelectedType} favourites={props.favourites} setFavourites={props.setFavourites} />
+        <TypeBrowserFavourites setSelectedType={props.setSelectedType} favourites={props.favourites} toggleFavourites={props.toggleFavourites} />
       </Tab>
       <Tab eventKey='add-bulk' title='Add Bulk'>
         <Alert variant='border border-info text-info text-center mt-1'>Coming Soon: Add Bulk</Alert>

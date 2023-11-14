@@ -1,5 +1,5 @@
 .favourites li .bi {
-    opacity: 0;
+    opacity: 0.3;
 }
 .favourites li:hover .bi {
     opacity: 1;
