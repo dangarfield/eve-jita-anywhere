@@ -62,7 +62,7 @@ export const getPlexForTotal = async () => {
   return result.length > 0 ? result[0].totalAmount : 0
 }
 export const getBalance = async (characterID) => {
-  console.log('getBalance', characterID)
+  // console.log('getBalance', characterID)
   const pipeline = [
     {
       $match: { characterID }
@@ -92,7 +92,7 @@ export const getBalance = async (characterID) => {
   const balance = balances[0]
   balance.characterID = balance._id
   delete balance._id
-  console.log('balance', balance)
+  // console.log('balance', balance)
 
   return balance
 }
