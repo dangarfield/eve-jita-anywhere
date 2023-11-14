@@ -121,7 +121,7 @@ export const getAllBalances = async () => {
     b.characterID = b._id
     delete b._id
   }
-  console.log('balances', balances)
+  // console.log('balances', balances)
 
   return balances
 }

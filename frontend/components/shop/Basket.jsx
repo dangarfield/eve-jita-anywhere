@@ -1,4 +1,4 @@
-import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
+import { For, Show, createEffect, createMemo, createResource, createSignal } from 'solid-js'
 import { useBasket } from '../../stores/BasketProvider'
 import { useStaticData } from '../../stores/StaticDataProvider'
 import EveTypeIcon from '../common/EveTypeIcon'
@@ -7,7 +7,7 @@ import './Basket.css'
 import { useUser } from '../../stores/UserProvider'
 import TopUpInfoModal, { openTopUpInfoModal } from '../common/TopUpInfoModal'
 import Delivery from './Delivery'
-import { post } from '../../services/utils'
+import { get, post } from '../../services/utils'
 import { setContent, openInfoModal } from '../common/InfoModal'
 import { useNavigate } from '@solidjs/router'
 
@@ -31,6 +31,7 @@ export const calculateBasketTotals = (items, deliveryChargeFromBasket, isRush, r
   }, 0))
   const aboveMinimumOrder = total > data.appConfig.minOrder
   const balance = userBalanceFromAccount
+  // console.log('balance', balance)
   return { totalMaterialCost, brokersFee, deliveryCharge, agentFee, p4gFee, total, totalVolume, aboveMinimumOrder, balance }
 }
 
@@ -38,8 +39,17 @@ const Basket = (props) => {
   const navigate = useNavigate()
   const [basket, { clearBasket, updatePrices, removeBasketItem, updateBasketQuantity }] = useBasket()
   const [staticData] = useStaticData()
-  const [user, { userBalance, triggerDataUpdate, isLoggedIn, characterID, characterName, ensureAccessTokenIsValid }] = useUser()
+  const [user, { isLoggedIn, characterID, characterName, ensureAccessTokenIsValid }] = useUser()
 
+  const fetchUserBalance = async () => {
+    if (isLoggedIn()) {
+      const balanceRed = await get('/api/balances/@me', await ensureAccessTokenIsValid())
+      return balanceRed.balance
+    }
+    return 0
+  }
+
+  const [userBalance] = createResource(fetchUserBalance)
   const [confirmCheckout, setConfirmCheckout] = createSignal(false)
   const [orderCreationInProgress, setOrderCreationInProgress] = createSignal(false)
 
@@ -48,7 +58,7 @@ const Basket = (props) => {
 
   createEffect(() => {
     // console.log('Basket createEffect')
-    triggerDataUpdate() // This causes it to load twice on the first page, but it does ensure that it gets the latest data on this page, which works for now
+    // triggerDataUpdate() // This causes it to load twice on the first page, but it does ensure that it gets the latest data on this page, which works for now
     setConfirmCheckout(false)
   })
 
@@ -63,7 +73,8 @@ const Basket = (props) => {
     const deliveryChargeFromBasket = (deliveryCharges() && deliveryCharges().charge && deliverySelectedValue() && deliverySelectedValue() !== 'None') ? deliveryCharges().charge : 0
     const isRush = deliverySelectedValue() === 'Rush'
     const rushCharge = (deliveryCharges() && deliveryCharges().rush) ? deliveryCharges().rush : 0
-    const userBalanceFromAccount = userBalance() ? userBalance().balance : 0
+    const userBalanceFromAccount = userBalance.loading ? 0 : userBalance()
+    // console.log('userBalanceFromAccount', userBalanceFromAccount, userBalance, userBalance())
     return calculateBasketTotals(basket, deliveryChargeFromBasket, isRush, rushCharge, userBalanceFromAccount, staticData())
   })
 
@@ -127,7 +138,7 @@ const Basket = (props) => {
         // Clear basket
         clearBasket()
         // Ensure the cached balance is updated
-        triggerDataUpdate()
+        // triggerDataUpdate()
         // Redirect to /my-orders
         navigate('/my-orders')
       }

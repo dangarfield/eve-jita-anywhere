@@ -11,9 +11,13 @@ import { useNavigate } from '@solidjs/router'
 
 const MyJobsPage = () => {
   const navigate = useNavigate()
-  const [user, { ensureAccessTokenIsValid }] = useUser()
+  const [user, { ensureAccessTokenIsValid, isLoggedIn }] = useUser()
 
-  const fetchAgentOrders = async (id) => {
+  if (!isLoggedIn()) {
+    navigate('/')
+    return
+  }
+  const fetchAgentOrders = async () => {
     const ordersRes = await get('/api/agent-orders', await ensureAccessTokenIsValid())
     console.log('fetchAgentOrders', ordersRes)
     return ordersRes

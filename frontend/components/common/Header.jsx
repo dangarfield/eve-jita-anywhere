@@ -26,20 +26,23 @@ const Header = () => {
             </Show>
           </Nav>
           <Nav>
-            <Show when={isLoggedIn()} fallback={<Button class='nav-link' variant='' onClick={beginLoginProcess}><Image src='https://web.ccpgamescdn.com/eveonlineassets/developers/eve-sso-login-white-small.png' /></Button>}>
 
+            <Show when={isLoggedIn()}>
               <A href='/my-jobs' class='nav-link position-relative me-2' activeClass='active'>
                 My Jobs
               </A>
-              <A href='/available-jobs' class='nav-link position-relative me-2' activeClass='active'>
-                Available Jobs
-              </A>
-              <div class='navbar-text position-relative me-2' activeClass='active' title={`${connectedUsers()} users online`}>
-                Agents Online
-                <span class='position-absolute top-75 start-100 translate-middle badge rounded-pill bg-primary'>
-                  {connectedUsers() !== 0 ? connectedUsers() : ''}
-                </span>
-              </div>
+            </Show>
+            <A href='/available-jobs' class='nav-link position-relative me-2' activeClass='active'>
+              Available Jobs
+            </A>
+            <div class='navbar-text position-relative me-2' activeClass='active' title={`${connectedUsers()} users online`}>
+              Agents Online
+              <span class='position-absolute top-75 start-100 translate-middle badge rounded-pill bg-primary'>
+                {connectedUsers() !== 0 ? connectedUsers() : ''}
+              </span>
+            </div>
+            <Show when={isLoggedIn()} fallback={<Button class='nav-link' variant='' onClick={beginLoginProcess}><Image src='https://web.ccpgamescdn.com/eveonlineassets/developers/eve-sso-login-white-small.png' /></Button>}>
+
               <NavDropdown
                 title={
                   <>

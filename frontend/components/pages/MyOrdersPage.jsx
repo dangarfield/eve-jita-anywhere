@@ -10,10 +10,22 @@ import OrderFilter from '../common/OrderFilter'
 import { useStaticData } from '../../stores/StaticDataProvider'
 import { getJitaSellOrders } from '../../services/esi'
 import { calculateBasketTotals } from '../shop/Basket'
+import { useNavigate } from '@solidjs/router'
 
 const MyOrdersPage = () => {
-  const [user, { ensureAccessTokenIsValid, userBalance }] = useUser()
+  const navigate = useNavigate()
+  const [user, { ensureAccessTokenIsValid, isLoggedIn }] = useUser()
   const [staticData] = useStaticData()
+
+  if (!isLoggedIn()) {
+    navigate('/')
+    return
+  }
+  const fetchUserBalance = async () => {
+    const balanceRes = await get('/api/balances/@me', await ensureAccessTokenIsValid())
+    return balanceRes.balance
+  }
+  const [userBalance] = createResource(fetchUserBalance)
 
   const fetchMyOrders = async (id) => {
     const ordersRes = await get('/api/orders/@me', await ensureAccessTokenIsValid())
@@ -83,14 +95,14 @@ const MyOrdersPage = () => {
     const deliveryChargeFromBasket = order.totals.deliveryFee // Note, this will also contain the rushFee, hence setting the rest to zero
     const isRush = false
     const rushCharge = 0
-    const userBalanceFromAccount = userBalance() ? userBalance().balance : 0
+    const userBalanceFromAccount = userBalance.loading ? 0 : userBalance()
     const data = staticData()
-    console.log('userBalanceFromAccount', userBalanceFromAccount)
+    // console.log('userBalanceFromAccount', userBalanceFromAccount)
     const orderUp = calculateBasketTotals(items, deliveryChargeFromBasket, isRush, rushCharge, userBalanceFromAccount, data)
-    console.log('orderUp', orderUp)
+    // console.log('orderUp', orderUp)
 
     const remainingBalance = userBalanceFromAccount + order.totals.total - orderUp.total
-    console.log('remainingBalance', remainingBalance)
+    // console.log('remainingBalance', remainingBalance)
     if (remainingBalance < 0) {
       setContent(
         <>
@@ -168,6 +180,7 @@ const MyOrdersPage = () => {
                 <div class={order.status === 'PRICE_INCREASE' ? 'col-6' : 'col-3'}>
                   <OrderCard
                     order={order}
+                    userBalance={userBalance}
                     actions={
 
                       <Switch>

@@ -1,4 +1,4 @@
-import { Alert } from 'solid-bootstrap'
+import { Alert, Button } from 'solid-bootstrap'
 import { For, Match, Show, Switch, createEffect, createMemo, createResource, createSignal } from 'solid-js'
 import { get, patch } from '../../services/utils'
 import { useUser } from '../../stores/UserProvider'
@@ -11,7 +11,7 @@ import { useNavigate } from '@solidjs/router'
 
 const AvailableJobsPage = () => {
   const navigate = useNavigate()
-  const [user, { ensureAccessTokenIsValid }] = useUser()
+  const [user, { ensureAccessTokenIsValid, isLoggedIn, beginLoginProcess }] = useUser()
 
   const fetchAvailableOrders = async (id) => {
     const ordersRes = await get('/api/available-orders', await ensureAccessTokenIsValid())
@@ -86,7 +86,13 @@ const AvailableJobsPage = () => {
                             <hr />
                             <div class='px-3'>
                               <div class='d-flex align-items-center gap-3'>
-                                <ConfirmButton variant='outline-primary w-100' onClick={() => handleClaimOrderClick(order)}>Claim Order</ConfirmButton>
+                                <Show
+                                  when={isLoggedIn()} fallback={
+                                    <Button variant='outline-primary w-100' onClick={beginLoginProcess}>Login to claim order</Button>
+                                  }
+                                >
+                                  <ConfirmButton variant='outline-primary w-100' onClick={() => handleClaimOrderClick(order)}>Claim Order</ConfirmButton>
+                                </Show>
                               </div>
                             </div>
                           </>

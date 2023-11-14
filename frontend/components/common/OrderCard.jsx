@@ -22,8 +22,8 @@ import { sleep } from '../../services/utils'
 
 const OrderCard = (props) => {
   const [staticData] = useStaticData()
-  const [user, { userBalance }] = useUser()
-
+  const [user] = useUser()
+  const { userBalance } = props
   const [orderUp, setOrderUp] = createSignal(null)
 
   const isPriceIncreaseOrder = createMemo(() => {
@@ -46,9 +46,9 @@ const OrderCard = (props) => {
       const deliveryChargeFromBasket = props.order.totals.deliveryFee // Note, this will also contain the rushFee, hence setting the rest to zero
       const isRush = false
       const rushCharge = 0
-      const userBalanceFromAccount = userBalance() ? userBalance().balance : 0
+      const userBalanceFromAccount = userBalance.loading ? 0 : userBalance()
       const data = staticData()
-      console.log('userBalanceFromAccount', userBalanceFromAccount)
+      // console.log('userBalanceFromAccount', userBalanceFromAccount)
       const orderUpa = calculateBasketTotals(items, deliveryChargeFromBasket, isRush, rushCharge, userBalanceFromAccount, data)
       orderUpa.items = items
       console.log('orderUpa', orderUpa)

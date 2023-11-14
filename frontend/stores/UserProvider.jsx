@@ -1,7 +1,6 @@
-import { createContext, createEffect, createMemo, createSignal, useContext } from 'solid-js'
+import { createContext, createEffect, createMemo, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { refreshTokenAndGetNewUserAccessToken, triggerLoginFlow } from '../services/auth'
-import { getUserBalance } from '../services/ja-api'
 
 const UserContext = createContext()
 const localUser = window.localStorage.getItem('jita-anywhere-user')
@@ -21,7 +20,7 @@ export const ensureAccessTokenIsValid = async () => {
   return null
 }
 export function UserProvider (props) {
-  const [userBalance, setUserBalance] = createSignal(null)
+  // const [userBalance, setUserBalance] = createSignal(null)
 
   createEffect(() => {
     console.log('createEffect UserProvider', user)
@@ -31,24 +30,24 @@ export function UserProvider (props) {
       window.localStorage.removeItem('jita-anywhere-user')
     }
 
-    triggerDataUpdate()
+    // triggerDataUpdate()
   })
 
-  const triggerDataUpdate = () => {
-    if (user && user.access_token) {
-      const isExpired = (new Date().getTime() / 1000) > user.payload.exp
-      console.log('isExpired', isExpired)
-      if (isExpired) {
-        refreshTokenAndGetNewUserAccessToken(user, setUser) // Hopefully this should trigger another createEffect, but it does ensure refresh tokens
-      } else {
-        getUserBalance(user, setUser).then((balance) => {
-          console.log('userBalance', balance)
-          balance.characterName = characterName
-          setUserBalance(balance)
-        })
-      }
-    }
-  }
+  // const triggerDataUpdate = () => {
+  //   if (user && user.access_token) {
+  //     const isExpired = (new Date().getTime() / 1000) > user.payload.exp
+  //     console.log('isExpired', isExpired)
+  //     if (isExpired) {
+  //       refreshTokenAndGetNewUserAccessToken(user, setUser) // Hopefully this should trigger another createEffect, but it does ensure refresh tokens
+  //     } else {
+  //       getUserBalance(user, setUser).then((balance) => {
+  //         console.log('userBalance', balance)
+  //         balance.characterName = characterName
+  //         setUserBalance(balance)
+  //       })
+  //     }
+  //   }
+  // }
 
   const characterID = createMemo(() => user?.character_id)
   const characterName = createMemo(() => user?.payload?.name)
@@ -71,8 +70,8 @@ export function UserProvider (props) {
       characterID,
       characterName,
       isLoggedIn,
-      triggerDataUpdate,
-      userBalance,
+      // triggerDataUpdate,
+      // userBalance,
       ensureAccessTokenIsValid
     }
   ]

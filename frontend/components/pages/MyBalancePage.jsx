@@ -1,14 +1,30 @@
 import { Alert } from 'solid-bootstrap'
 import BalanceList from '../common/BalanceList'
-import { Show } from 'solid-js'
+import { Show, createResource } from 'solid-js'
 import Loading from '../common/Loading'
 import { useUser } from '../../stores/UserProvider'
 import { useStaticData } from '../../stores/StaticDataProvider'
 import { topUpInfoText } from '../common/TopUpInfoModal'
+import { get } from '../../services/utils'
+import { useNavigate } from '@solidjs/router'
 
 const MyBalancePage = () => {
+  const navigate = useNavigate()
+  const [user, { ensureAccessTokenIsValid, characterName, isLoggedIn }] = useUser()
   const [staticData] = useStaticData()
-  const [user, { userBalance }] = useUser()
+
+  if (!isLoggedIn()) {
+    navigate('/')
+    return
+  }
+
+  const fetchUserBalance = async () => {
+    const balanceRes = await get('/api/balances/@me', await ensureAccessTokenIsValid())
+    balanceRes.characterName = characterName
+    return balanceRes
+  }
+  const [userBalance] = createResource(fetchUserBalance)
+
   return (
     <div class='row'>
       <div class='col-6'>

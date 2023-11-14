@@ -4,10 +4,11 @@ import { getAdmin } from '../../services/utils'
 import { Col } from 'solid-bootstrap'
 import { addCharacterNames } from '../../services/esi'
 import BalanceList from '../common/BalanceList'
+
 const getBalances = async () => {
   const balances = await getAdmin('/api/balances')
   await addCharacterNames(balances)
-  console.log('balances', balances)
+  // console.log('balances', balances)
   return balances
 }
 const AdminBalances = () => {

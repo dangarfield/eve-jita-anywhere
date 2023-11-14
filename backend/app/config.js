@@ -21,7 +21,7 @@ const appAuthDefault = {
   refreshToken: 'r'
 }
 export const getAppConfig = async (showPrivateFields) => {
-  const startTime = new Date()
+  // const startTime = new Date()
 
   const [appConfig, corpName, plexForGoodTotal] = await Promise.all([
     configCollection.findOne({ _id: ID_APP_CONFIG }) || configCollection.insertOne(appConfigDefault).then(() => appConfigDefault),
@@ -38,9 +38,9 @@ export const getAppConfig = async (showPrivateFields) => {
     appConfig.plexForGoodTotal = plexForGoodTotal
   }
 
-  const endTime = new Date()
-  const elapsedTime = endTime - startTime
-  console.log(`Time taken: ${elapsedTime} milliseconds`)
+  // const endTime = new Date()
+  // const elapsedTime = endTime - startTime
+  // console.log(`Time taken: ${elapsedTime} milliseconds`)
 
   return appConfig
 }
