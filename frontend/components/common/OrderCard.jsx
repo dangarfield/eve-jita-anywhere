@@ -1,16 +1,50 @@
-import { For, Show } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
 import EveTypeIcon from './EveTypeIcon'
-import { Card } from 'solid-bootstrap'
-// import { setContent, openInfoModal } from './InfoModal'
+import { Card, Spinner } from 'solid-bootstrap'
+import { useStaticData } from '../../stores/StaticDataProvider'
+import { calculateBasketTotals } from '../shop/Basket'
+import { useUser } from '../../stores/UserProvider'
+import PriceDiff from './PriceDiff'
 import './OrderCard.css'
-
-// const handleOrderCardClick = (order) => {
-//   console.log('handleOrderCardClick', order)
-//   setContent({ title: `Order: ${order._id}`, content: <p>LOTS OF CONTENT</p> })
-//   openInfoModal()
-// }
+import { getJitaSellOrders } from '../../services/esi'
+import { sleep } from '../../services/utils'
 
 const OrderCard = (props) => {
+  const [staticData] = useStaticData()
+  const [user, { userBalance }] = useUser()
+
+  const [orderUp, setOrderUp] = createSignal(null)
+
+  const isPriceIncreaseOrder = createMemo(() => {
+    return props.order.status === 'PRICE_INCREASE'
+  })
+  createEffect(async () => {
+    if (props.order.status === 'PRICE_INCREASE') {
+      const items = JSON.parse(JSON.stringify(props.order.items))
+      items[0].price = 200
+
+      const promises = items.map(async (basketItem) => {
+        const orders = await getJitaSellOrders(basketItem.typeID)
+        if (orders.sell.length > 0) {
+          basketItem.price = orders.sell[0].price + 20 // TEMP - Remove +20
+        }
+      })
+      await Promise.all(promises)
+      // await sleep(2000)
+
+      const deliveryChargeFromBasket = props.order.totals.deliveryFee // Note, this will also contain the rushFee
+      const isRush = props.order.delivery && props.order.delivery.isRush
+      const rushCharge = 100000000 // Note, should be kept elsewhere
+      const userBalanceFromAccount = userBalance() ? userBalance().balance : 0
+      const data = staticData()
+      console.log('userBalanceFromAccount', userBalanceFromAccount)
+      const orderUpa = calculateBasketTotals(items, deliveryChargeFromBasket, isRush, rushCharge, userBalanceFromAccount, data)
+      orderUpa.items = items
+      console.log('orderUpa', orderUpa)
+      setOrderUp(orderUpa)
+    }
+  })
+  // let orderUp = null
   return (
     <>
       {/* <Card class='order-card-pointer' onClick={() => handleOrderCardClick(props.order)}> */}
@@ -19,11 +53,17 @@ const OrderCard = (props) => {
           <div class='px-3'>
             <div class='d-flex align-items-center'>
               <span class='col-4'>Total</span>
+              <Show when={isPriceIncreaseOrder()}>
+                <Show when={orderUp()} fallback={<span class='col-4 text-end pe-5'><Spinner animation='border' size='sm' /></span>}>
+                  <PriceDiff old={props.order.totals.total} new={orderUp().total} class='col-4 text-end' />
+                </Show>
+              </Show>
               <span class='ms-auto'>{props.order.totals.total.toLocaleString()} ISK</span>
+
             </div>
             <div class='d-flex align-items-center'>
               <span class='col-4'>Status</span>
-              <span class='ms-auto'>{props.order.status}</span>
+              <span class='ms-auto'>{props.order.status.replace('_', ' ')}</span>
             </div>
             <div class='d-flex align-items-center'>
               <span class='col-4'>Created</span>
@@ -31,6 +71,11 @@ const OrderCard = (props) => {
             </div>
             <div class='d-flex align-items-center'>
               <span class='col-4'>Total for Agent</span>
+              <Show when={isPriceIncreaseOrder()}>
+                <Show when={orderUp()} fallback={<span class='col-4 text-end pe-5'><Spinner animation='border' size='sm' /></span>}>
+                  <PriceDiff old={props.order.totals.deliveryFee + props.order.totals.agentFee} new={orderUp().agentFee + orderUp().deliveryCharge} class='col-4 text-end' />
+                </Show>
+              </Show>
               <span class='ms-auto'>{(props.order.totals.deliveryFee + props.order.totals.agentFee).toLocaleString()} ISK</span>
             </div>
           </div>
@@ -38,40 +83,74 @@ const OrderCard = (props) => {
           <div class='px-3'>
             <div class='d-flex align-items-center'>
               <span class='col-4'>Materials Total</span>
+              <Show when={isPriceIncreaseOrder()}>
+                <Show when={orderUp()} fallback={<span class='col-4 text-end pe-5'><Spinner animation='border' size='sm' /></span>}>
+                  <PriceDiff old={props.order.totals.totalMaterialCost} new={orderUp().totalMaterialCost} class='col-4 text-end' />
+                </Show>
+              </Show>
               <span class='ms-auto'>{props.order.totals.totalMaterialCost.toLocaleString()} ISK</span>
             </div>
             <div class='d-flex align-items-center'>
               <span class='col-4'>Broker Fee</span>
+              <Show when={isPriceIncreaseOrder()}>
+                <Show when={orderUp()} fallback={<span class='col-4 text-end pe-5'><Spinner animation='border' size='sm' /></span>}>
+                  <PriceDiff old={props.order.totals.brokersFee} new={orderUp().brokersFee} class='col-4 text-end' />
+                </Show>
+              </Show>
               <span class='ms-auto'>{props.order.totals.brokersFee.toLocaleString()} ISK</span>
             </div>
             <div class='d-flex align-items-center'>
               <span class='col-4'>Delivery Fee</span>
+              <Show when={isPriceIncreaseOrder()}>
+                <Show when={orderUp()} fallback={<span class='col-4 text-end pe-5'><Spinner animation='border' size='sm' /></span>}>
+                  <PriceDiff old={props.order.totals.deliveryFee} new={orderUp().deliveryCharge} class='col-4 text-end' />
+                </Show>
+              </Show>
               <span class='ms-auto'>{props.order.totals.deliveryFee.toLocaleString()} ISK</span>
             </div>
             <div class='d-flex align-items-center'>
               <span class='col-4'>Agent Fee</span>
+              <Show when={isPriceIncreaseOrder()}>
+                <Show when={orderUp()} fallback={<span class='col-4 text-end pe-5'><Spinner animation='border' size='sm' /></span>}>
+                  <PriceDiff old={props.order.totals.agentFee} new={orderUp().agentFee} class='col-4 text-end' />
+                </Show>
+              </Show>
               <span class='ms-auto'>{props.order.totals.agentFee.toLocaleString()} ISK</span>
             </div>
             <div class='d-flex align-items-center'>
               <span class='col-4'>Plex For Good Fee</span>
+              <Show when={isPriceIncreaseOrder()}>
+                <Show when={orderUp()} fallback={<span class='col-4 text-end pe-5'><Spinner animation='border' size='sm' /></span>}>
+                  <PriceDiff old={props.order.totals.p4gFee} new={orderUp().p4gFee} class='col-4 text-end' />
+                </Show>
+              </Show>
               <span class='ms-auto'>{props.order.totals.p4gFee.toLocaleString()} ISK</span>
             </div>
           </div>
           <hr />
           <div class='px-3'>
             <For each={props.order.items}>
-              {(item) =>
+              {(item, i) =>
                 <div class='d-flex flex-columns align-items-center mb-2 basket-item'>
-                  <div class='col-md-5'>
+                  <div class={`${isPriceIncreaseOrder() ? 'col-md-3' : 'col-md-5'}`}>
                     <div class='d-flex align-items-center'>
                       <EveTypeIcon type={{ type_id: item.typeID, name: item.name }} />
                       <span class='ps-1'>{item.name}</span>
                     </div>
                   </div>
-                  <div class='col-md-3 px-1 text-center'>
-                    <span class=''>{item.quantity}</span>
+                  <div class={`${isPriceIncreaseOrder() ? 'col-md-1' : 'col-md-2'} px-1 text-end`}>
+                    <span class=''>x {item.quantity}</span>
                   </div>
-                  <div class='col-md-4 text-end basket-item-price-line'>
+
+                  <Show when={isPriceIncreaseOrder()}>
+                    <div class='col-md-4 text-end basket-item-price-line'>
+                      <Show when={orderUp()} fallback={<><span class='pe-5'><Spinner animation='border' size='sm' /></span></>}>
+                        <PriceDiff old={item.price * item.quantity} new={orderUp().items[i()].price * item.quantity} class='' />
+                        {item.quantity > 1 ? <><br style='height:100px;' /><PriceDiff old={item.price} new={orderUp().items[i()].price} class='opacity-50' /></> : ''}
+                      </Show>
+                    </div>
+                  </Show>
+                  <div class={`${isPriceIncreaseOrder() ? 'col-md-4' : 'col-md-5'} text-end basket-item-price-line`}>
                     {Math.ceil(item.price * item.quantity).toLocaleString()} ISK
                     {item.quantity > 1 ? <><br style='height:100px;' /><span class='opacity-50'>{item.price.toLocaleString()} ISK</span></> : ''}
                   </div>
@@ -82,12 +161,11 @@ const OrderCard = (props) => {
           <div class='px-3'>
             <Show
               when={props.order.delivery} fallback={
-
                 <div class='d-flex align-items-center'>
                   <span class='col-4'>Delivery</span>
                   <span class='ms-auto'>None</span>
                 </div>
-      }
+                }
             >
 
               <div class='d-flex align-items-center'>

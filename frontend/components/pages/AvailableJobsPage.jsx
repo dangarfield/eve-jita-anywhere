@@ -1,4 +1,4 @@
-import { Alert, Form } from 'solid-bootstrap'
+import { Alert } from 'solid-bootstrap'
 import { For, Match, Show, Switch, createEffect, createMemo, createResource, createSignal } from 'solid-js'
 import { get, patch } from '../../services/utils'
 import { useUser } from '../../stores/UserProvider'
@@ -7,19 +7,19 @@ import OrderCard from '../common/OrderCard'
 import ConfirmButton from '../common/ConfirmButton'
 import { openInfoModal, setContent } from '../common/InfoModal'
 import OrderFilter from '../common/OrderFilter'
-import { useStaticData } from '../../stores/StaticDataProvider'
+import { useNavigate } from '@solidjs/router'
 
-const MyOrdersPage = () => {
+const AvailableJobsPage = () => {
+  const navigate = useNavigate()
   const [user, { ensureAccessTokenIsValid }] = useUser()
-  const [staticData] = useStaticData()
 
-  const fetchMyOrders = async (id) => {
-    const ordersRes = await get('/api/orders/@me', await ensureAccessTokenIsValid())
-    console.log('fetchMyOrders', ordersRes)
+  const fetchAvailableOrders = async (id) => {
+    const ordersRes = await get('/api/available-orders', await ensureAccessTokenIsValid())
+    console.log('fetchAvailableOrders', ordersRes)
     return ordersRes
   }
 
-  const [orders, { refetch }] = createResource(fetchMyOrders)
+  const [orders, { refetch }] = createResource(fetchAvailableOrders)
   const [filters, setFilters] = createSignal({})
 
   const filteredOrders = createMemo(() => {
@@ -46,10 +46,10 @@ const MyOrdersPage = () => {
     setFilters({ status: uniqueStatusList, delivery: uniqueDeliveryList })
   })
 
-  const handleCancelOrderClick = async (order) => {
-    console.log('handleCancelOrderClick', order)
-    const ordersRes = await patch(`/api/orders/${order.orderID}`, { status: 'CANCELLED' }, await ensureAccessTokenIsValid())
-    console.log('handleCancelOrderClick res', ordersRes)
+  const handleClaimOrderClick = async (order) => {
+    console.log('handleClaimOrderClick', order)
+    const ordersRes = await patch(`/api/orders/${order.orderID}`, { status: 'IN_PROGRESS' }, await ensureAccessTokenIsValid())
+    console.log('handleClaimOrderClick res', ordersRes)
     if (ordersRes.error) {
       setContent(
         <>
@@ -58,32 +58,16 @@ const MyOrdersPage = () => {
         </>)
       openInfoModal()
     } else {
-      refetch()
+      navigate('/my-jobs')
     }
-  }
-
-  const handleUpdatePricesOrderClick = async (order) => {
-    console.log('handleUpdatePricesOrderClick', order)
-    // const ordersRes = await patch(`/api/orders/${order.orderID}`, { status: 'CANCELLED' }, await ensureAccessTokenIsValid())
-    // console.log('handleCancelOrderClick res', ordersRes)
-    // if (ordersRes.error) {
-    //   setContent(
-    //     <>
-    //       <p>Something went wrong amending the order:</p>
-    //       <p>{ordersRes.error}</p>
-    //     </>)
-    //   openInfoModal()
-    // } else {
-    //   refetch()
-    // }
   }
   return (
 
-    <Show when={filteredOrders() && staticData()} fallback={<div class='row'><Loading /></div>}>
+    <Show when={filteredOrders()} fallback={<div class='row'><Loading /></div>}>
 
       <div class='row'>
         <div class='col-2'>
-          <Show when={orders()}>
+          <Show when={orders().length > 0}>
             <OrderFilter filters={filters} setFilters={setFilters} />
           </Show>
         </div>
@@ -91,7 +75,7 @@ const MyOrdersPage = () => {
           <div class='row'>
             <For each={filteredOrders()} fallback={<div class='col-6'><Alert variant='border border-light text-center mt-1'>No orders</Alert></div>}>
               {(order) =>
-                <div class={order.status === 'PRICE_INCREASE' ? 'col-6' : 'col-3'}>
+                <div class='col-3'>
                   <OrderCard
                     order={order}
                     actions={
@@ -102,18 +86,7 @@ const MyOrdersPage = () => {
                             <hr />
                             <div class='px-3'>
                               <div class='d-flex align-items-center gap-3'>
-                                <ConfirmButton variant='outline-danger w-100' onClick={() => handleCancelOrderClick(order)}>Cancel Order</ConfirmButton>
-                              </div>
-                            </div>
-                          </>
-                        </Match>
-                        <Match when={order.status === 'PRICE_INCREASE'}>
-                          <>
-                            <hr />
-                            <div class='px-3'>
-                              <div class='d-flex align-items-center gap-3'>
-                                <ConfirmButton variant='outline-danger w-100' onClick={() => handleCancelOrderClick(order)}>Cancel Order</ConfirmButton>
-                                <ConfirmButton variant='outline-primary w-100' onClick={() => handleUpdatePricesOrderClick(order)}>Accept Updated Prices</ConfirmButton>
+                                <ConfirmButton variant='outline-primary w-100' onClick={() => handleClaimOrderClick(order)}>Claim Order</ConfirmButton>
                               </div>
                             </div>
                           </>
@@ -130,4 +103,4 @@ const MyOrdersPage = () => {
     </Show>
   )
 }
-export default MyOrdersPage
+export default AvailableJobsPage

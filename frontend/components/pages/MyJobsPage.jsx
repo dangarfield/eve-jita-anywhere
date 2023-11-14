@@ -1,4 +1,4 @@
-import { Alert, Form } from 'solid-bootstrap'
+import { Alert } from 'solid-bootstrap'
 import { For, Match, Show, Switch, createEffect, createMemo, createResource, createSignal } from 'solid-js'
 import { get, patch } from '../../services/utils'
 import { useUser } from '../../stores/UserProvider'
@@ -6,17 +6,20 @@ import Loading from '../common/Loading'
 import OrderCard from '../common/OrderCard'
 import ConfirmButton from '../common/ConfirmButton'
 import { openInfoModal, setContent } from '../common/InfoModal'
+import OrderFilter from '../common/OrderFilter'
+import { useNavigate } from '@solidjs/router'
 
-const AvailableJobsPage = () => {
+const MyJobsPage = () => {
+  const navigate = useNavigate()
   const [user, { ensureAccessTokenIsValid }] = useUser()
 
-  const fetchAvailableOrders = async (id) => {
-    const ordersRes = await get('/api/available-orders', await ensureAccessTokenIsValid())
-    console.log('fetchAvailableOrders', ordersRes)
+  const fetchAgentOrders = async (id) => {
+    const ordersRes = await get('/api/agent-orders', await ensureAccessTokenIsValid())
+    console.log('fetchAgentOrders', ordersRes)
     return ordersRes
   }
 
-  const [orders, { refetch }] = createResource(fetchAvailableOrders)
+  const [orders, { refetch }] = createResource(fetchAgentOrders)
   const [filters, setFilters] = createSignal({})
 
   const filteredOrders = createMemo(() => {
@@ -29,8 +32,6 @@ const AvailableJobsPage = () => {
 
       return statusFilter && deliveryFilter
     })
-
-    // return orders()// ?.filter(o => o.delivery)
   })
   createEffect(() => {
     console.log('MyOrdersPage createEffect', orders)
@@ -45,35 +46,10 @@ const AvailableJobsPage = () => {
     setFilters({ status: uniqueStatusList, delivery: uniqueDeliveryList })
   })
 
-  const handleStatusChange = (statusName) => {
-    setFilters((prevFilters) => {
-      const updatedStatusFilters = prevFilters.status.map((status) => {
-        if (status.name === statusName) {
-          return { ...status, active: !status.active }
-        }
-        return status
-      })
-      return { ...prevFilters, status: updatedStatusFilters }
-    })
-  }
-
-  const handleDeliveryChange = (deliveryName) => {
-    setFilters((prevFilters) => {
-      const updatedDeliveryFilters = prevFilters.delivery.map((delivery) => {
-        if (delivery.name === deliveryName) {
-          return { ...delivery, active: !delivery.active }
-        }
-        return delivery
-      })
-      return { ...prevFilters, delivery: updatedDeliveryFilters }
-    })
-  }
-
-  const handleSelectOrderClick = async (order) => {
-    console.log('handleCancelOrderClick', order)
-    const ordersRes = await patch(`/api/orders/${order.orderID}`, { status: 'CANCELLED' }, await ensureAccessTokenIsValid())
-    console.log('handleCancelOrderClick res', ordersRes)
-    refetch()
+  const handleTooExpensiveOrderClick = async (order) => {
+    console.log('handleTooExpensiveOrderClick', order)
+    const ordersRes = await patch(`/api/orders/${order.orderID}`, { status: 'PRICE_INCREASE' }, await ensureAccessTokenIsValid())
+    console.log('handleTooExpensiveOrderClick res', ordersRes)
     if (ordersRes.error) {
       setContent(
         <>
@@ -85,39 +61,18 @@ const AvailableJobsPage = () => {
       refetch()
     }
   }
+  const handleDeliveredOrderClick = async (order) => {
+    console.log('handleDeliveredOrderClick', order)
+  }
   return (
 
     <Show when={filteredOrders()} fallback={<div class='row'><Loading /></div>}>
 
       <div class='row'>
         <div class='col-2'>
-          <h3>Filter Status</h3>
-          <For each={filters().status}>
-            {(status) =>
-              <Form.Check
-                type='checkbox'
-                id={`status-filter-${status.name}`}
-                label={`${status.name}`}
-                key='status-filter'
-                checked={status.active}
-                onChange={() => handleStatusChange(status.name)}
-              />}
-          </For>
-
-          <h3 class='mt-3'>Filter Delivery</h3>
-          <For each={filters().delivery}>
-            {(delivery) =>
-              <Form.Check
-                type='checkbox'
-                id={`delivery-filter-${delivery.name}`}
-                label={`${delivery.name}`}
-                key='delivery-filter'
-                checked={delivery.active}
-                onChange={() => handleDeliveryChange(delivery.name)}
-                class='text-uppercase'
-              />}
-          </For>
-
+          <Show when={orders() && orders().length > 0}>
+            <OrderFilter filters={filters} setFilters={setFilters} />
+          </Show>
         </div>
         <div class='col-10'>
           <div class='row'>
@@ -129,19 +84,19 @@ const AvailableJobsPage = () => {
                     actions={
 
                       <Switch>
-                        <Match when={order.status === 'AVAILABLE'}>
+                        <Match when={order.status === 'IN_PROGRESS'}>
                           <>
                             <hr />
                             <div class='px-3'>
-                              <div class='d-flex align-items-center'>
-                                <span class='ms-auto'>
-                                  <ConfirmButton variant='outline-primary' onClick={() => handleSelectOrderClick(order)}>Select Order</ConfirmButton>
-                                </span>
+                              <div class='d-flex align-items-center gap-3'>
+                                <ConfirmButton variant='outline-danger w-100' onClick={() => handleTooExpensiveOrderClick(order)}>Too expensive</ConfirmButton>
+                                <ConfirmButton variant='outline-primary w-100' onClick={() => handleDeliveredOrderClick(order)}>Delivered</ConfirmButton>
                               </div>
                             </div>
                           </>
                         </Match>
                       </Switch>
+
                       }
                   />
                 </div>}
@@ -152,4 +107,4 @@ const AvailableJobsPage = () => {
     </Show>
   )
 }
-export default AvailableJobsPage
+export default MyJobsPage

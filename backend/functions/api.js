@@ -4,7 +4,7 @@ import { ssoAdminLoginStart, ssoAdminReturn } from '../app/sso'
 import { getAppAuth, getAppConfig, setAppConfig } from '../app/config'
 import { getEvePaymentJournal } from '../app/eve-api'
 import { getAllBalances, getBalance, updatePaymentsFromCorpJournal } from '../app/payments'
-import { createOrder, getAvailableOrders, getOrdersForCharacter, modifyOrder } from '../app/orders'
+import { createOrder, getAgentOrders, getAvailableOrders, getOrdersForCharacter, modifyOrder } from '../app/orders'
 
 const app = API()
 
@@ -33,6 +33,10 @@ app.get('/api/orders/@me', verifyToken, async (req, res) => {
 app.get('/api/available-orders', async (req, res) => {
   console.log('/api/available-orders', 'auth', req.auth.characterID, req.auth.characterName)
   res.json(await getAvailableOrders())
+})
+app.get('/api/agent-orders', verifyToken, async (req, res) => {
+  console.log('/api/agent-orders', 'auth', req.auth.characterID, req.auth.characterName)
+  res.json(await getAgentOrders(parseInt(req.auth.characterID)))
 })
 app.post('/api/orders', verifyToken, async (req, res) => {
   console.log('/api/orders', 'auth', req.auth.characterID, req.auth.characterName)

@@ -4,7 +4,7 @@ import { BasketProvider } from './stores/BasketProvider'
 
 import { Navigate, Route, Router, Routes } from '@solidjs/router'
 import InfoPage from './components/pages/InfoPage'
-import AvailableJobsPage from './components/agents/AvailableJobsPage'
+import AvailableJobsPage from './components/pages/AvailableJobsPage'
 import { UserProvider } from './stores/UserProvider'
 import SSOReturnPage from './components/pages/SSOReturnPage'
 import MyOrdersPage from './components/pages/MyOrdersPage'
@@ -17,7 +17,7 @@ import MyBalancePage from './components/pages/MyBalancePage'
 import InfoModal from './components/common/InfoModal'
 import './services/notifications'
 import { Toaster } from 'solid-toast'
-import MyJobsPage from './components/agents/MyJobsPage'
+import MyJobsPage from './components/pages/MyJobsPage'
 import Header from './components/common/Header'
 
 function App () {
@@ -36,12 +36,15 @@ function App () {
               <Routes>
                 {/* <Route path='/' component={HomePage} /> */}
                 <Route path='/' element={<Navigate href='/shop' />} />
+
                 <Route path='/info' component={InfoPage} />
                 <Route path='/shop' component={ShopPage} />
-                <Route path='/available-jobs' component={AvailableJobsPage} />
-                <Route path='/my-jobs' component={MyJobsPage} />
                 <Route path='/my-balance' component={MyBalancePage} />
                 <Route path='/my-orders' component={MyOrdersPage} />
+
+                <Route path='/my-jobs' component={MyJobsPage} />
+                <Route path='/available-jobs' component={AvailableJobsPage} />
+
                 <Route path='/sso-return' component={SSOReturnPage} />
                 <Route path='/admin' component={AdminPage}>
                   <Route path='/' component={AdminConfigForms} />

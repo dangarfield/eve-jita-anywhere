@@ -11,6 +11,29 @@ import { post } from '../../services/utils'
 import { setContent, openInfoModal } from '../common/InfoModal'
 import { useNavigate } from '@solidjs/router'
 
+export const calculateBasketTotals = (items, deliveryChargeFromBasket, isRush, rushCharge, userBalanceFromAccount, data) => {
+  const totalMaterialCost = Math.ceil(items?.reduce((total, basketItem) => total + (basketItem.quantity * basketItem.price), 0))
+
+  let deliveryCharge = 0
+  if (deliveryChargeFromBasket) {
+    deliveryCharge = deliveryChargeFromBasket + (isRush ? rushCharge : 0)
+  }
+  // console.log('data', data)
+  // console.log('data.appConfig', data.appConfig)
+  // console.log('data.appConfig.brokerPercent', data.appConfig.brokerPercent)
+  const brokersFee = Math.ceil(totalMaterialCost * data.appConfig.brokerPercent)
+  const agentFee = Math.ceil((totalMaterialCost + brokersFee + deliveryCharge) * data.appConfig.agentPercent)
+  const p4gFee = Math.ceil((totalMaterialCost + brokersFee + deliveryCharge) * data.appConfig.plexForGoodPercent)
+  const total = totalMaterialCost + brokersFee + deliveryCharge + agentFee + p4gFee
+  const totalVolume = Math.ceil(items.reduce((total, basketItem) => {
+    const item = data.types[basketItem.typeID]
+    return total + (basketItem.quantity * item.volume)
+  }, 0))
+  const aboveMinimumOrder = total > data.appConfig.minOrder
+  const balance = userBalanceFromAccount
+  return { totalMaterialCost, brokersFee, deliveryCharge, agentFee, p4gFee, total, totalVolume, aboveMinimumOrder, balance }
+}
+
 const Basket = (props) => {
   const navigate = useNavigate()
   const [basket, { clearBasket, updatePrices, removeBasketItem, updateBasketQuantity }] = useBasket()
@@ -35,33 +58,15 @@ const Basket = (props) => {
     if (orderCreationInProgress()) text = 'Creating order'
     return text
   })
-  const basketData = createMemo(() => {
-    const totalMaterialCost = Math.ceil(basket?.reduce((total, basketItem) => total + (basketItem.quantity * basketItem.price), 0))
-    // console.log('basketData memo deliveryCharge 1', deliveryCharges(), deliverySelectedValue())
-    // const deliveryCharge = deliveryCharges() && deliveryCharges.charge ? deliveryCharges().charge : 0 // TODO - This ends up being repeated
-    let deliveryCharge = 0
-    if (deliveryCharges() && deliveryCharges().charge) {
-      if (deliverySelectedValue() === 'Normal') {
-        deliveryCharge = deliveryCharges().charge
-      } else if (deliverySelectedValue() === 'Rush') {
-        deliveryCharge = deliveryCharges().charge + deliveryCharges().rush
-      }
-    }
-    // console.log('basketData memo deliveryCharge 2', deliveryCharge)
-    const brokersFee = Math.ceil(totalMaterialCost * staticData().appConfig.brokerPercent)
-    const agentFee = Math.ceil((totalMaterialCost + brokersFee + deliveryCharge) * staticData().appConfig.agentPercent)
-    const p4gFee = Math.ceil((totalMaterialCost + brokersFee + deliveryCharge) * staticData().appConfig.plexForGoodPercent)
-    const total = totalMaterialCost + brokersFee + deliveryCharge + agentFee + p4gFee
-    const totalVolume = Math.ceil(basket.reduce((total, basketItem) => {
-      const item = staticData().types[basketItem.typeID]
-      return total + (basketItem.quantity * item.volume)
-    }, 0))
-    const aboveMinimumOrder = total > staticData().appConfig.minOrder
-    let balance = 0
-    if (userBalance()) balance = userBalance().balance
 
-    return { totalMaterialCost, brokersFee, deliveryCharge, agentFee, p4gFee, total, totalVolume, aboveMinimumOrder, balance }
+  const basketData = createMemo(() => {
+    const deliveryChargeFromBasket = (deliveryCharges() && deliveryCharges().charge && deliverySelectedValue() && deliverySelectedValue() !== 'None') ? deliveryCharges().charge : 0
+    const isRush = deliverySelectedValue() === 'Rush'
+    const rushCharge = (deliveryCharges() && deliveryCharges().rush) ? deliveryCharges().rush : 0
+    const userBalanceFromAccount = userBalance() ? userBalance().balance : 0
+    return calculateBasketTotals(basket, deliveryChargeFromBasket, isRush, rushCharge, userBalanceFromAccount, staticData())
   })
+
   const handleQuantityInputChange = (event, basketItem) => {
     let newValue = parseInt(event.target.value)
     if (isNaN(newValue) || newValue <= 0) {

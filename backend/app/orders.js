@@ -5,7 +5,6 @@ import { nanoid } from 'nanoid'
 
 const ORDER_STATUS = {
   AVAILABLE: 'AVAILABLE',
-  SELECTED: 'SELECTED',
   PRICE_INCREASE: 'PRICE_INCREASE',
   CANCELLED: 'CANCELLED',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -66,6 +65,15 @@ export const getAvailableOrders = async () => {
   // console.log('getAvailableOrders', orders)
   return orders
 }
+export const getAgentOrders = async (characterID) => {
+  const orders = await ordersCollection.find({ agent: characterID }).sort({ creationDate: -1 }).toArray()
+  for (const order of orders) {
+    order.orderID = order._id
+    delete order._id
+  }
+  console.log('getAgentOrders', orders, characterID)
+  return orders
+}
 
 export const modifyOrder = async (characterID, orderID, updateCommand) => {
   console.log('modifyOrder', characterID, orderID, updateCommand)
@@ -74,7 +82,10 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
   const nowDate = new Date()
   if (updateCommand.status) {
     // Change status -> AVAILABLE to CANCELLED
-    if (order.status === ORDER_STATUS.AVAILABLE && updateCommand.status === ORDER_STATUS.CANCELLED && order.characterID === characterID) {
+    if (
+      (order.status === ORDER_STATUS.AVAILABLE || order.status === ORDER_STATUS.PRICE_INCREASE) &&
+       updateCommand.status === ORDER_STATUS.CANCELLED && order.characterID === characterID
+    ) {
       await ordersCollection.updateOne(
         { _id: order._id },
         { $set: { status: updateCommand.status }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
@@ -90,23 +101,25 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
       await createPayment(payment)
       return { success: true }
     }
-    // // Change status -> CANCELLED to AVAILABLE
-    // if (order.status === ORDER_STATUS.CANCELLED && updateCommand.status === ORDER_STATUS.AVAILABLE && order.characterID === characterID) {
-    //   await ordersCollection.updateOne(
-    //     { _id: order._id },
-    //     { $set: { status: updateCommand.status, creationDate: nowDate }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
-    //   )
-    //   const payment = {
-    //     _id: nanoid(10),
-    //     amount: -order.totals.total,
-    //     characterID,
-    //     date: nowDate,
-    //     type: PAYMENT_TYPES.RESERVE,
-    //     relatedOrderID: order._id
-    //   }
-    //   await createPayment(payment)
-    //   return { success: true }
-    // }
+    // Change status -> AVAILABLE to IN_PROGRESS
+    if (order.status === ORDER_STATUS.AVAILABLE && updateCommand.status === ORDER_STATUS.IN_PROGRESS) {
+      await ordersCollection.updateOne(
+        { _id: order._id },
+        { $set: { status: updateCommand.status, creationDate: nowDate, agent: characterID }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
+      )
+      // TODO - Somehow notify the user that this is now in progress
+      return { success: true }
+    }
+
+    // Change status -> IN_PROGRESS to PRICE_INCREASE
+    if (order.status === ORDER_STATUS.IN_PROGRESS && updateCommand.status === ORDER_STATUS.PRICE_INCREASE && order.agent === characterID) {
+      await ordersCollection.updateOne(
+        { _id: order._id },
+        { $set: { status: updateCommand.status, creationDate: nowDate }, $unset: { agent: '' }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
+      )
+      // TODO - Somehow notify the user that this is now price_increase
+      return { success: true }
+    }
   }
 
   return { error: 'Unknown action' }
