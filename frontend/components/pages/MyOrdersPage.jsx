@@ -8,9 +8,11 @@ import ConfirmButton from '../common/ConfirmButton'
 import { openInfoModal, setContent } from '../common/InfoModal'
 import OrderFilter from '../common/OrderFilter'
 import { useStaticData } from '../../stores/StaticDataProvider'
+import { getJitaSellOrders } from '../../services/esi'
+import { calculateBasketTotals } from '../shop/Basket'
 
 const MyOrdersPage = () => {
-  const [user, { ensureAccessTokenIsValid }] = useUser()
+  const [user, { ensureAccessTokenIsValid, userBalance }] = useUser()
   const [staticData] = useStaticData()
 
   const fetchMyOrders = async (id) => {
@@ -64,18 +66,67 @@ const MyOrdersPage = () => {
 
   const handleUpdatePricesOrderClick = async (order) => {
     console.log('handleUpdatePricesOrderClick', order)
-    // const ordersRes = await patch(`/api/orders/${order.orderID}`, { status: 'CANCELLED' }, await ensureAccessTokenIsValid())
-    // console.log('handleCancelOrderClick res', ordersRes)
-    // if (ordersRes.error) {
-    //   setContent(
-    //     <>
-    //       <p>Something went wrong amending the order:</p>
-    //       <p>{ordersRes.error}</p>
-    //     </>)
-    //   openInfoModal()
-    // } else {
-    //   refetch()
-    // }
+
+    // It's generally more efficient / consistent to load this when loading the orders, but I like it loading faster and then
+    // seeing the spinners. Could improve a lot
+    const items = JSON.parse(JSON.stringify(order.items))
+    items[0].price = 200
+
+    const promises = items.map(async (basketItem) => {
+      const orders = await getJitaSellOrders(basketItem.typeID)
+      if (orders.sell.length > 0) {
+        basketItem.price = orders.sell[0].price
+      }
+    })
+    await Promise.all(promises)
+    console.log('updated item prices', items)
+    const deliveryChargeFromBasket = order.totals.deliveryFee // Note, this will also contain the rushFee, hence setting the rest to zero
+    const isRush = false
+    const rushCharge = 0
+    const userBalanceFromAccount = userBalance() ? userBalance().balance : 0
+    const data = staticData()
+    console.log('userBalanceFromAccount', userBalanceFromAccount)
+    const orderUp = calculateBasketTotals(items, deliveryChargeFromBasket, isRush, rushCharge, userBalanceFromAccount, data)
+    console.log('orderUp', orderUp)
+
+    const remainingBalance = userBalanceFromAccount + order.totals.total - orderUp.total
+    console.log('remainingBalance', remainingBalance)
+    if (remainingBalance < 0) {
+      setContent(
+        <>
+          <p>Something went wrong amending the order:</p>
+          <p>Your balance is too low</p>
+        </>)
+      openInfoModal()
+      return
+    }
+    const updateObject = {
+      status: 'AVAILABLE',
+      items,
+      totals: {
+        totalMaterialCost: orderUp.totalMaterialCost,
+        brokersFee: orderUp.brokersFee,
+        deliveryFee: orderUp.deliveryCharge,
+        agentFee: orderUp.agentFee,
+        p4gFee: orderUp.p4gFee,
+        total: orderUp.total,
+        totalVolume: orderUp.totalVolume
+      }
+    }
+
+    console.log('updateObject', updateObject)
+    const ordersRes = await patch(`/api/orders/${order.orderID}`, updateObject, await ensureAccessTokenIsValid())
+    console.log('handleCancelOrderClick res', ordersRes)
+    if (ordersRes.error) {
+      setContent(
+        <>
+          <p>Something went wrong amending the order:</p>
+          <p>{ordersRes.error}</p>
+        </>)
+      openInfoModal()
+    } else {
+      refetch()
+    }
   }
   return (
 

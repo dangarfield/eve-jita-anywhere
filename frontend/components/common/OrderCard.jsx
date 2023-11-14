@@ -26,15 +26,15 @@ const OrderCard = (props) => {
       const promises = items.map(async (basketItem) => {
         const orders = await getJitaSellOrders(basketItem.typeID)
         if (orders.sell.length > 0) {
-          basketItem.price = orders.sell[0].price + 20 // TEMP - Remove +20
+          basketItem.price = orders.sell[0].price
         }
       })
       await Promise.all(promises)
       // await sleep(2000)
 
-      const deliveryChargeFromBasket = props.order.totals.deliveryFee // Note, this will also contain the rushFee
-      const isRush = props.order.delivery && props.order.delivery.isRush
-      const rushCharge = 100000000 // Note, should be kept elsewhere
+      const deliveryChargeFromBasket = props.order.totals.deliveryFee // Note, this will also contain the rushFee, hence setting the rest to zero
+      const isRush = false
+      const rushCharge = 0
       const userBalanceFromAccount = userBalance() ? userBalance().balance : 0
       const data = staticData()
       console.log('userBalanceFromAccount', userBalanceFromAccount)

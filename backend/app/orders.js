@@ -78,7 +78,7 @@ export const getAgentOrders = async (characterID) => {
 export const modifyOrder = async (characterID, orderID, updateCommand) => {
   console.log('modifyOrder', characterID, orderID, updateCommand)
   const order = await ordersCollection.findOne({ _id: orderID })
-  console.log('modifyOrder', order)
+  // console.log('modifyOrder', order)
   const nowDate = new Date()
   if (updateCommand.status) {
     // Change status -> AVAILABLE to CANCELLED
@@ -118,6 +118,50 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
         { $set: { status: updateCommand.status, creationDate: nowDate }, $unset: { agent: '' }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
       )
       // TODO - Somehow notify the user that this is now price_increase
+      return { success: true }
+    }
+    if (order.status === ORDER_STATUS.PRICE_INCREASE && updateCommand.status === ORDER_STATUS.AVAILABLE && order.characterID === characterID && updateCommand.items && updateCommand.totals) {
+      const { balance } = await getBalance(characterID)
+      console.log('verify balance', balance, order.totals.total)
+      if ((balance + order.totals.total - updateCommand.totals.total) < 0) {
+        console.log('Balance too low for order')
+        return { error: 'Your balance is too low' }
+      }
+      const nowDate = new Date()
+
+      await ordersCollection.updateOne(
+        { _id: order._id },
+        {
+          $set: {
+            status: updateCommand.status,
+            creationDate: nowDate,
+            items: updateCommand.items,
+            totals: updateCommand.totals
+          },
+          $push: { statusHistory: { status: updateCommand.status, date: nowDate } }
+        }
+      )
+      const releasePayment = {
+        _id: nanoid(10),
+        amount: order.totals.total,
+        characterID,
+        date: new Date(),
+        type: PAYMENT_TYPES.RELEASE,
+        relatedOrderID: order._id
+      }
+      await createPayment(releasePayment)
+      const reservePayment = {
+        _id: nanoid(10),
+        amount: -updateCommand.totals.total,
+        characterID,
+        date: new Date(),
+        type: PAYMENT_TYPES.RESERVE,
+        relatedOrderID: order._id
+      }
+      await createPayment(reservePayment)
+
+      await sendOnSiteNotification('orders', 'New order available for agents')
+
       return { success: true }
     }
   }
