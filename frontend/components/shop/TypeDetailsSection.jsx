@@ -31,11 +31,12 @@ const TypeDetailsSection = (props) => {
               ? <Alert variant='dark'>Select Type</Alert>
               : (
                 <>
-                  <div class='align-items-center d-flex'>
+                  <div class='align-items-center d-flex align-items-center mb-2'>
                     <EveTypeIcon type={selectedType()} />
-                    <h3 className='ps-2'>
+                    <h3 className='ps-2 mb-0'>
                       {selectedType().name}
                     </h3>
+                    <i class={`bi ${props.favourites().includes(props.selectedType()) ? 'bi-star-fill' : 'bi-star'} fs-5 text-s ps-2 pointer`} onClick={() => props.toggleFavourites(props.selectedType())} />
                   </div>
                   {/* <Tabs defaultActiveKey='details' class='mb-3' variant='underline'>
                     <Tab eventKey='details' title='Details'> */}
@@ -46,7 +47,7 @@ const TypeDetailsSection = (props) => {
                       </Show> */}
                   {/* </Tab>
                     <Tab eventKey='price' title='Jita Price'> */}
-                  <TypeDetailsPrice orders={orders} />
+                  <TypeDetailsPrice orders={orders} favourites={props.favourites} setFavourites={props.setFavourites} />
                   {/* </Tab>
                     <Tab eventKey='history' title='History'> */}
                   <Show when={history()} fallback={<Loading />}>

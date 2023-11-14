@@ -1,5 +1,6 @@
 import { Tabs, Tab, Alert } from 'solid-bootstrap'
 import TypeBrowserList from './TypeBrowserList'
+import TypeBrowserFavourites from './TypeBrowserFavourites'
 
 const TypeBrowserSection = (props) => {
   return (
@@ -8,7 +9,7 @@ const TypeBrowserSection = (props) => {
         <TypeBrowserList setSelectedType={props.setSelectedType} />
       </Tab>
       <Tab eventKey='favourites' title='Favourites'>
-        <Alert variant='border border-info text-info text-center mt-1'>Coming Soon: Favourites</Alert>
+        <TypeBrowserFavourites setSelectedType={props.setSelectedType} favourites={props.favourites} setFavourites={props.setFavourites} />
       </Tab>
       <Tab eventKey='add-bulk' title='Add Bulk'>
         <Alert variant='border border-info text-info text-center mt-1'>Coming Soon: Add Bulk</Alert>

@@ -3,7 +3,7 @@ import { useStaticData } from '../../stores/StaticDataProvider'
 
 import './TypeBrowserList.css'
 import EveTypeIcon from '../common/EveTypeIcon'
-import { Alert, Button, FormControl, InputGroup } from 'solid-bootstrap'
+import { Alert, FormControl, InputGroup } from 'solid-bootstrap'
 
 const createItem = (item, setSelectedType) => {
   const handleClick = () => {
@@ -13,7 +13,7 @@ const createItem = (item, setSelectedType) => {
 
   return (
     <li class='text-start' data-type-id={item.type_id} data-parent-group-id={item.parent_group_id}>
-      <span class='content w-100 h-100 d-block' onClick={handleClick}>
+      <span class='content w-100 h-100 d-block d-flex align-items-center' onClick={handleClick}>
         <span class='px-1'>
           <EveTypeIcon type={item} />
         </span>
@@ -36,7 +36,7 @@ const createGroup = (item, setSelectedType) => {
 
   return (
     <li class='text-start' data-market-group-id={item.market_group_id} data-parent-group-id={item.parent_group_id}>
-      <span class='content w-100 h-100 d-block' onClick={toggleGroup}>
+      <span class='content w-100 h-100 d-block d-flex align-items-center' onClick={toggleGroup}>
         <i class={`expanded-icon bi bi-caret-${expanded() ? 'down-fill' : 'right-fill'}`} />
         <span class='px-1'>
           <img class='width-32' src={`/generated-icons/${item.icon_id}.png`} />

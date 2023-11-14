@@ -3,6 +3,7 @@ import { Button, Image, Nav, NavDropdown, Navbar } from 'solid-bootstrap'
 import { useUser } from '../../stores/UserProvider'
 import { Show } from 'solid-js'
 import { connectedUsers } from '../../services/notifications'
+import './Header.css'
 
 const Header = () => {
   const [user, { beginLoginProcess, logout, characterID, characterName, isLoggedIn }] = useUser()
@@ -50,7 +51,8 @@ const Header = () => {
                     <span class='ps-2 text-light'>{characterName}</span>
                   </>
               }
-                id='collasible-nav-dropdown'
+                id='login-nav-dropdown'
+                class='login-nav-dropdown'
               >
                 <A href='/logout' class='dropdown-item' onclick={handleLogout}>Logout</A>
               </NavDropdown>
