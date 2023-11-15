@@ -21,26 +21,24 @@ const appAuthDefault = {
   refreshToken: 'r'
 }
 export const getAppConfig = async (showPrivateFields) => {
-  // const startTime = new Date()
-
+  const startTime = new Date()
+  console.log('getAppConfig', getAppConfig, showPrivateFields)
   const [appConfig, corpName, plexForGoodTotal] = await Promise.all([
     configCollection.findOne({ _id: ID_APP_CONFIG }) || configCollection.insertOne(appConfigDefault).then(() => appConfigDefault),
-    showPrivateFields ? undefined : getAppAuth().then(auth => auth.corpName),
+    getAppAuth().then(auth => auth.corpName),
     getPlexForTotal()
   ])
 
+  console.log('appConfig, corpName, plexForGoodTotal', appConfig, corpName, plexForGoodTotal)
   if (appConfig) {
     delete appConfig._id
-    if (!showPrivateFields) {
-      // No longer required
-    }
     appConfig.corpName = corpName || appConfig.corpName
     appConfig.plexForGoodTotal = plexForGoodTotal
   }
 
-  // const endTime = new Date()
-  // const elapsedTime = endTime - startTime
-  // console.log(`Time taken: ${elapsedTime} milliseconds`)
+  const endTime = new Date()
+  const elapsedTime = endTime - startTime
+  console.log(`Time taken: ${elapsedTime} milliseconds`)
 
   return appConfig
 }
