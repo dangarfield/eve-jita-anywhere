@@ -7,16 +7,16 @@ const esi = new Api()
 export const ensureAccessTokenIsValid = async () => {
   console.log('ensureAccessTokenIsValid')
   try {
-    const { characterId, accessToken, refreshToken } = await getAppAuth()
+    const { characterID, accessToken, refreshToken } = await getAppAuth()
     const req = await fetch(`https://esi.evetech.net/verify?token=${accessToken}`)
     const res = await req.json()
     // console.log('verify', res)
     if (res.ExpiresOn && new Date(`${res.ExpiresOn}Z`) - new Date() < 0) {
       // console.log('token expired', res.ExpiresOn, new Date())
       const newAccessToken = await updateAndPersistRefreshToken(refreshToken)
-      return { characterId, accessToken: newAccessToken }
+      return { characterID, accessToken: newAccessToken }
     }
-    return { characterId, accessToken }
+    return { characterID, accessToken }
   } catch (error) {
     console.error('ensureAccessTokenIsValid ERROR', error)
     throw new Error('ensureAccessTokenIsValid ERROR')
@@ -25,12 +25,12 @@ export const ensureAccessTokenIsValid = async () => {
 export const sendMail = async (recipient, subject, body) => {
   console.log('sendMail req', recipient, subject, body)
 
-  const { characterId, accessToken } = await ensureAccessTokenIsValid()
-  // const { characterId, accessToken } = await getAppAuth()
-  // const result = await callWithRetry(esi.characters.postCharactersCharacterIdMail, characterId, {
-  console.log('sendMail auth', characterId, accessToken, recipient, subject)
+  const { characterID, accessToken } = await ensureAccessTokenIsValid()
+  // const { characterID, accessToken } = await getAppAuth()
+  // const result = await callWithRetry(esi.characters.postCharactersCharacterIdMail, characterID, {
+  console.log('sendMail auth', characterID, accessToken, recipient, subject)
   try {
-    const result = await esi.characters.postCharactersCharacterIdMail(characterId, {
+    const result = await esi.characters.postCharactersCharacterIdMail(characterID, {
       body,
       recipients: [{ recipient_id: recipient, recipient_type: 'character' }],
       subject
@@ -49,7 +49,7 @@ export const getEvePaymentJournal = async () => {
   const appConfig = await getAppConfig(true)
   const { accessToken } = await ensureAccessTokenIsValid()
 
-  // console.log('getEvePaymentJournal', characterId, accessToken, appAuth.corpId, appConfig.corpDivisionId)
+  // console.log('getEvePaymentJournal', characterID, accessToken, appAuth.corpId, appConfig.corpDivisionId)
   try {
     const result = (await esi.corporations.getCorporationsCorporationIdWalletsDivisionJournal(appAuth.corpId, 1, { token: accessToken }))
     for (const item of result.data) {

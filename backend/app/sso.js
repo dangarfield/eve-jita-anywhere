@@ -84,12 +84,12 @@ export const ssoAdminReturn = async (code, state) => {
     const accessToken = res.access_token
     const refreshToken = res.refresh_token
     const payload = jsonwebtoken.decode(accessToken)
-    const characterId = parseInt(payload.sub.replace('CHARACTER:EVE:', ''))
+    const characterID = parseInt(payload.sub.replace('CHARACTER:EVE:', ''))
     const characterName = payload.name
-    const corpId = (await esi.characters.postCharactersAffiliation([characterId])).data[0].corporation_id
+    const corpId = (await esi.characters.postCharactersAffiliation([characterID])).data[0].corporation_id
     const corpName = (await esi.corporations.getCorporationsCorporationId(corpId)).data.name
 
-    const newAuth = { characterId, characterName, corpId, corpName, accessToken, refreshToken }
+    const newAuth = { characterID, characterName, corpId, corpName, accessToken, refreshToken }
     console.log('newAuth', newAuth)
     await setAppAuth(newAuth)
   } catch (error) {
