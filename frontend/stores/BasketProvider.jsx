@@ -33,6 +33,24 @@ export function BasketProvider (props) {
             newBasket.push(item)
           }
           sortBasket(newBasket)
+          console.log('addToBasket end', item, newBasket)
+          return newBasket
+        })
+      },
+      addAllToBasket (items) {
+        setBasket((basket) => {
+          // console.log('addToBasket item', item)
+          const newBasket = cloneBasket(basket)
+          items.forEach(item => {
+            const existingItem = newBasket.find((basketItem) => basketItem.typeID === item.typeID)
+            if (existingItem) {
+              existingItem.quantity += item.quantity
+              existingItem.price = item.price
+            } else {
+              newBasket.push(item)
+            }
+          })
+          sortBasket(newBasket)
           // console.log('addToBasket end', item, newBasket)
           return newBasket
         })
