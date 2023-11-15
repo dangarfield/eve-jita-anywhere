@@ -9,7 +9,8 @@ const appConfigDefault = {
   brokerPercent: 0.0175,
   agentPercent: 0.05,
   plexForGoodPercent: 0.05,
-  minOrder: 100000
+  minOrder: 100000,
+  plexForGoodCharacterID: 1435692323
 }
 const appAuthDefault = {
   _id: ID_APP_AUTH,
@@ -21,29 +22,28 @@ const appAuthDefault = {
   refreshToken: 'r'
 }
 export const getAppConfig = async (showPrivateFields) => {
-  const startTime = new Date()
-  console.log('getAppConfig', showPrivateFields)
-  const [appConfig, corpName, plexForGoodTotal] = await Promise.all([
-    configCollection.findOneAndUpdate(
-      { _id: ID_APP_CONFIG },
-      { $setOnInsert: appConfigDefault },
-      { upsert: true, returnDocument: 'after' }
-    ),
-
+  // const startTime = new Date()
+  // console.log('getAppConfig', showPrivateFields)
+  const appConfig = await configCollection.findOneAndUpdate(
+    { _id: ID_APP_CONFIG },
+    { $setOnInsert: appConfigDefault },
+    { upsert: true, returnDocument: 'after' }
+  )
+  const [corpName, plexForGoodTotal] = await Promise.all([
     getAppAuth().then(auth => auth.corpName),
-    getPlexForTotal()
+    getPlexForTotal(appConfig.plexForGoodCharacterID)
   ])
 
-  console.log('appConfig, corpName, plexForGoodTotal', appConfig, corpName, plexForGoodTotal)
+  // console.log('appConfig, corpName, plexForGoodTotal', appConfig, corpName, plexForGoodTotal)
   if (appConfig) {
     delete appConfig._id
     appConfig.corpName = corpName || appConfig.corpName
     appConfig.plexForGoodTotal = plexForGoodTotal
   }
 
-  const endTime = new Date()
-  const elapsedTime = endTime - startTime
-  console.log(`Time taken: ${elapsedTime} milliseconds`)
+  // const endTime = new Date()
+  // const elapsedTime = endTime - startTime
+  // console.log(`Time taken: ${elapsedTime} milliseconds`)
 
   return appConfig
 }

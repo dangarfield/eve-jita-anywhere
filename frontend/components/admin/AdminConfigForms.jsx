@@ -83,6 +83,12 @@ const AdminConfigForms = () => {
               <Form.Control type='text' placeholder='Agent Percent' value={appConfig().minOrder} />
             </Col>
           </Form.Group>
+          <Form.Group class='mb-3' controlId='plexForGoodCharacterID' as={Row}>
+            <Form.Label column sm={2}>Plex For Good Character ID</Form.Label>
+            <Col sm={4}>
+              <Form.Control type='text' placeholder='plexForGoodCharacterID' value={appConfig().plexForGoodCharacterID} />
+            </Col>
+          </Form.Group>
           <Form.Group class='mb-3' controlId='formBasicPassword' as={Row}>
             <Col sm={{ span: 2, offset: 4 }}>
               <Button variant='primary' type='submit' class='w-100'>Save Admin Config</Button>

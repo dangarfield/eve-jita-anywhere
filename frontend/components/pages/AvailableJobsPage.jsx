@@ -39,10 +39,10 @@ const AvailableJobsPage = () => {
     const uniqueStatusList = [...new Set(orders()?.map(item => item.status))].sort().map(key => ({ name: key, active: true }))
     const cancelledOption = uniqueStatusList.find(f => f.name === 'CANCELLED')
     if (cancelledOption) cancelledOption.active = false
-    console.log('uniqueStatusList', uniqueStatusList)
+    // console.log('uniqueStatusList', uniqueStatusList)
 
     const uniqueDeliveryList = [...new Set(orders()?.map(item => item.delivery === undefined ? 'None' : (item.delivery.isRush ? 'Rush' : 'Normal')))].sort().map(key => ({ name: key, active: true }))
-    console.log('uniqueDeliveryList', uniqueDeliveryList)
+    // console.log('uniqueDeliveryList', uniqueDeliveryList)
     setFilters({ status: uniqueStatusList, delivery: uniqueDeliveryList })
   })
 

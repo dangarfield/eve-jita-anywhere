@@ -1,7 +1,6 @@
 import { paymentsCollection } from './db.js'
 import { getEvePaymentJournal, sendMail } from './eve-api.js'
 
-export const PLEX_FOR_GOOD_CHARACTER_ID = parseInt(process.env.PLEX_FOR_GOOD_CHARACTER_ID || 1)
 export const PAYMENT_TYPES = { DEPOSIT: 'deposit', WITHDRAWAL: 'withdrawal', RESERVE: 'reserve', RELEASE: 'release', JOB_COMPLETE: 'job_complete', PLEX_FOR_GOOD: 'plex_for_good' }
 
 const PAYMENT_REASONS = ['deposit', 'withdrawal']
@@ -36,11 +35,11 @@ We've updated your balance to include your ${cleanReason(entry.type)} of ${entry
   //   paymentsCollection
   console.log('updatePaymentsFromCorpJournal END')
 }
-export const getPlexForTotal = async () => {
+export const getPlexForTotal = async (plexForGoodCharacterID) => {
   const result = await paymentsCollection.aggregate([
     {
       $match: {
-        characterID: PLEX_FOR_GOOD_CHARACTER_ID,
+        characterID: plexForGoodCharacterID,
         type: PAYMENT_TYPES.PLEX_FOR_GOOD
       }
     },

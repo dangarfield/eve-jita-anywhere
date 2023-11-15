@@ -1,6 +1,7 @@
+import { getAppConfig } from './config.js'
 import { ordersCollection } from './db.js'
 import { sendOnSiteNotification } from './notifications.js'
-import { PAYMENT_TYPES, createPayment, getBalance, PLEX_FOR_GOOD_CHARACTER_ID } from './payments.js'
+import { PAYMENT_TYPES, createPayment, getBalance } from './payments.js'
 import { nanoid } from 'nanoid'
 
 const ORDER_STATUS = {
@@ -191,10 +192,11 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
         relatedOrderID: order._id
       }
       await createPayment(releasePayment)
+      const appConfig = await getAppConfig()
       const reservePayment = {
         _id: nanoid(10),
         amount: order.totals.p4gFee,
-        characterID: PLEX_FOR_GOOD_CHARACTER_ID,
+        characterID: appConfig.plexForGoodCharacterID,
         date: new Date(),
         type: PAYMENT_TYPES.PLEX_FOR_GOOD,
         relatedOrderID: order._id

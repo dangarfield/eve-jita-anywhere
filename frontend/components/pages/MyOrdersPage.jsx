@@ -43,20 +43,16 @@ const MyOrdersPage = () => {
     // Example filter logic, adjust as needed
       const statusFilter = appliedFilters.status.find((status) => status.name === order.status && status.active)
       const deliveryFilter = appliedFilters.delivery.find((delivery) => (order.delivery === undefined ? 'None' : (order.delivery.isRush ? 'Rush' : 'Normal')) === delivery.name && delivery.active)
-
       return statusFilter && deliveryFilter
     })
   })
   createEffect(() => {
-    console.log('MyOrdersPage createEffect', orders)
-
+    // console.log('MyOrdersPage createEffect', orders())
     const uniqueStatusList = [...new Set(orders()?.map(item => item.status))].sort().map(key => ({ name: key, active: true }))
     uniqueStatusList.filter(option => ['CANCELLED', 'COMPLETE'].includes(option.name)).forEach(option => { option.active = false })
-
-    console.log('uniqueStatusList', uniqueStatusList)
-
+    // console.log('uniqueStatusList', uniqueStatusList)
     const uniqueDeliveryList = [...new Set(orders()?.map(item => item.delivery === undefined ? 'None' : (item.delivery.isRush ? 'Rush' : 'Normal')))].sort().map(key => ({ name: key, active: true }))
-    console.log('uniqueDeliveryList', uniqueDeliveryList)
+    // console.log('uniqueDeliveryList', uniqueDeliveryList)
     setFilters({ status: uniqueStatusList, delivery: uniqueDeliveryList })
   })
 
