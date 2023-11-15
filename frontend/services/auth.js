@@ -9,12 +9,13 @@ const SSO_CONFIG = window.location.href.includes('localhost')
       clientId: 'd216c1de59c54644bb3729e89ea19bb9',
       redirectUri: 'https://jita-anywhere.netlify.app/sso-return'
     }
+const SSO_SCOPES = 'esi-ui.open_window.v1'.split(' ')
 
 const sso = createSSO(SSO_CONFIG)
 export const triggerLoginFlow = async () => {
   console.log('triggerLoginFlow', sso)
 
-  const ssoUri = await sso.getUri([])
+  const ssoUri = await sso.getUri(SSO_SCOPES)
 
   window.localStorage.setItem('jita-anywhere-return-url', window.location.href)
   window.localStorage.setItem('jita-anywhere-code-verifier', ssoUri.codeVerifier)

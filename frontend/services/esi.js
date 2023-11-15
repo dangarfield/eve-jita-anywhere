@@ -1,5 +1,8 @@
 // import { sleep } from './utils'
 
+import toast from 'solid-toast'
+import { post } from './utils'
+
 export const getJitaSellOrders = async (itemID) => {
   let maxPages = 1
   let page = 0
@@ -43,4 +46,36 @@ export const getCharacterName = async (characterID) => {
   const res = await window.fetch(`https://esi.evetech.net/latest/characters/${characterID}/?datasource=tranquility`)
   const character = await res.json()
   return character.name
+}
+export const openMarketWindow = async (typeID, accessTokenPromise) => {
+  const accessToken = await accessTokenPromise
+  console.log('openMarketWindow', typeID, accessToken)
+  const url = `https://esi.evetech.net/latest/ui/openwindow/marketdetails/?datasource=tranquility&type_id=${typeID}`
+
+  const options = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    }
+  }
+  options.headers.Authorization = `Bearer ${accessToken}`
+  await window.fetch(url, options)
+  toast.success('Market window opened')
+}
+export const openInformationWindow = async (typeID, accessTokenPromise) => {
+  const accessToken = await accessTokenPromise
+  console.log('openInformationWindow', typeID, accessToken)
+  const url = `https://esi.evetech.net/latest/ui/openwindow/marketdetails/?datasource=tranquility&type_id=${typeID}`
+
+  const options = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    }
+  }
+  options.headers.Authorization = `Bearer ${accessToken}`
+  await window.fetch(url, options)
+  toast.success('Station information window opened')
 }

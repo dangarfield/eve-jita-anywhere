@@ -35,3 +35,12 @@ const executeFetch = async (method, url, bodyObject, password) => {
   const res = await req.json()
   return res
 }
+export const copyTextToClipboard = (text) => {
+  // console.log('copyTextToClipboard', text)
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  document.body.appendChild(textarea)
+  textarea.select()
+  document.execCommand('copy')
+  document.body.removeChild(textarea)
+}
