@@ -214,10 +214,6 @@ const OrderCard = (props) => {
                   </div>
                 </div>}
             </For>
-            <div class='text-end'>
-              <a href='/copy-multibuy-to-clipboard' class='show-on-hover' onClick={copyMultiBuyToClipboard}>Multibuy <i class='bi bi-clipboard-plus' /></a>
-            </div>
-
           </div>
           <hr />
           <div class='px-3'>
