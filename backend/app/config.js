@@ -22,9 +22,14 @@ const appAuthDefault = {
 }
 export const getAppConfig = async (showPrivateFields) => {
   const startTime = new Date()
-  console.log('getAppConfig', getAppConfig, showPrivateFields)
+  console.log('getAppConfig', showPrivateFields)
   const [appConfig, corpName, plexForGoodTotal] = await Promise.all([
-    configCollection.findOne({ _id: ID_APP_CONFIG }) || configCollection.insertOne(appConfigDefault).then(() => appConfigDefault),
+    configCollection.findOneAndUpdate(
+      { _id: ID_APP_CONFIG },
+      { $setOnInsert: appConfigDefault },
+      { upsert: true, returnDocument: 'after' }
+    ),
+
     getAppAuth().then(auth => auth.corpName),
     getPlexForTotal()
   ])
