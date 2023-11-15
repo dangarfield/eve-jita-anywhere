@@ -1,6 +1,6 @@
-import { ordersCollection } from './db'
-import { sendOnSiteNotification } from './notifications'
-import { PAYMENT_TYPES, createPayment, getBalance, PLEX_FOR_GOOD_CHARACTER_ID } from './payments'
+import { ordersCollection } from './db.js'
+import { sendOnSiteNotification } from './notifications.js'
+import { PAYMENT_TYPES, createPayment, getBalance, PLEX_FOR_GOOD_CHARACTER_ID } from './payments.js'
 import { nanoid } from 'nanoid'
 
 const ORDER_STATUS = {

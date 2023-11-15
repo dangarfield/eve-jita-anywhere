@@ -1,5 +1,5 @@
-import { paymentsCollection } from './db'
-import { getEvePaymentJournal, sendMail } from './eve-api'
+import { paymentsCollection } from './db.js'
+import { getEvePaymentJournal, sendMail } from './eve-api.js'
 
 export const PLEX_FOR_GOOD_CHARACTER_ID = parseInt(process.env.PLEX_FOR_GOOD_CHARACTER_ID || 1)
 export const PAYMENT_TYPES = { DEPOSIT: 'deposit', WITHDRAWAL: 'withdrawal', RESERVE: 'reserve', RELEASE: 'release', JOB_COMPLETE: 'job_complete', PLEX_FOR_GOOD: 'plex_for_good' }

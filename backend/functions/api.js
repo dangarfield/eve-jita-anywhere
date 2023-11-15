@@ -1,10 +1,10 @@
 import API from 'lambda-api'
-import { verifyAdmin, verifyToken } from '../app/auth'
-import { ssoAdminLoginStart, ssoAdminReturn } from '../app/sso'
-import { getAppAuth, getAppConfig, setAppConfig } from '../app/config'
-import { getEvePaymentJournal } from '../app/eve-api'
-import { getAllBalances, getBalance, updatePaymentsFromCorpJournal } from '../app/payments'
-import { createOrder, getAgentOrders, getAvailableOrders, getOrdersForCharacter, modifyOrder } from '../app/orders'
+import { verifyAdmin, verifyToken } from '../app/auth.js'
+import { ssoAdminLoginStart, ssoAdminReturn } from '../app/sso.js'
+import { getAppAuth, getAppConfig, setAppConfig } from '../app/config.js'
+import { getEvePaymentJournal } from '../app/eve-api.js'
+import { getAllBalances, getBalance, updatePaymentsFromCorpJournal } from '../app/payments.js'
+import { createOrder, getAgentOrders, getAvailableOrders, getOrdersForCharacter, modifyOrder } from '../app/orders.js'
 
 const app = API()
 
