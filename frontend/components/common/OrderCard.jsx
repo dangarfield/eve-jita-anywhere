@@ -102,7 +102,7 @@ const OrderCard = (props) => {
             </div>
             <Show when={showHistory()}>
               <Alert variant='border border-secondary-subtle text-light text-center mt-1 mb-1'>
-                <For each={props.order.statusHistory}>
+                <For each={props.order.statusHistory.reverse()}>
                   {(history, i) =>
                     <div class='d-flex align-items-center'>
                       <span class=''>{new Date(history.date).toLocaleString()}</span>
@@ -138,7 +138,7 @@ const OrderCard = (props) => {
                   <PriceDiff old={props.order.totals.totalMaterialCost} new={orderUp().totalMaterialCost} />
                 </Show>
               </Show>
-              <span class={isPriceIncreaseOrder() ? 'text-end col-4' : ''}>{(props.order.totals.totalMaterialCost * 100000).toLocaleString()} ISK</span>
+              <span class={isPriceIncreaseOrder() ? 'text-end col-4' : ''}>{props.order.totals.totalMaterialCost.toLocaleString()} ISK</span>
             </div>
             <div class='d-flex align-items-center'>
               <span class='me-auto'>Broker Fee</span>
