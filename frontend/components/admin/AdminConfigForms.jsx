@@ -38,8 +38,9 @@ const AdminConfigForms = () => {
     const agentPercent = parseFloat(e.target.querySelector('#agentPercent').value)
     const plexForGoodPercent = parseFloat(e.target.querySelector('#plexForGoodPercent').value)
     const minOrder = parseFloat(e.target.querySelector('#minOrder').value)
-    console.log('handleSaveAdminConfig', brokerPercent, agentPercent, plexForGoodPercent)
-    saveAppConfig({ brokerPercent, agentPercent, plexForGoodPercent, minOrder })
+    const plexForGoodCharacterID = parseInt(e.target.querySelector('#plexForGoodCharacterID').value)
+    console.log('handleSaveAdminConfig', brokerPercent, agentPercent, plexForGoodPercent, plexForGoodCharacterID)
+    saveAppConfig({ brokerPercent, agentPercent, plexForGoodPercent, minOrder, plexForGoodCharacterID })
   }
   const handleSSOAdminLogin = async (e) => {
     e.preventDefault()
@@ -71,16 +72,16 @@ const AdminConfigForms = () => {
               <Form.Control type='text' placeholder='Agent Percent' value={appConfig().agentPercent} />
             </Col>
           </Form.Group>
-          <Form.Group class='mb-3' controlId='plexForGoodPercent' as={Row}>
-            <Form.Label column sm={2}>Isk For Good Percent</Form.Label>
-            <Col sm={4}>
-              <Form.Control type='text' placeholder='Agent Percent' value={appConfig().plexForGoodPercent} />
-            </Col>
-          </Form.Group>
           <Form.Group class='mb-3' controlId='minOrder' as={Row}>
             <Form.Label column sm={2}>Minimum Order</Form.Label>
             <Col sm={4}>
               <Form.Control type='text' placeholder='Agent Percent' value={appConfig().minOrder} />
+            </Col>
+          </Form.Group>
+          <Form.Group class='mb-3' controlId='plexForGoodPercent' as={Row}>
+            <Form.Label column sm={2}>Isk For Good Percent</Form.Label>
+            <Col sm={4}>
+              <Form.Control type='text' placeholder='Agent Percent' value={appConfig().plexForGoodPercent} />
             </Col>
           </Form.Group>
           <Form.Group class='mb-3' controlId='plexForGoodCharacterID' as={Row}>
