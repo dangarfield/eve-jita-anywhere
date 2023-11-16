@@ -19,6 +19,7 @@ import './services/notifications'
 import { Toaster } from 'solid-toast'
 import MyJobsPage from './components/pages/MyJobsPage'
 import Header from './components/common/Header'
+import AdminWithdrawalRequests from './components/admin/AdminWithdrawalRequests'
 
 function App () {
   return (
@@ -50,6 +51,7 @@ function App () {
                   <Route path='/' component={AdminConfigForms} />
                   <Route path='/journal' component={AdminJournal} />
                   <Route path='/balances' component={AdminBalances} />
+                  <Route path='/withdrawal-requests' component={AdminWithdrawalRequests} />
                 </Route>
                 <Route path='*' component={NotFoundPage} />
               </Routes>

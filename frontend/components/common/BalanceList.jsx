@@ -2,10 +2,6 @@ import { Badge, ListGroup } from 'solid-bootstrap'
 import { For } from 'solid-js'
 
 const BalanceList = (props) => {
-  for (const entry of props.userBalance.entries) {
-    const entryDate = new Date(entry.date)
-    entry.dateString = `${entryDate.toLocaleDateString()} ${entryDate.toLocaleTimeString()}`
-  }
   return (
     <ListGroup class='mb-3'>
       <ListGroup.Item variant='light'>
@@ -19,7 +15,7 @@ const BalanceList = (props) => {
           <ListGroup.Item>
             {/* <div class='w-100 d-flex flex-row justify-content-between'> */}
             <div class='row'>
-              <p class='col-5'>{entry.dateString}</p>
+              <p class='col-5'>{`${new Date(entry.date).toLocaleDateString()} ${new Date(entry.date).toLocaleTimeString()}`}</p>
               <p class='col text-uppercase'>{entry.type.replace(/_/g, ' ')}</p>
               <p class='col text-end'>{entry.amount.toLocaleString()} ISK</p>
             </div>

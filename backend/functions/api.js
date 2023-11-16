@@ -5,6 +5,7 @@ import { getAppAuth, getAppConfig, setAppConfig } from '../app/config.js'
 import { getEvePaymentJournal } from '../app/eve-api.js'
 import { getAllBalances, getBalance, updatePaymentsFromCorpJournal } from '../app/payments.js'
 import { createOrder, getAgentOrders, getAvailableOrders, getOrdersForCharacter, modifyOrder } from '../app/orders.js'
+import { createWithdrawalRequest, getAllWithdrawalRequests, updateWithdrawalRequestCompletionState } from '../app/withdrawals.js'
 
 const app = API()
 
@@ -18,6 +19,20 @@ app.get('/api/balances/@me', verifyToken, async (req, res) => {
 })
 app.get('/api/balances', verifyAdmin, async (req, res) => {
   res.json(await getAllBalances())
+})
+
+// Withdrawals
+app.post('/api/withdrawals', verifyToken, async (req, res) => {
+  console.log('/api/withdrawals POST', 'auth', req.auth.characterID, req.auth.characterName)
+  res.json(await createWithdrawalRequest(req.auth.characterID, req.body.amount))
+})
+app.get('/api/withdrawals', verifyAdmin, async (req, res) => {
+  console.log('/api/withdrawals GET')
+  res.json(await getAllWithdrawalRequests())
+})
+app.patch('/api/withdrawals', verifyAdmin, async (req, res) => {
+  console.log('/api/withdrawals PATCH')
+  res.json(await updateWithdrawalRequestCompletionState(req.body.characterID, req.body.complete))
 })
 
 // Orders

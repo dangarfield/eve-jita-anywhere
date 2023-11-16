@@ -46,6 +46,9 @@ const AdminPage = () => {
             <li role='presentation' class='nav-item'>
               <A href='/admin/balances' class='nav-link' activeClass='active'>Balances</A>
             </li>
+            <li role='presentation' class='nav-item'>
+              <A href='/admin/withdrawal-requests' class='nav-link' activeClass='active'>Withdrawal Requests</A>
+            </li>
           </ul>
           <Outlet />
         </Show>

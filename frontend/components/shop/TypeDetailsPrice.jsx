@@ -33,7 +33,7 @@ const TypeDetailsPrice = (props) => {
         <div class='col-md'>
           <h5>Jita 4-4 Buy Orders</h5>
           <Show when={props.orders().buy.length > 0} fallback={<Alert variant='dark'>No buy orders available</Alert>}>
-            <table class='table'>
+            <table class='table text-end'>
               <thead>
                 <tr>
                   <th scope='col'>Quantity</th>

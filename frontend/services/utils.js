@@ -6,6 +6,12 @@ export const sleep = (ms) => {
 export const getAdmin = async (url) => {
   return get(url, password())
 }
+export const postAdmin = async (url, bodyObject) => {
+  return post(url, bodyObject, password())
+}
+export const patchAdmin = async (url, bodyObject) => {
+  return patch(url, bodyObject, password())
+}
 export const get = async (url, password) => {
   return executeFetch('GET', url, undefined, password)
 }

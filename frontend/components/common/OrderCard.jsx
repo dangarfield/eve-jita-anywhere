@@ -102,7 +102,7 @@ const OrderCard = (props) => {
             </div>
             <Show when={showHistory()}>
               <Alert variant='border border-secondary-subtle text-light text-center mt-1 mb-1'>
-                <For each={props.order.statusHistory.reverse()}>
+                <For each={props.order.statusHistory.sort((a, b) => b.date.localeCompare(a.date))}>
                   {(history, i) =>
                     <div class='d-flex align-items-center'>
                       <span class=''>{new Date(history.date).toLocaleString()}</span>

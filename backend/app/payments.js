@@ -1,7 +1,16 @@
 import { paymentsCollection } from './db.js'
 import { getEvePaymentJournal, sendMail } from './eve-api.js'
+import { fulfilWithdrawalRequest, getWithdrawalRequestAmount } from './withdrawals.js'
 
-export const PAYMENT_TYPES = { DEPOSIT: 'deposit', WITHDRAWAL: 'withdrawal', RESERVE: 'reserve', RELEASE: 'release', JOB_COMPLETE: 'job_complete', PLEX_FOR_GOOD: 'plex_for_good' }
+export const PAYMENT_TYPES = {
+  DEPOSIT: 'deposit',
+  WITHDRAWAL_PENDING: 'withdrawal_pending',
+  WITHDRAWAL: 'withdrawal',
+  RESERVE: 'reserve',
+  RELEASE: 'release',
+  JOB_COMPLETE: 'job_complete',
+  PLEX_FOR_GOOD: 'plex_for_good'
+}
 
 const PAYMENT_REASONS = ['deposit', 'withdrawal']
 
@@ -12,7 +21,11 @@ export const updatePaymentsFromCorpJournal = async () => {
   console.log('updatePaymentsFromCorpJournal START', journal)
   const entries = journal
     .filter(j => PAYMENT_REASONS.includes(cleanReason(j.reason.toLowerCase())))
-    .map(j => { return { _id: j.id, date: j.date, characterID: j.first_party_id, type: cleanReason(j.reason.toLowerCase()), amount: j.amount } })
+    .map(j => {
+      const type = cleanReason(j.reason.toLowerCase())
+      const characterID = type === 'deposit' ? j.first_party_id : j.second_party_id
+      return { _id: j.id, date: j.date, characterID, type, amount: j.amount }
+    })
   for (const entry of entries) {
     console.log('entry', entry)
 
@@ -25,11 +38,22 @@ export const updatePaymentsFromCorpJournal = async () => {
     if (result.upsertedCount > 0) {
       console.log('INSERTED')
       // Document was inserted
-      const body = `
+
+      // May be a deposit or withdrawal
+      if (entry.type === 'deposit') {
+        const body = `
 <font size="14" color="#bfffffff">
 Thanks for choosing Jita Anywhere.<br><br>
 We've updated your balance to include your ${cleanReason(entry.type)} of ${entry.amount.toLocaleString()} ISK<br/><br/></font>`.replace(/\n/g, '')
-      sendMail(entry.characterID, 'Jita Anywhere - Deposit ', body)
+        await sendMail(entry.characterID, 'Jita Anywhere - Deposit', body)
+      } else {
+        const body = `
+<font size="14" color="#bfffffff">
+Your withdrawal has been completed.<br><br>
+We've updated your balance to include your ${cleanReason(entry.type)} of ${entry.amount.toLocaleString()} ISK<br/><br/></font>`.replace(/\n/g, '')
+        await sendMail(entry.characterID, 'Jita Anywhere - Withdrawal', body)
+        await fulfilWithdrawalRequest(entry.characterID)
+      }
     }
   }
   //   paymentsCollection
@@ -93,6 +117,7 @@ export const getBalance = async (characterID) => {
   delete balance._id
   // console.log('balance', balance)
 
+  balance.withdrawal = await getWithdrawalRequestAmount(characterID)
   return balance
 }
 export const getAllBalances = async () => {
@@ -126,4 +151,7 @@ export const getAllBalances = async () => {
 }
 export const createPayment = async (reservePayment) => {
   await paymentsCollection.insertOne(reservePayment)
+}
+export const removePendingWithdrawalPayment = async (characterID) => {
+  await paymentsCollection.deleteOne({ characterID, type: PAYMENT_TYPES.WITHDRAWAL_PENDING })
 }
