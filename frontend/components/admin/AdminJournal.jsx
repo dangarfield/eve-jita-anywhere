@@ -6,7 +6,14 @@ import '../common/SimpleTable.css'
 import CountdownTimer from '../common/CountdownTimer'
 
 const AdminJournal = () => {
-  const [journal] = createResource('/api/journal', getAdmin)
+  const fetchJournal = async () => {
+    const journal = await getAdmin('/api/journal')
+    for (const j of journal.journal.data) {
+      j.date = new Date(j.date).toLocaleString()
+    }
+    return journal
+  }
+  const [journal] = createResource(fetchJournal)
 
   const columns = [
     { id: 'id', label: 'Transaction ID' },

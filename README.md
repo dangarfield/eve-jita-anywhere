@@ -12,6 +12,8 @@ flowchart TD
 
 ```
 
+
+
 User Checkout - Complete
 ```mermaid
 flowchart TD
@@ -27,7 +29,8 @@ flowchart TD
 
 
 
-Order fulfilment
+Order fulfilment - Complete (apart from dispute process)
+
 ```mermaid
 flowchart TD
 
@@ -70,6 +73,30 @@ flowchart TD
     c20b -- Dispute --> c24[Dispute process];
 ```
 
+
+
+
+Fund withdrawal, including plex for good - Complete
+
+```mermaid
+flowchart TD
+
+    e1[User] -- Requests withdrawal --> e2[JA Website];
+    e2 -- Create withdraw request --> e3[Status: Pending];
+    e2 -- Notify Admin --> e4[Admin];
+    e4 -- Looks at --> e5[JA Website];
+    e4 -- Opens --> e6[Admin EVE Client];
+
+    e6 -- Transfers funds --> e6;
+    e6 -- Looks at --> e8[JA Website];
+    e8 -- Admin updates status --> e7[Status: Transfer complete];
+    e9[Background task monitor corp journal] -- monitors --> e7;
+    e9 -- Updates status --> e10[Status: Complete];
+```
+
+
+
+
 Dispute process
 ```mermaid
 flowchart TD
@@ -78,15 +105,6 @@ flowchart TD
     
 ```
 
-
-Fund withdrawal, including plex for good
-
-```mermaid
-flowchart TD
-
-    t --> b --> c;
-    
-```
 
 
 Process of orders with no changes (unattractive orders, unresponsive agents, unresponsive users)
