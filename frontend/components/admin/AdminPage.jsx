@@ -41,6 +41,9 @@ const AdminPage = () => {
               <A href='/admin' class='nav-link' activeClass='active' end>App Config</A>
             </li>
             <li role='presentation' class='nav-item'>
+              <A href='/admin/orders' class='nav-link' activeClass='active'>Orders</A>
+            </li>
+            <li role='presentation' class='nav-item'>
               <A href='/admin/journal' class='nav-link' activeClass='active'>Journal</A>
             </li>
             <li role='presentation' class='nav-item'>
@@ -48,6 +51,9 @@ const AdminPage = () => {
             </li>
             <li role='presentation' class='nav-item'>
               <A href='/admin/withdrawal-requests' class='nav-link' activeClass='active'>Withdrawal Requests</A>
+            </li>
+            <li role='presentation' class='nav-item'>
+              <A href='/admin/disputes' class='nav-link' activeClass='active'>Disputes</A>
             </li>
           </ul>
           <Outlet />

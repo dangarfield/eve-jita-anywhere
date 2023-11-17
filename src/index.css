@@ -74,3 +74,6 @@ body {
 .pointer {
     cursor: pointer;
 }
+.pre-line {
+    white-space: pre-line;
+}

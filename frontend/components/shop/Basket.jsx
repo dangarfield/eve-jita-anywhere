@@ -8,7 +8,7 @@ import { useUser } from '../../stores/UserProvider'
 import TopUpInfoModal, { openTopUpInfoModal } from '../common/TopUpInfoModal'
 import Delivery from './Delivery'
 import { get, post } from '../../services/utils'
-import { setContent, openInfoModal } from '../common/InfoModal'
+import { openInfoModal } from '../common/InfoModal'
 import { useNavigate } from '@solidjs/router'
 
 export const calculateBasketTotals = (items, deliveryChargeFromBasket, isRush, rushCharge, userBalanceFromAccount, data) => {
@@ -126,12 +126,13 @@ const Basket = (props) => {
       const res = await post('/api/orders', order, await ensureAccessTokenIsValid())
       console.log('order creation res', res)
       if (res.error) {
-        setContent(
+        openInfoModal(
+          'Error',
           <>
             <p>Something went wrong creating your order:</p>
             <p>{res.error}</p>
-          </>)
-        openInfoModal()
+          </>
+        )
         setConfirmCheckout(false)
         setOrderCreationInProgress(false)
       } else {

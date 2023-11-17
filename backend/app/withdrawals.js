@@ -30,6 +30,7 @@ export const createWithdrawalRequest = async (characterID, amount) => {
 
   return { success: true }
 }
+
 export const fulfilWithdrawalRequest = async (characterID) => {
   await removePendingWithdrawalPayment(characterID)
   await withdrawalsCollection.deleteOne({ _id: characterID })
@@ -43,13 +44,10 @@ export const getAllWithdrawalRequests = async () => {
   }
   return withdrawals
 }
+
 export const updateWithdrawalRequestCompletionState = async (characterID, complete) => {
   console.log('updateWithdrawalRequestCompletionState', characterID, complete)
-  if (complete) {
-    await withdrawalsCollection.updateOne({ _id: characterID }, { $set: { complete } })
-  } else {
-    await withdrawalsCollection.updateOne({ _id: characterID }, { $unset: { complete } })
-  }
+  await withdrawalsCollection.updateOne({ _id: characterID }, complete ? { $set: { complete } } : { $unset: { complete } })
 
   return { success: true }
 }

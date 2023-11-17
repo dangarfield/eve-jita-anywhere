@@ -1,16 +1,17 @@
-import { Alert, Form } from 'solid-bootstrap'
+import { Alert, Badge, Button } from 'solid-bootstrap'
 import { For, Match, Show, Switch, createEffect, createMemo, createResource, createSignal } from 'solid-js'
-import { get, patch } from '../../services/utils'
+import { get, patch, post } from '../../services/utils'
 import { useUser } from '../../stores/UserProvider'
 import Loading from '../common/Loading'
 import OrderCard from '../common/OrderCard'
 import ConfirmButton from '../common/ConfirmButton'
-import { openInfoModal, setContent } from '../common/InfoModal'
+import { openInfoModal } from '../common/InfoModal'
 import OrderFilter from '../common/OrderFilter'
 import { useStaticData } from '../../stores/StaticDataProvider'
 import { getJitaSellOrders } from '../../services/esi'
 import { calculateBasketTotals } from '../shop/Basket'
 import { useNavigate } from '@solidjs/router'
+import DisputeContent from '../common/DisputeContent'
 
 const MyOrdersPage = () => {
   const navigate = useNavigate()
@@ -35,9 +36,13 @@ const MyOrdersPage = () => {
 
   const [orders, { refetch }] = createResource(fetchMyOrders)
   const [filters, setFilters] = createSignal({})
+  const [showDisputes, setShowDisputes] = createSignal(null)
+  const [savingDisputeComments, setSavingDisputeComments] = createSignal(false)
 
   const filteredOrders = createMemo(() => {
-    console.log('UPDATE filteredOrders')
+    console.log('UPDATE filteredOrders', orders())
+    setSavingDisputeComments(false)
+    if (orders() === undefined) return []
     const appliedFilters = filters()
     return orders()?.filter((order) => {
     // Example filter logic, adjust as needed
@@ -46,6 +51,7 @@ const MyOrdersPage = () => {
       return statusFilter && deliveryFilter
     })
   })
+
   createEffect(() => {
     // console.log('MyOrdersPage createEffect', orders())
     const uniqueStatusList = [...new Set(orders()?.map(item => item.status))].sort().map(key => ({ name: key, active: true }))
@@ -61,12 +67,13 @@ const MyOrdersPage = () => {
     const ordersRes = await patch(`/api/orders/${order.orderID}`, { status: 'CANCELLED' }, await ensureAccessTokenIsValid())
     console.log('handleCancelOrderClick res', ordersRes)
     if (ordersRes.error) {
-      setContent(
+      openInfoModal(
+        'Error',
         <>
           <p>Something went wrong amending the order:</p>
           <p>{ordersRes.error}</p>
-        </>)
-      openInfoModal()
+        </>
+      )
     } else {
       refetch()
     }
@@ -100,12 +107,13 @@ const MyOrdersPage = () => {
     const remainingBalance = userBalanceFromAccount + order.totals.total - orderUp.total
     // console.log('remainingBalance', remainingBalance)
     if (remainingBalance < 0) {
-      setContent(
+      openInfoModal(
+        'Error',
         <>
           <p>Something went wrong amending the order:</p>
           <p>Your balance is too low</p>
-        </>)
-      openInfoModal()
+        </>
+      )
       return
     }
     const updateObject = {
@@ -126,35 +134,41 @@ const MyOrdersPage = () => {
     const ordersRes = await patch(`/api/orders/${order.orderID}`, updateObject, await ensureAccessTokenIsValid())
     console.log('handleCancelOrderClick res', ordersRes)
     if (ordersRes.error) {
-      setContent(
+      openInfoModal(
+        'Error',
         <>
           <p>Something went wrong amending the order:</p>
           <p>{ordersRes.error}</p>
-        </>)
-      openInfoModal()
+        </>
+      )
     } else {
       refetch()
     }
   }
+
   const handleDisputeOrderClick = async (order) => {
     console.log('handleDisputeOrderClick', order)
-    setContent({
-      title: 'Dispute process',
-      content: <div role='alert' class='alert alert-border border-info text-info text-center mt-1 fade show'>Dispute process coming soon</div>
-    })
-    openInfoModal()
+    showDisputes() === order.orderID ? setShowDisputes(null) : setShowDisputes(order.orderID)
+  }
+  const handleAddDisputeCallback = async (order, disputeComment) => {
+    console.log('handleAddDisputeCallback', order, disputeComment)
+    const comment = { user: 'user', comment: disputeComment }
+    setSavingDisputeComments(true)
+    await post(`/api/orders/${order.orderID}/dispute-comments`, comment, await ensureAccessTokenIsValid())
+    refetch()
   }
   const handleCompleteOrderClick = async (order) => {
     console.log('handleCompleteOrderClick', order)
     const ordersRes = await patch(`/api/orders/${order.orderID}`, { status: 'COMPLETE' }, await ensureAccessTokenIsValid())
     console.log('handleCompleteOrderClick res', ordersRes)
     if (ordersRes.error) {
-      setContent(
+      openInfoModal(
+        'Error',
         <>
           <p>Something went wrong amending the order:</p>
           <p>{ordersRes.error}</p>
-        </>)
-      openInfoModal()
+        </>
+      )
     } else {
       refetch()
     }
@@ -206,9 +220,20 @@ const MyOrdersPage = () => {
                             <hr />
                             <div class='px-3'>
                               <div class='d-flex align-items-center gap-3'>
-                                <ConfirmButton variant='outline-danger w-100' onClick={() => handleDisputeOrderClick(order)}>Dispute</ConfirmButton>
+                                <Button variant='outline-danger w-100 position-relative' onClick={() => handleDisputeOrderClick(order)}>
+                                  {showDisputes() === order.orderID ? 'Hide ' : 'Show '}
+                                  Disputes
+                                  <Show when={order.disputes && order.disputes.length > 0}>
+                                    <span class='position-absolute top-75 start-100 translate-middle badge rounded-pill bg-danger'>{order.disputes.length}</span>
+                                  </Show>
+                                </Button>
                                 <ConfirmButton variant='outline-primary w-100' onClick={() => handleCompleteOrderClick(order)}>Complete Order</ConfirmButton>
                               </div>
+                              <Show when={showDisputes() === order.orderID}>
+                                <div class='mt-3'>
+                                  <DisputeContent disputes={order.disputes} savingDisputeComments={savingDisputeComments} handleAddDisputeCallback={disputeComment => handleAddDisputeCallback(order, disputeComment)} />
+                                </div>
+                              </Show>
                             </div>
                           </>
                         </Match>

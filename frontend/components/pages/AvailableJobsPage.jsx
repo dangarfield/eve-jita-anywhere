@@ -5,7 +5,7 @@ import { useUser } from '../../stores/UserProvider'
 import Loading from '../common/Loading'
 import OrderCard from '../common/OrderCard'
 import ConfirmButton from '../common/ConfirmButton'
-import { openInfoModal, setContent } from '../common/InfoModal'
+import { openInfoModal } from '../common/InfoModal'
 import OrderFilter from '../common/OrderFilter'
 import { useNavigate } from '@solidjs/router'
 
@@ -51,12 +51,12 @@ const AvailableJobsPage = () => {
     const ordersRes = await patch(`/api/orders/${order.orderID}`, { status: 'IN_PROGRESS' }, await ensureAccessTokenIsValid())
     console.log('handleClaimOrderClick res', ordersRes)
     if (ordersRes.error) {
-      setContent(
+      openInfoModal(
+        'Error',
         <>
           <p>Something went wrong amending the order:</p>
           <p>{ordersRes.error}</p>
         </>)
-      openInfoModal()
     } else {
       navigate('/my-jobs')
     }

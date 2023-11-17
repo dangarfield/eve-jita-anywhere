@@ -206,6 +206,16 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
       return { success: true }
     }
   }
-
   return { error: 'Unknown action' }
+}
+export const addDisputeComment = async (characterID, orderID, comment) => {
+  console.log('addDisputeComment', characterID, orderID, comment)
+  const filter = { _id: orderID, $or: [{ characterID }, { agent: characterID }] }
+  const update = { $push: { disputes: comment } }
+  const result = await ordersCollection.updateOne(filter, update)
+  if (result.modifiedCount === 0 && result.upsertedCount === 0) {
+    return { success: false, error: 'Invalid order or character' }
+  }
+  // TODO - Somehow notify the agent, user and admin that there has been an update on the dispute
+  return { success: true }
 }
