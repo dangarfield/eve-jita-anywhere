@@ -62,51 +62,56 @@ const AvailableJobsPage = () => {
     }
   }
   return (
+    <>
 
-    <Show when={filteredOrders()} fallback={<div class='row'><Loading /></div>}>
+      <Show when={orders() && orders().length === 0}>
+        <div class='col-6'><Alert variant='border border-light text-center mt-1'>No orders</Alert></div>
+      </Show>
+      <Show when={filteredOrders()} fallback={<div class='row'><Loading /></div>}>
 
-      <div class='row'>
-        <div class='col-2'>
-          <Show when={orders().length > 0}>
-            <OrderFilter filters={filters} setFilters={setFilters} />
-          </Show>
-        </div>
-        <div class='col-10'>
-          <div class='row'>
-            <For each={filteredOrders()} fallback={<div class='col-6'><Alert variant='border border-light text-center mt-1'>No orders</Alert></div>}>
-              {(order) =>
-                <div class='col-3'>
-                  <OrderCard
-                    order={order}
-                    actions={
+        <div class='row'>
+          <div class='col-2'>
+            <Show when={orders().length > 0}>
+              <OrderFilter filters={filters} setFilters={setFilters} />
+            </Show>
+          </div>
+          <div class='col-10'>
+            <div class='row'>
+              <For each={filteredOrders()}>
+                {(order) =>
+                  <div class='col-3 mb-4'>
+                    <OrderCard
+                      order={order}
+                      actions={
 
-                      <Switch>
-                        <Match when={order.status === 'AVAILABLE'}>
-                          <>
-                            <hr />
-                            <div class='px-3'>
-                              <div class='d-flex align-items-center gap-3'>
-                                <Show
-                                  when={isLoggedIn()} fallback={
-                                    <Button variant='outline-primary w-100' onClick={beginLoginProcess}>Login to claim order</Button>
+                        <Switch>
+                          <Match when={order.status === 'AVAILABLE'}>
+                            <>
+                              <hr />
+                              <div class='px-3'>
+                                <div class='d-flex align-items-center gap-3'>
+                                  <Show
+                                    when={isLoggedIn()} fallback={
+                                      <Button variant='outline-primary w-100' onClick={beginLoginProcess}>Login to claim order</Button>
                                   }
-                                >
-                                  <ConfirmButton variant='outline-primary w-100' onClick={() => handleClaimOrderClick(order)}>Claim Order</ConfirmButton>
-                                </Show>
+                                  >
+                                    <ConfirmButton variant='outline-primary w-100' onClick={() => handleClaimOrderClick(order)}>Claim Order</ConfirmButton>
+                                  </Show>
+                                </div>
                               </div>
-                            </div>
-                          </>
-                        </Match>
-                      </Switch>
+                            </>
+                          </Match>
+                        </Switch>
 
                       }
-                  />
-                </div>}
-            </For>
+                    />
+                  </div>}
+              </For>
+            </div>
           </div>
         </div>
-      </div>
-    </Show>
+      </Show>
+    </>
   )
 }
 export default AvailableJobsPage

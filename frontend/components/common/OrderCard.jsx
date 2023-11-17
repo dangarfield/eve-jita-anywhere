@@ -6,7 +6,7 @@ import { calculateBasketTotals } from '../shop/Basket'
 import { useUser } from '../../stores/UserProvider'
 import PriceDiff from './PriceDiff'
 import './OrderCard.css'
-import { getJitaSellOrders, openMarketWindow } from '../../services/esi'
+import { addCharacterNames, getJitaSellOrders, openMarketWindow } from '../../services/esi'
 import { copyTextToClipboard } from '../../services/utils'
 import toast from 'solid-toast'
 
@@ -27,12 +27,22 @@ const OrderCard = (props) => {
   const { userBalance } = props
   const [orderUp, setOrderUp] = createSignal(null)
   const [showHistory, setShowHistory] = createSignal(false)
+  const [agentName, setAgentName] = createSignal('')
 
   const isPriceIncreaseOrder = createMemo(() => {
-    return props.order.status === 'PRICE_INCREASE'
+    return props.order.status === 'PRICE_INCREASE' && userBalance
   })
   createEffect(async () => {
-    if (props.order.status === 'PRICE_INCREASE') {
+    console.log('props.order.agent', props.order.agent)
+    if (props.order.agent) {
+      const nameObj = { characterID: props.order.agent }
+      await addCharacterNames([nameObj])
+      console.log('agent name', props.order.agent, nameObj)
+      setAgentName(nameObj.characterName)
+    }
+  })
+  createEffect(async () => {
+    if (props.order.status === 'PRICE_INCREASE' && userBalance) {
       const items = JSON.parse(JSON.stringify(props.order.items))
       items[0].price = 200
 
@@ -126,6 +136,25 @@ const OrderCard = (props) => {
               <span class={isPriceIncreaseOrder() ? 'text-end col-4' : ''}>{(props.order.totals.deliveryFee + props.order.totals.agentFee).toLocaleString()} ISK</span>
             </div>
           </div>
+          <Show when={props.showUsers}>
+            <hr />
+
+            <div class='d-flex align-items-center px-3'>
+              <span class='me-auto'>User</span>
+              <span class=''>{props.order.characterName}</span>
+            </div>
+
+            <Show when={props.order.agent}>
+              <div class='d-flex align-items-center px-3'>
+                <span class='me-auto'>Agent</span>
+                <span class=''>
+                  <Show when={agentName() !== ''} fallback={<Spinner animation='border' size='sm' />}>
+                    {agentName()}
+                  </Show>
+                </span>
+              </div>
+            </Show>
+          </Show>
           <hr />
           <div class='px-3'>
             <div class='d-flex align-items-center'>

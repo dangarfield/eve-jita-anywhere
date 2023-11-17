@@ -10,6 +10,7 @@ import SSOReturnPage from './components/pages/SSOReturnPage'
 import MyOrdersPage from './components/pages/MyOrdersPage'
 import NotFoundPage from './components/pages/NotFoundPage'
 import AdminPage from './components/admin/AdminPage'
+import AdminOrders from './components/admin/AdminOrders'
 import AdminConfigForms from './components/admin/AdminConfigForms'
 import AdminJournal from './components/admin/AdminJournal'
 import AdminBalances from './components/admin/AdminBalances'
@@ -49,6 +50,7 @@ function App () {
                 <Route path='/sso-return' component={SSOReturnPage} />
                 <Route path='/admin' component={AdminPage}>
                   <Route path='/' component={AdminConfigForms} />
+                  <Route path='/orders' component={AdminOrders} />
                   <Route path='/journal' component={AdminJournal} />
                   <Route path='/balances' component={AdminBalances} />
                   <Route path='/withdrawal-requests' component={AdminWithdrawalRequests} />

@@ -49,6 +49,15 @@ export const createOrder = async (characterID, order) => {
 
   return { success: true }
 }
+export const getAllOrders = async () => {
+  const orders = await ordersCollection.find().sort({ creationDate: -1 }).toArray()
+  for (const order of orders) {
+    order.orderID = order._id
+    delete order._id
+  }
+  // console.log('orders', orders, characterID)
+  return orders
+}
 export const getOrdersForCharacter = async (characterID) => {
   const orders = await ordersCollection.find({ characterID }).sort({ creationDate: -1 }).toArray()
   for (const order of orders) {
@@ -77,17 +86,31 @@ export const getAgentOrders = async (characterID) => {
   console.log('getAgentOrders', orders, characterID)
   return orders
 }
-
-export const modifyOrder = async (characterID, orderID, updateCommand) => {
+export const modifyOrderAdmin = async (orderID, updateCommand) => {
+  return modifyOrder(orderID, updateCommand, null, true)
+}
+export const modifyOrderUser = async (orderID, updateCommand, characterID) => {
+  return modifyOrder(orderID, updateCommand, characterID, false)
+}
+const modifyOrder = async (orderID, updateCommand, characterID, isAdmin) => {
   console.log('modifyOrder', characterID, orderID, updateCommand)
   const order = await ordersCollection.findOne({ _id: orderID })
+  if (!order) return { error: 'Invalid order' }
   // console.log('modifyOrder', order)
   const nowDate = new Date()
   if (updateCommand.status) {
     // Change status -> AVAILABLE to CANCELLED
+    // Change status -> PRICE_INCREASE to CANCELLED
+    // Change status -> IN_PROGRESS to CANCELLED (admin)
+    // Change status -> DELIVERED to CANCELLED (admin)
     if (
-      (order.status === ORDER_STATUS.AVAILABLE || order.status === ORDER_STATUS.PRICE_INCREASE) &&
-       updateCommand.status === ORDER_STATUS.CANCELLED && order.characterID === characterID
+      updateCommand.status === ORDER_STATUS.CANCELLED &&
+      (
+        (isAdmin && [ORDER_STATUS.AVAILABLE, ORDER_STATUS.PRICE_INCREASE, ORDER_STATUS.IN_PROGRESS, ORDER_STATUS.DELIVERED].includes(order.status)) ||
+        (order.characterID === characterID && [ORDER_STATUS.AVAILABLE, ORDER_STATUS.PRICE_INCREASE].includes(order.status))
+      )
+    // (order.status === ORDER_STATUS.AVAILABLE || order.status === ORDER_STATUS.PRICE_INCREASE || order.status === ORDER_STATUS.IN_PROGRESS || order.status === ORDER_STATUS.DELIVERED) &&
+    //  updateCommand.status === ORDER_STATUS.CANCELLED && (order.characterID === characterID || isAdmin)
     ) {
       await ordersCollection.updateOne(
         { _id: order._id },
@@ -96,7 +119,7 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
       const payment = {
         _id: nanoid(10),
         amount: order.totals.total,
-        characterID,
+        characterID: order.characterID,
         date: nowDate,
         type: PAYMENT_TYPES.RELEASE,
         relatedOrderID: order._id
@@ -123,6 +146,15 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
       // TODO - Somehow notify the user that this is now price_increase
       return { success: true }
     }
+    // Change status -> IN_PROGRESS to AVAILABLE
+    if (order.status === ORDER_STATUS.IN_PROGRESS && updateCommand.status === ORDER_STATUS.AVAILABLE && isAdmin) {
+      await ordersCollection.updateOne(
+        { _id: order._id },
+        { $set: { status: updateCommand.status }, $unset: { agent: '' }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
+      )
+      // TODO - Somehow notify the user that this is now price_increase
+      return { success: true }
+    }
     // Change status -> PRICE_INCREASE to AVAILABLE
     if (order.status === ORDER_STATUS.PRICE_INCREASE && updateCommand.status === ORDER_STATUS.AVAILABLE && order.characterID === characterID && updateCommand.items && updateCommand.totals) {
       const { balance } = await getBalance(characterID)
@@ -142,6 +174,7 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
             items: updateCommand.items,
             totals: updateCommand.totals
           },
+          $unset: { disputes: '' },
           $push: { statusHistory: { status: updateCommand.status, date: nowDate } }
         }
       )
@@ -169,7 +202,7 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
       return { success: true }
     }
     // Change status -> IN_PROGRESS to DELIVERED
-    if (order.status === ORDER_STATUS.IN_PROGRESS && updateCommand.status === ORDER_STATUS.DELIVERED && order.agent === characterID) {
+    if (order.status === ORDER_STATUS.IN_PROGRESS && updateCommand.status === ORDER_STATUS.DELIVERED && (order.agent === characterID || isAdmin)) {
       await ordersCollection.updateOne(
         { _id: order._id },
         { $set: { status: updateCommand.status }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
@@ -178,7 +211,7 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
       return { success: true }
     }
     // Change status -> DELIVERED to COMPLETE
-    if (order.status === ORDER_STATUS.DELIVERED && updateCommand.status === ORDER_STATUS.COMPLETE && order.characterID === characterID) {
+    if (order.status === ORDER_STATUS.DELIVERED && updateCommand.status === ORDER_STATUS.COMPLETE && (order.characterID === characterID || isAdmin)) {
       await ordersCollection.updateOne(
         { _id: order._id },
         { $set: { status: updateCommand.status }, $push: { statusHistory: { status: updateCommand.status, date: nowDate } } }
@@ -211,6 +244,17 @@ export const modifyOrder = async (characterID, orderID, updateCommand) => {
 export const addDisputeComment = async (characterID, orderID, comment) => {
   console.log('addDisputeComment', characterID, orderID, comment)
   const filter = { _id: orderID, $or: [{ characterID }, { agent: characterID }] }
+  const update = { $push: { disputes: comment } }
+  const result = await ordersCollection.updateOne(filter, update)
+  if (result.modifiedCount === 0 && result.upsertedCount === 0) {
+    return { success: false, error: 'Invalid order or character' }
+  }
+  // TODO - Somehow notify the agent, user and admin that there has been an update on the dispute
+  return { success: true }
+}
+export const addDisputeCommentAdmin = async (orderID, comment) => {
+  console.log('addDisputeCommentAdmin', orderID, comment)
+  const filter = { _id: orderID }
   const update = { $push: { disputes: comment } }
   const result = await ordersCollection.updateOne(filter, update)
   if (result.modifiedCount === 0 && result.upsertedCount === 0) {

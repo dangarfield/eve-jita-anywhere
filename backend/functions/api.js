@@ -4,7 +4,7 @@ import { ssoAdminLoginStart, ssoAdminReturn } from '../app/sso.js'
 import { getAppAuth, getAppConfig, setAppConfig } from '../app/config.js'
 import { getEvePaymentJournal } from '../app/eve-api.js'
 import { getAllBalances, getBalance, updatePaymentsFromCorpJournal } from '../app/payments.js'
-import { addDisputeComment, createOrder, getAgentOrders, getAvailableOrders, getOrdersForCharacter, modifyOrder } from '../app/orders.js'
+import { addDisputeComment, addDisputeCommentAdmin, createOrder, getAgentOrders, getAllOrders, getAvailableOrders, getOrdersForCharacter, modifyOrderAdmin, modifyOrderUser } from '../app/orders.js'
 import { createWithdrawalRequest, getAllWithdrawalRequests, updateWithdrawalRequestCompletionState } from '../app/withdrawals.js'
 
 const app = API()
@@ -36,6 +36,10 @@ app.patch('/api/withdrawals', verifyAdmin, async (req, res) => {
 })
 
 // Orders
+app.get('/api/orders', verifyAdmin, async (req, res) => {
+  console.log('/api/orders')
+  res.json(await getAllOrders())
+})
 app.get('/api/orders/@me', verifyToken, async (req, res) => {
   console.log('/api/orders/@me', 'auth', req.auth.characterID, req.auth.characterName)
   res.json(await getOrdersForCharacter(parseInt(req.auth.characterID)))
@@ -54,11 +58,19 @@ app.post('/api/orders', verifyToken, async (req, res) => {
 })
 app.patch('/api/orders/:orderID', verifyToken, async (req, res) => {
   console.log('/api/orders/:orderID', req.params.orderID, 'auth', req.auth.characterID, req.auth.characterName)
-  res.json(await modifyOrder(req.auth.characterID, req.params.orderID, req.body))
+  res.json(await modifyOrderUser(req.params.orderID, req.body, req.auth.characterID))
+})
+app.patch('/api/orders/:orderID/admin', verifyAdmin, async (req, res) => {
+  console.log('/api/orders/:orderID/admin', req.params.orderID)
+  res.json(await modifyOrderAdmin(req.params.orderID, req.body))
 })
 app.post('/api/orders/:orderID/dispute-comments', verifyToken, async (req, res) => {
   console.log('/api/orders/:orderID/dispute-comments', req.params.orderID, 'auth', req.auth.characterID, req.auth.characterName)
   res.json(await addDisputeComment(parseInt(req.auth.characterID), req.params.orderID, req.body))
+})
+app.post('/api/orders/:orderID/dispute-comments-admin', verifyAdmin, async (req, res) => {
+  console.log('/api/orders/:orderID/dispute-comments-admin', req.params.orderID)
+  res.json(await addDisputeCommentAdmin(req.params.orderID, req.body))
 })
 
 // App Config

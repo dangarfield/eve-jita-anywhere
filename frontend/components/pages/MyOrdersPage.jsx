@@ -45,7 +45,6 @@ const MyOrdersPage = () => {
     if (orders() === undefined) return []
     const appliedFilters = filters()
     return orders()?.filter((order) => {
-    // Example filter logic, adjust as needed
       const statusFilter = appliedFilters.status.find((status) => status.name === order.status && status.active)
       const deliveryFilter = appliedFilters.delivery.find((delivery) => (order.delivery === undefined ? 'None' : (order.delivery.isRush ? 'Rush' : 'Normal')) === delivery.name && delivery.active)
       return statusFilter && deliveryFilter
@@ -174,79 +173,67 @@ const MyOrdersPage = () => {
     }
   }
   return (
+    <>
+      <Show when={orders() && orders().length === 0}>
+        <div class='col-6'><Alert variant='border border-light text-center mt-1'>No orders</Alert></div>
+      </Show>
+      <Show when={filteredOrders() && staticData()} fallback={<div class='row'><Loading /></div>}>
 
-    <Show when={filteredOrders() && staticData()} fallback={<div class='row'><Loading /></div>}>
-
-      <div class='row'>
-        <div class='col-2'>
-          <Show when={orders()}>
-            <OrderFilter filters={filters} setFilters={setFilters} />
-          </Show>
-        </div>
-        <div class='col-10'>
-          <div class='row'>
-            <For each={filteredOrders()} fallback={<div class='col-6'><Alert variant='border border-light text-center mt-1'>No orders</Alert></div>}>
-              {(order) =>
-                <div class={order.status === 'PRICE_INCREASE' ? 'col-6' : 'col-3'}>
-                  <OrderCard
-                    order={order}
-                    userBalance={userBalance}
-                    actions={
-
-                      <Switch>
-                        <Match when={order.status === 'AVAILABLE'}>
-                          <>
-                            <hr />
-                            <div class='px-3'>
-                              <div class='d-flex align-items-center gap-3'>
-                                <ConfirmButton variant='outline-danger w-100' onClick={() => handleCancelOrderClick(order)}>Cancel Order</ConfirmButton>
-                              </div>
+        <div class='row'>
+          <div class='col-2'>
+            <Show when={orders()}>
+              <OrderFilter filters={filters} setFilters={setFilters} />
+            </Show>
+          </div>
+          <div class='col-10'>
+            <div class='row'>
+              <For each={filteredOrders()}>
+                {(order) =>
+                  <div class={order.status === 'PRICE_INCREASE' ? 'col-6 mb-4' : 'col-3 mb-4'}>
+                    <OrderCard
+                      order={order}
+                      userBalance={userBalance}
+                      actions={
+                        <>
+                          <hr />
+                          <div class='px-3'>
+                            <div class='d-flex align-items-center gap-3'>
+                              <Button variant='outline-danger w-100 position-relative' onClick={() => handleDisputeOrderClick(order)}>
+                                {showDisputes() === order.orderID ? 'Hide ' : 'Show '}
+                                Disputes
+                                <Show when={order.disputes && order.disputes.length > 0}>
+                                  <span class='position-absolute top-75 start-100 translate-middle badge rounded-pill bg-danger'>{order.disputes.length}</span>
+                                </Show>
+                              </Button>
+                              <Switch>
+                                <Match when={order.status === 'AVAILABLE'}>
+                                  <ConfirmButton variant='outline-danger w-100' onClick={() => handleCancelOrderClick(order)}>Cancel Order</ConfirmButton>
+                                </Match>
+                                <Match when={order.status === 'PRICE_INCREASE'}>
+                                  <ConfirmButton variant='outline-danger w-100' onClick={() => handleCancelOrderClick(order)}>Cancel Order</ConfirmButton>
+                                  <ConfirmButton variant='outline-primary w-100' onClick={() => handleUpdatePricesOrderClick(order)}>Accept Updated Prices</ConfirmButton>
+                                </Match>
+                                <Match when={order.status === 'DELIVERED'}>
+                                  <ConfirmButton variant='outline-primary w-100' onClick={() => handleCompleteOrderClick(order)}>Complete Order</ConfirmButton>
+                                </Match>
+                              </Switch>
                             </div>
-                          </>
-                        </Match>
-                        <Match when={order.status === 'PRICE_INCREASE'}>
-                          <>
-                            <hr />
-                            <div class='px-3'>
-                              <div class='d-flex align-items-center gap-3'>
-                                <ConfirmButton variant='outline-danger w-100' onClick={() => handleCancelOrderClick(order)}>Cancel Order</ConfirmButton>
-                                <ConfirmButton variant='outline-primary w-100' onClick={() => handleUpdatePricesOrderClick(order)}>Accept Updated Prices</ConfirmButton>
+                            <Show when={showDisputes() === order.orderID}>
+                              <div class='mt-3'>
+                                <DisputeContent disputes={order.disputes} savingDisputeComments={savingDisputeComments} handleAddDisputeCallback={disputeComment => handleAddDisputeCallback(order, disputeComment)} />
                               </div>
-                            </div>
-                          </>
-                        </Match>
-                        <Match when={order.status === 'DELIVERED'}>
-                          <>
-                            <hr />
-                            <div class='px-3'>
-                              <div class='d-flex align-items-center gap-3'>
-                                <Button variant='outline-danger w-100 position-relative' onClick={() => handleDisputeOrderClick(order)}>
-                                  {showDisputes() === order.orderID ? 'Hide ' : 'Show '}
-                                  Disputes
-                                  <Show when={order.disputes && order.disputes.length > 0}>
-                                    <span class='position-absolute top-75 start-100 translate-middle badge rounded-pill bg-danger'>{order.disputes.length}</span>
-                                  </Show>
-                                </Button>
-                                <ConfirmButton variant='outline-primary w-100' onClick={() => handleCompleteOrderClick(order)}>Complete Order</ConfirmButton>
-                              </div>
-                              <Show when={showDisputes() === order.orderID}>
-                                <div class='mt-3'>
-                                  <DisputeContent disputes={order.disputes} savingDisputeComments={savingDisputeComments} handleAddDisputeCallback={disputeComment => handleAddDisputeCallback(order, disputeComment)} />
-                                </div>
-                              </Show>
-                            </div>
-                          </>
-                        </Match>
-                      </Switch>
-
+                            </Show>
+                          </div>
+                        </>
                       }
-                  />
-                </div>}
-            </For>
+                    />
+                  </div>}
+              </For>
+            </div>
           </div>
         </div>
-      </div>
-    </Show>
+      </Show>
+    </>
   )
 }
 export default MyOrdersPage
