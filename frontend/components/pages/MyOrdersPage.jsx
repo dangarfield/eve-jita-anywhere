@@ -181,7 +181,7 @@ const MyOrdersPage = () => {
 
         <div class='row'>
           <div class='col-2'>
-            <Show when={orders()}>
+            <Show when={orders() && orders().length > 0}>
               <OrderFilter filters={filters} setFilters={setFilters} />
             </Show>
           </div>
