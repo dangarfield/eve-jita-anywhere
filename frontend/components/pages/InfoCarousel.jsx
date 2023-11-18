@@ -1,6 +1,6 @@
 import anime from 'animejs'
 import { createEffect, onCleanup } from 'solid-js'
-import './InfoAnim.css'
+import './InfoCarousel.css'
 
 // https://codepen.io/pasqualevitiello/pen/wZrbEL
 
@@ -100,11 +100,12 @@ const InfoCarousel = ({ sliderData }) => {
       <div class='container gx-0'>
         <div class='hero-inner rowZZ'>
           <div class='hero-copy colZZ'>
-            <h1 class='mt-0'>{sliderData().title}</h1>
+            <h1 class='mt-0 mb-5'>{sliderData().title}</h1>
+            <div class='divider bg-primary mb-5' />
             {sliderData().content}
           </div>
           <div class='hero-figure anime-element colZZ'>
-            <svg class='placeholder' width='550' height='400' viewBox='0 0 550 400'>
+            <svg class='placeholderZZ' width='550' height='400' viewBox='0 0 550 400'>
               <rect width='550' height='400' style='fill:#212529;' />
             </svg>
             <div class='hero-figure-box hero-figure-box-01' data-rotation='45deg' />

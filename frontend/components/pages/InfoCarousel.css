@@ -204,9 +204,9 @@
         align-items:center;
     }
     .hero-copy{
-        padding-right:64px;
+        /* padding-right:64px; */
         min-width:552px;
-        width:552px;
+        /* width:552px; */
     }
     .hero-cta{
         margin:0;
@@ -220,4 +220,9 @@
     .hero-figure svg{
         width:auto;
     }
+}
+.divider {
+    width: 150px;
+    height: 2px;
+    background-color: #ba1f7e;
 }

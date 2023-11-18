@@ -6,47 +6,47 @@ import InfoCarousel from './InfoCarousel'
 const InfoPage = () => {
   const slides = [
     {
-      title: 'Info',
+      title: 'Buy EVE goods away from your desk',
       content:
   <>
-    <p class='hero-paragraph'><i class='bi bi-person-fill' /> Buy and get items delivered in EVE online without logging in!</p>
-    <p class='hero-paragraph'><i class='bi bi-headset' /> Get paid to be a personal shopper</p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Buy and get items delivered in EVE online without logging in!</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Get paid to be a personal shopper</span></p>
   </>,
       image: 'image-info'
     },
     {
-      title: 'Deposit',
+      title: 'Add a deposit to secure your purchases',
       content:
   <>
-    <p class='hero-paragraph'><i class='bi bi-person-fill' /> Buy and get items delivered in EVE online without logging in!</p>
-    <p class='hero-paragraph'><i class='bi bi-headset' /> Get paid to be a personal shopper</p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>We have a proven track record. <a href='#faq'>Why you can trust us</a></span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Agents have certainty in payment</span></p>
   </>,
       image: 'image-deposit'
     },
     {
-      title: 'Browse',
+      title: 'Jita Prices accurate to 5 mins',
       content:
   <>
-    <p class='hero-paragraph'><i class='bi bi-person-fill' /> Buy and get items delivered in EVE online without logging in!</p>
-    <p class='hero-paragraph'><i class='bi bi-headset' /> Get paid to be a personal shopper</p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>You only pay what you agree</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Accurate prices mean less wasted time</span></p>
   </>,
       image: 'image-browse'
     },
     {
-      title: 'Checkout',
+      title: 'Checkout without opening the client',
       content:
   <>
-    <p class='hero-paragraph'><i class='bi bi-person-fill' /> Buy and get items delivered in EVE online without logging in!</p>
-    <p class='hero-paragraph'><i class='bi bi-headset' /> Get paid to be a personal shopper</p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>No EVE client? No problem. Buy from your mobile</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Get notified the instant an order is requested</span></p>
   </>,
       image: 'image-checkout'
     },
     {
-      title: 'Jobs',
+      title: 'Jobs come to you',
       content:
   <>
-    <p class='hero-paragraph'><i class='bi bi-person-fill' /> Buy and get items delivered in EVE online without logging in!</p>
-    <p class='hero-paragraph'><i class='bi bi-headset' /> Get paid to be a personal shopper</p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Select which jobs your want to take</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Sit back and relax, your goods will come to you</span></p>
   </>,
       image: 'image-jobs'
     },
@@ -54,17 +54,17 @@ const InfoPage = () => {
       title: 'Purchase',
       content:
   <>
-    <p class='hero-paragraph'><i class='bi bi-person-fill' /> Buy and get items delivered in EVE online without logging in!</p>
-    <p class='hero-paragraph'><i class='bi bi-headset' /> Get paid to be a personal shopper</p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Sell your stockpiled goods at Jita prices</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Forget about spending time creating hauling contracts</span></p>
   </>,
       image: 'image-purchase'
     },
     {
-      title: 'Profit',
+      title: 'Gimme that ISK',
       content:
   <>
-    <p class='hero-paragraph'><i class='bi bi-person-fill' /> Buy and get items delivered in EVE online without logging in!</p>
-    <p class='hero-paragraph'><i class='bi bi-headset' /> Get paid to be a personal shopper</p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Personal shopper: A new career in the EVE universe</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Play with game wherever you are</span></p>
   </>,
       image: 'image-profit'
     }]
@@ -134,7 +134,7 @@ const InfoPage = () => {
               setSlide={setSlide}
               slideID={1}
             >
-              Deposit ISK
+              <b>User:</b> Deposit ISK
             </ProgressButton>
           </div>
           <div class='col'>
@@ -145,7 +145,7 @@ const InfoPage = () => {
               setSlide={setSlide}
               slideID={2}
             >
-              Browse Jita Offline Store
+              <b>User:</b> Browse Jita Offline Store
             </ProgressButton>
           </div>
           <div class='col'>
@@ -156,7 +156,7 @@ const InfoPage = () => {
               setSlide={setSlide}
               slideID={3}
             >
-              Checkout
+              <b>User:</b> Checkout
             </ProgressButton>
           </div>
         </div>
@@ -176,7 +176,7 @@ const InfoPage = () => {
               slideID={4}
               variant='top'
             >
-              View available jobs
+              <b>Agent:</b> View available jobs
             </ProgressButton>
           </div>
           <div class='col'>
@@ -188,7 +188,7 @@ const InfoPage = () => {
               slideID={5}
               variant='top'
             >
-              Purchase and deliver
+              <b>Agent:</b> Purchase and deliver
             </ProgressButton>
           </div>
           <div class='col'>
@@ -200,7 +200,7 @@ const InfoPage = () => {
               slideID={6}
               variant='top'
             >
-              Profit
+              <b>Agent:</b> Profit
             </ProgressButton>
           </div>
         </div>
@@ -248,6 +248,13 @@ const InfoPage = () => {
                 <p class='text-body-secondary'>Paragraph of text beneath the heading to explain the heading.</p>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div class='container gx-0'>
+        <div class='row'>
+          <div class='col'>
+            <h5>TODO - FAQ - Why you can trust us</h5>
           </div>
         </div>
       </div>
