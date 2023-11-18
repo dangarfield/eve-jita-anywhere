@@ -41,13 +41,13 @@ const MyBalancePage = () => {
 
   return (
     <div class='row'>
-      <div class='col-6'>
+      <div class='col-6 mt-3'>
         <h3>Your balance</h3>
         <Show when={userBalance()} fallback={<Loading />}>
           <BalanceList userBalance={userBalance()} />
         </Show>
       </div>
-      <div class='col-4'>
+      <div class='col-4 mt-3'>
         <h3>How To Top Up Your Balance</h3>
         {topUpInfoText(staticData)}
 

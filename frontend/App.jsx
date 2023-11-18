@@ -29,17 +29,14 @@ function App () {
         <UserProvider>
           <Router>
             <div class='container-fluid'>
-              <div class='row'>
+              <div class='row border-bottom'>
                 <div class='col'>
                   <Header />
                 </div>
               </div>
 
               <Routes>
-                {/* <Route path='/' component={HomePage} /> */}
-                <Route path='/' element={<Navigate href='/shop' />} />
-
-                <Route path='/info' component={InfoPage} />
+                <Route path='/' component={InfoPage} />
                 <Route path='/shop' component={ShopPage} />
                 <Route path='/my-balance' component={MyBalancePage} />
                 <Route path='/my-orders' component={MyOrdersPage} />

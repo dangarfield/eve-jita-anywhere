@@ -24,7 +24,7 @@ const AdminPage = () => {
   }
   return (
     <div class='row'>
-      <div class='col'>
+      <div class='col mt-3'>
         <Show
           when={password()} fallback={
             <Form onSubmit={handleEnterPassword}>

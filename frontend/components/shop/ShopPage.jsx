@@ -31,13 +31,13 @@ const ShopPage = () => {
     <Show when={staticData()} fallback={<Loading />}>
       <div>
         <div class='row'>
-          <div class='col-md-3'>
+          <div class='col-md-3 mt-3'>
             <TypeBrowserSection setSelectedType={setSelectedType} favourites={favourites} toggleFavourites={toggleFavourites} />
           </div>
-          <div class='col-md-6'>
+          <div class='col-md-6 mt-3'>
             <TypeDetailsSection selectedType={selectedType} favourites={favourites} toggleFavourites={toggleFavourites} />
           </div>
-          <div class='col-md-3'>
+          <div class='col-md-3 mt-3'>
             <Basket setSelectedType={setSelectedType} />
           </div>
         </div>

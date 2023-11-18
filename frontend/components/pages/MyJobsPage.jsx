@@ -104,12 +104,12 @@ const MyJobsPage = () => {
       <Show when={filteredOrders()}>
 
         <div class='row'>
-          <div class='col-2'>
+          <div class='col-2 mt-3'>
             <Show when={orders() && orders().length > 0}>
               <OrderFilter filters={filters} setFilters={setFilters} />
             </Show>
           </div>
-          <div class='col-10'>
+          <div class='col-10 mt-3'>
             <div class='row'>
               <For each={filteredOrders()}>
                 {(order) =>

@@ -19,7 +19,6 @@ const Header = () => {
         <Navbar.Toggle aria-controls='responsive-navbar-nav' />
         <Navbar.Collapse id='responsive-navbar-nav'>
           <Nav class='me-auto'>
-            <A href='/info' class='nav-link' activeClass='active'>Info</A>
             <A href='/shop' class='nav-link' activeClass='active'>Shop</A>
             <Show when={isLoggedIn()}>
               <A href='/my-balance' class='nav-link' activeClass='active'>My Balance</A>
