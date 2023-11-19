@@ -20,7 +20,7 @@ const InfoPage = () => {
       title: 'Add a deposit to secure your purchases',
       content:
   <>
-    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>We have a proven track record. <a href='#faq'>Why trust us?</a></span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>We have a proven track record. <a href='#trust'>Why trust us?</a></span></p>
     <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Agents have certainty in payment</span></p>
   </>,
       image: 'image-deposit'
@@ -213,10 +213,10 @@ const InfoPage = () => {
         </div>
       </div>
       <div class='container gx-0 py-5 my-5'>
-
+        {/* TODO - favicon logo */}
         <div class='row row-cols-1 row-cols-md-2 align-items-md-center g-5 py-5'>
           <div class='col d-flex flex-column align-items-start gap-2'>
-            <h2 class='fw-bold text-body-emphasis'>Why trust us?</h2>
+            <h2 class='fw-bold text-body-emphasis' id='trust'>Why trust us?</h2>
 
             <div class='d-flex align-items-center'>
               <i class='bi bi-person-fill text-primary pe-2 fs-5' />
@@ -241,7 +241,7 @@ const InfoPage = () => {
                   <i class='bi bi-pin' />
                 </div>
                 <h4 class='fw-semibold mb-0 text-body-emphasis'>Become a User</h4>
-                <p class='text-body-secondary'>Paragraph of text beneath the heading to explain the heading.</p>
+                <p class='text-body-secondary'>Purchase and receive EVE Online items without logging in</p>
               </div>
 
               <div class='col d-flex flex-column gap-2 text-center'>
@@ -249,7 +249,7 @@ const InfoPage = () => {
                   <i class='bi bi-pin' />
                 </div>
                 <h4 class='fw-semibold mb-0 text-body-emphasis'>Become an Agent</h4>
-                <p class='text-body-secondary'>Paragraph of text beneath the heading to explain the heading.</p>
+                <p class='text-body-secondary'>Personal shopper: A new career in the EVE universe</p>
               </div>
 
               <div class='col d-flex flex-column gap-2 text-center'>
@@ -257,7 +257,7 @@ const InfoPage = () => {
                   <i class='bi bi-pin' />
                 </div>
                 <h4 class='fw-semibold mb-0 text-body-emphasis'>Plex for Good</h4>
-                <p class='text-body-secondary'>Paragraph of text beneath the heading to explain the heading.</p>
+                <p class='text-body-secondary'>We don't make ISK from this.<br />All profits to Plex for good</p>
               </div>
 
               <div class='col d-flex flex-column gap-2 text-center'>
@@ -265,19 +265,19 @@ const InfoPage = () => {
                   <i class='bi bi-pin' />
                 </div>
                 <h4 class='fw-semibold mb-0 text-body-emphasis'>Low Risk</h4>
-                <p class='text-body-secondary'>Paragraph of text beneath the heading to explain the heading.</p>
+                <p class='text-body-secondary'>Agents have certainty in payment with our hardened process</p>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class='container gx-0'>
+      {/* <div class='container gx-0'>
         <div class='row'>
           <div class='col'>
             <h5>TODO - FAQ - Why you can trust us</h5>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   )
 }
