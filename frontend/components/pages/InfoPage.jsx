@@ -217,7 +217,20 @@ const InfoPage = () => {
         <div class='row row-cols-1 row-cols-md-2 align-items-md-center g-5 py-5'>
           <div class='col d-flex flex-column align-items-start gap-2'>
             <h2 class='fw-bold text-body-emphasis'>Why trust us?</h2>
-            <p class='text-body-secondary'>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+
+            <div class='d-flex align-items-center'>
+              <i class='bi bi-person-fill text-primary pe-2 fs-5' />
+              <span class='text-body-secondary'>Project led by Kukela, CEO of <a href='https://discord.gg/tBJmdmtvQq' target='_blank' rel='noreferrer'>United Standings Improvement Agency</a> - a tried and tested standings raising service operating for the last 14 years</span>
+            </div>
+            <div class='d-flex align-items-center'>
+              <i class='bi bi-person-fill text-primary pe-2 fs-5' />
+              <span class='text-body-secondary'>Developed by Seraph Sephiroth, behind <a href='https://abyssboard.space' target='_blank' rel='noreferrer'>abyssboard.space</a>. All <a href='https://github.com/dangarfield' target='_blank' rel='noreferrer'>source code</a> is publically available</span>
+            </div>
+            <div class='d-flex align-items-center'>
+              <i class='bi bi-person-fill text-primary pe-2 fs-5' />
+              <span class='text-body-secondary'>Backend and sponsored by <a href='https://community.eveonline.com/community/csm/current-csm' target='_blank' rel='noreferrer'>CSM member Oz</a> and his team of trillionaire investors at <a href='https://discord.com/invite/FZccntUScP' target='_blank' rel='noreferrer'>Oz Discord</a></span>
+            </div>
+
             <A href='/shop' class='btn btn-primary btn-lg'>Shop Now</A>
           </div>
 

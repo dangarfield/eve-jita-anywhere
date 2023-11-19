@@ -61,7 +61,7 @@ body {
     color: #ffffff;
     font-family: 'Shentox', 'Rogan', sans-serif;
 }
-body::before {
+/* body::before {
     content: ' ';
     display: block;
     position: absolute;
@@ -74,7 +74,7 @@ body::before {
     background-position: 0% 50%;
     background-image: url('../frontend/assets/logo-white-centered.svg');
     scale: 2;
-}
+} */
 /* body::before {
     content: ' ';
     display: block;
