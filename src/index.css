@@ -60,9 +60,32 @@
 body {
     color: #ffffff;
     font-family: 'Shentox', 'Rogan', sans-serif;
-    /* background-image: url(https://images.ctfassets.net/7lhcm73ukv5p/1mv6Tg8PUsMWyGauWckSOo/5be5f00d5fb6d445f420b7a1c669fd26/star-bg.jpg?w=2400&q=75&fm=webp); */
 }
-
+body::before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.0075;
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    background-image: url('../frontend/assets/logo-white-centered.svg');
+    scale: 2;
+}
+/* body::before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.2;
+    background-image: url(https://images.ctfassets.net/7lhcm73ukv5p/1mv6Tg8PUsMWyGauWckSOo/5be5f00d5fb6d445f420b7a1c669fd26/star-bg.jpg?w=2400&q=75&fm=webp);
+} */
 .width-32 {
     width: 32px;
     min-width: 32px;

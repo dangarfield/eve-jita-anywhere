@@ -14,7 +14,7 @@ const ProgressButton = ({ currentSlide, progress, setIsPaused, setSlide, slideID
       >Step {slideID}
       </span>
       <Show when={!variant}>
-        <span class='py-4 d-block fs-5'>{children}</span>
+        <span class='py-4 px-1 d-block fs-5'>{children}</span>
       </Show>
       <div class='px-0' style={{ width: '100%', height: '5px' }}>
         <div
@@ -28,7 +28,7 @@ const ProgressButton = ({ currentSlide, progress, setIsPaused, setSlide, slideID
       </div>
 
       <Show when={variant === 'top'}>
-        <span class='py-4 d-block fs-5'>{children}</span>
+        <span class='py-4 px-1 d-block fs-5'>{children}</span>
       </Show>
 
     </Button>

@@ -120,7 +120,7 @@ const InfoCarousel = ({ sliderData }) => {
           </div>
           <div class='hero-figure anime-element colZZ'>
             <svg class='placeholderZZ' width='550' height='400' viewBox='0 0 550 400'>
-              <rect width='550' height='400' style='fill:#212529;' />
+              {/* <rect width='550' height='400' style='fill:#212529;' /> */}
             </svg>
             <div class='hero-figure-box hero-figure-box-01' data-rotation='45deg' />
             <div class='hero-figure-box hero-figure-box-02' data-rotation='-45deg' />
