@@ -65,7 +65,7 @@
     top:64.1%;
     width:37.87%;
     height:50.50%;
-    background:linear-gradient(to left top, #0270D7, rgba(2,112,215,0));
+    background:linear-gradient(to left top, #0d6efd, rgba(2,112,215,0));
     transform:rotateZ(-45deg);
 }
 .hero-figure-box-02::before{
@@ -88,7 +88,7 @@
     top:-8%;
     width:45.45%;
     height:60.60%;
-    background:linear-gradient(to left top, #0270D7, rgba(2,112,215,0));
+    background:linear-gradient(to left top, #0d6efd, rgba(2,112,215,0));
     transform:rotateZ(-135deg);
 }
 .hero-figure-box-04::before{
@@ -128,6 +128,12 @@
 .image-profit {
     background-image:url("https://picsum.photos/seed/profit/550/300");
 }
+/* .image-logo {
+    background-image:url("../../assets/logo-white.png");
+    object-fit: contain;
+    width: 30px;
+    height: 30px;
+} */
 
 
 .hero-figure-box-06{

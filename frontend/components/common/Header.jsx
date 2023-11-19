@@ -4,6 +4,7 @@ import { useUser } from '../../stores/UserProvider'
 import { Show } from 'solid-js'
 import { connectedUsers } from '../../services/notifications'
 import './Header.css'
+import logo from '../../assets/logo.svg'
 
 const Header = () => {
   const [user, { beginLoginProcess, logout, characterID, characterName, isLoggedIn }] = useUser()
@@ -15,7 +16,10 @@ const Header = () => {
   return (
     <Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>
       <div class='container-fluid px-0'>
-        <A href='/' class='navbar-brand'>Jita Anywhere</A>
+        <A href='/' class='navbar-brand'>
+          <img src={logo} class='d-inline-block align-text-top' style={{ width: '50px', color: 'white' }} />
+          Jita Anywhere
+        </A>
         <Navbar.Toggle aria-controls='responsive-navbar-nav' />
         <Navbar.Collapse id='responsive-navbar-nav'>
           <Nav class='me-auto'>

@@ -6,51 +6,57 @@ import InfoCarousel from './InfoCarousel'
 const InfoPage = () => {
   const slides = [
     {
+      link: <><b>All:</b> What do we do?</>,
       title: 'Buy EVE goods away from your desk',
       content:
   <>
-    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Buy and get items delivered in EVE online without logging in!</span></p>
-    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Get paid to be a personal shopper</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Purchase and receive EVE Online items without logging in</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Earn as a personal shopper</span></p>
   </>,
       image: 'image-info'
     },
     {
+      link: <><b>User:</b> Deposit ISK</>,
       title: 'Add a deposit to secure your purchases',
       content:
   <>
-    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>We have a proven track record. <a href='#faq'>Why you can trust us</a></span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>We have a proven track record. <a href='#faq'>Why trust us?</a></span></p>
     <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Agents have certainty in payment</span></p>
   </>,
       image: 'image-deposit'
     },
     {
+      link: <><b>User:</b> Browse Jita Offline Store</>,
       title: 'Jita Prices accurate to 5 mins',
       content:
   <>
-    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>You only pay what you agree</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Pay only what you agree on</span></p>
     <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Accurate prices mean less wasted time</span></p>
   </>,
       image: 'image-browse'
     },
     {
+      link: <><b>User:</b> Checkout</>,
       title: 'Checkout without opening the client',
       content:
   <>
     <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>No EVE client? No problem. Buy from your mobile</span></p>
-    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Get notified the instant an order is requested</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Get notified instantly when an order is requested</span></p>
   </>,
       image: 'image-checkout'
     },
     {
+      link: <><b>Agent:</b> View available jobs</>,
       title: 'Jobs come to you',
       content:
   <>
-    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Select which jobs your want to take</span></p>
-    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Sit back and relax, your goods will come to you</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Select the jobs you want</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Sit back and relax; your goods will come to you</span></p>
   </>,
       image: 'image-jobs'
     },
     {
+      link: <><b>Agent:</b> Purchase and deliver</>,
       title: 'Purchase',
       content:
   <>
@@ -60,6 +66,7 @@ const InfoPage = () => {
       image: 'image-purchase'
     },
     {
+      link: <><b>Agent:</b> Profit</>,
       title: 'Gimme that ISK',
       content:
   <>
@@ -134,7 +141,7 @@ const InfoPage = () => {
               setSlide={setSlide}
               slideID={1}
             >
-              <b>User:</b> Deposit ISK
+              {slides[1].link}
             </ProgressButton>
           </div>
           <div class='col'>
@@ -145,7 +152,7 @@ const InfoPage = () => {
               setSlide={setSlide}
               slideID={2}
             >
-              <b>User:</b> Browse Jita Offline Store
+              {slides[2].link}
             </ProgressButton>
           </div>
           <div class='col'>
@@ -156,7 +163,7 @@ const InfoPage = () => {
               setSlide={setSlide}
               slideID={3}
             >
-              <b>User:</b> Checkout
+              {slides[3].link}
             </ProgressButton>
           </div>
         </div>
@@ -176,7 +183,7 @@ const InfoPage = () => {
               slideID={4}
               variant='top'
             >
-              <b>Agent:</b> View available jobs
+              {slides[4].link}
             </ProgressButton>
           </div>
           <div class='col'>
@@ -188,7 +195,7 @@ const InfoPage = () => {
               slideID={5}
               variant='top'
             >
-              <b>Agent:</b> Purchase and deliver
+              {slides[5].link}
             </ProgressButton>
           </div>
           <div class='col'>
@@ -200,7 +207,7 @@ const InfoPage = () => {
               slideID={6}
               variant='top'
             >
-              <b>Agent:</b> Profit
+              {slides[6].link}
             </ProgressButton>
           </div>
         </div>

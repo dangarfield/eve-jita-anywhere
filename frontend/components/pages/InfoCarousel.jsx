@@ -66,10 +66,23 @@ const InfoCarousel = ({ sliderData }) => {
     })
   })
 
+  const content = anime.timeline({
+    targets: '.hero-copy',
+    autoplay: false
+  })
+  createEffect(() => {
+    content.add({
+      duration: 500,
+      scale: [0.9, 1],
+      opacity: [0, 1],
+      easing: 'easeInOutExpo'
+    })
+  })
   const playAll = () => {
     bigDarkRectangle.play()
     smallDarkRectangles.play()
     colouredRectangles.play()
+    content.play()
   }
 
   createEffect(() => {
@@ -81,6 +94,7 @@ const InfoCarousel = ({ sliderData }) => {
     bigDarkRectangle.restart() // Pause the animation during cleanup
     smallDarkRectangles.restart()
     colouredRectangles.restart()
+    content.restart()
   })
 
   // createEffect(() => {
@@ -113,7 +127,7 @@ const InfoCarousel = ({ sliderData }) => {
             {/* <div class='hero-figure-box hero-figure-box-03' data-rotation='0deg' /> */}
             <div class='hero-figure-box hero-figure-box-04' data-rotation='-135deg' />
             <div class={`hero-figure-box hero-figure-box-05 ${sliderData().image}`} />
-            <div class='hero-figure-box hero-figure-box-06' />
+            <div class='hero-figure-box hero-figure-box-06 image-logo' />
             <div class='hero-figure-box hero-figure-box-07' />
             <div class='hero-figure-box hero-figure-box-08' data-rotation='-22deg' />
             <div class='hero-figure-box hero-figure-box-09' data-rotation='-52deg' />
