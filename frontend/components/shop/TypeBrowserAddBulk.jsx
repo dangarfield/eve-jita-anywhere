@@ -6,8 +6,9 @@ import { getJitaSellOrders } from '../../services/esi'
 import { useUser } from '../../stores/UserProvider'
 import Loading from '../common/Loading'
 import { useBasket } from '../../stores/BasketProvider'
+import { TABS } from './ShopPage'
 
-const TypeBrowserAddBulk = (props) => {
+const TypeBrowserAddBulk = ({ setSelectedType, setSelectedTab }) => {
   const [text, setText] = createSignal('')
   const [staticData] = useStaticData()
   const [items, setItems] = createSignal([])
@@ -90,6 +91,7 @@ Total:			80,724,200.00
     const itemsToAdd = items().filter(i => i.price > 0).map(item => { return { typeID: item.typeID, quantity: item.quantity, price: item.price, name: item.name } })
     console.log('addAllToBasket itemsToAdd', itemsToAdd)
     addAllToBasket(itemsToAdd)
+    setSelectedTab(TABS.Basket)
   }
 
   return (
@@ -116,7 +118,11 @@ Total:			80,724,200.00
                 <div class='col-md-5'>
                   <div class='d-flex align-items-center'>
                     <EveTypeIcon type={item.type} />
-                    <a class='ps-1 link-light link-underline link-underline-opacity-0 link-underline-opacity-100-hover' href='' onClick={(e) => e.preventDefault() & props.setSelectedType(item.typeID)}>{item.name}</a>
+                    <a
+                      class='ps-1 link-light link-underline link-underline-opacity-0 link-underline-opacity-100-hover' href=''
+                      onClick={(e) => e.preventDefault() & setSelectedType(item.typeID) & setSelectedTab(TABS.Details)}
+                    >{item.name}
+                    </a>
                   </div>
                 </div>
                 <div class='col-md-3 px-1'>

@@ -40,14 +40,14 @@ const MyBalancePage = () => {
   }
 
   return (
-    <div class='row'>
-      <div class='col-6 mt-3'>
+    <div class='row mb-3'>
+      <div class='col-md-6 mt-3'>
         <h3>Your balance</h3>
         <Show when={userBalance()} fallback={<Loading />}>
           <BalanceList userBalance={userBalance()} />
         </Show>
       </div>
-      <div class='col-4 mt-3'>
+      <div class='col-md-4 mt-3'>
         <h3>How To Top Up Your Balance</h3>
         {topUpInfoText(staticData)}
 
@@ -74,19 +74,19 @@ const MyBalancePage = () => {
             >
               <Card>
                 <Card.Body class='pb-0'>
-                  <Form.Group as={Row} class='mb-3' controlId='withdrawalAmountText'>
-                    <Col sm='4'>
+                  <Form.Group as={Row} controlId='withdrawalAmountText'>
+                    <Col sm='4' class='mb-3'>
                       <Form.Label>
                         Withdrawal amount
                       </Form.Label>
                     </Col>
-                    <Col sm='3'>
+                    <Col sm='3' class='mb-3'>
                       <Form.Control type='number' min={1} max={userBalance().balance} value={withdrawalAmount()} onInput={handleWithdrawalChange} />
                     </Col>
-                    <Col sm='5'>
+                    <Col sm='5' class='mb-3'>
                       <ConfirmButton class='w-100' onClick={handleWithdrawalRequest}>Request Withdrawal</ConfirmButton>
                     </Col>
-                    <Col sm='12' class='mt-2'>
+                    <Col sm='12' class='mb-3'>
                       <Form.Range min={1} max={userBalance().balance} value={withdrawalAmount()} step={1} onInput={handleWithdrawalChange} />
                     </Col>
                   </Form.Group>

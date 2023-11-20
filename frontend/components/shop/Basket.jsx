@@ -10,6 +10,7 @@ import Delivery from './Delivery'
 import { get, post } from '../../services/utils'
 import { openInfoModal } from '../common/InfoModal'
 import { useNavigate } from '@solidjs/router'
+import { TABS } from './ShopPage'
 
 export const calculateBasketTotals = (items, deliveryChargeFromBasket, isRush, rushCharge, userBalanceFromAccount, data) => {
   const totalMaterialCost = Math.ceil(items?.reduce((total, basketItem) => total + (basketItem.quantity * basketItem.price), 0))
@@ -35,7 +36,7 @@ export const calculateBasketTotals = (items, deliveryChargeFromBasket, isRush, r
   return { totalMaterialCost, brokersFee, deliveryCharge, agentFee, p4gFee, total, totalVolume, aboveMinimumOrder, balance }
 }
 
-const Basket = (props) => {
+const Basket = ({ setSelectedType, setSelectedTab }) => {
   const navigate = useNavigate()
   const [basket, { clearBasket, updatePrices, removeBasketItem, updateBasketQuantity }] = useBasket()
   const [staticData] = useStaticData()
@@ -146,7 +147,7 @@ const Basket = (props) => {
     }
   }
   return (
-    <>
+    <div class='mb-3'>
       {/* <h1>Basket</h1> */}
       {/* <p>Basket: {JSON.stringify(basket)}</p> */}
 
@@ -186,7 +187,11 @@ const Basket = (props) => {
                   <div class='col-md-5'>
                     <div class='d-flex align-items-center'>
                       <EveTypeIcon type={staticData().types[basketItem.typeID]} />
-                      <a class='ps-1 link-light link-underline link-underline-opacity-0 link-underline-opacity-100-hover' href='' onClick={(e) => e.preventDefault() & props.setSelectedType(basketItem.typeID)}>{staticData().types[basketItem.typeID].name}</a>
+                      <a
+                        class='ps-1 link-light link-underline link-underline-opacity-0 link-underline-opacity-100-hover' href=''
+                        onClick={(e) => e.preventDefault() & setSelectedType(basketItem.typeID) & setSelectedTab(TABS.Details)}
+                      >{staticData().types[basketItem.typeID].name}
+                      </a>
                       <i class='ms-auto bi bi-x' onClick={() => removeBasketItem(basketItem.typeID)} />
                     </div>
                   </div>
@@ -294,7 +299,7 @@ const Basket = (props) => {
 
       </Show>
       <TopUpInfoModal />
-    </>
+    </div>
   )
 }
 export default Basket

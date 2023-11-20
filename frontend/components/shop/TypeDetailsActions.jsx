@@ -3,14 +3,15 @@ import Loading from '../common/Loading'
 import { useBasket } from '../../stores/BasketProvider'
 import { useStaticData } from '../../stores/StaticDataProvider'
 import { useUser } from '../../stores/UserProvider'
+import { TABS } from './ShopPage'
 
-const TypeDetailsActions = (props) => {
+const TypeDetailsActions = ({ orders, selectedType, setSelectedTab }) => {
   const [basket, { addToBasket }] = useBasket()
   const [user, { isLoggedIn }] = useUser()
   const [staticData] = useStaticData()
 
   const price = createMemo(() => {
-    return props.orders() && props.orders().sell.length > 0 ? props.orders().sell[0].price : 0
+    return orders() && orders().sell.length > 0 ? orders().sell[0].price : 0
   })
   const [quantity, setQuantity] = createSignal(1)
 
@@ -25,18 +26,19 @@ const TypeDetailsActions = (props) => {
   }
   const handleAddToBasket = (event) => {
     event.preventDefault()
-    const type = props.selectedType()
+    const type = selectedType()
     const item = { typeID: type.type_id, name: type.name, quantity: quantity(), price: price() }
     // console.log('handleAddToBasket', item)
     if (price() > 0) {
       addToBasket(item)
+      setSelectedTab(TABS.Basket)
     }
 
     // console.log(basket)
   }
 
   return (
-    <Show when={props.orders()} fallback={<Loading />}>
+    <Show when={orders()} fallback={<Loading />}>
       <div class='row mb-5'>
         <div class='col-md'>
           <form class='form add-item' onSubmit={handleAddToBasket}>

@@ -1,5 +1,5 @@
 import { For } from 'solid-js'
-import { Form } from 'solid-bootstrap'
+import { Card, Form } from 'solid-bootstrap'
 
 const OrderFilter = (props) => {
   const { filters, setFilters } = props
@@ -29,34 +29,36 @@ const OrderFilter = (props) => {
   }
 
   return (
-    <div>
-      <h3>Filter Status</h3>
-      <For each={filters().status}>
-        {(status) =>
-          <Form.Check
-            type='checkbox'
-            id={`status-filter-${status.name}`}
-            label={`${status.name.replace('_', ' ')}`}
-            key={`status-filter-${status.name}`}
-            checked={status.active}
-            onChange={() => handleStatusChange(status.name)}
-          />}
-      </For>
+    <Card>
+      <Card.Body>
+        <h3>Filter Status</h3>
+        <For each={filters().status}>
+          {(status) =>
+            <Form.Check
+              type='checkbox'
+              id={`status-filter-${status.name}`}
+              label={`${status.name.replace('_', ' ')}`}
+              key={`status-filter-${status.name}`}
+              checked={status.active}
+              onChange={() => handleStatusChange(status.name)}
+            />}
+        </For>
 
-      <h3 class='mt-3'>Filter Delivery</h3>
-      <For each={filters().delivery}>
-        {(delivery) =>
-          <Form.Check
-            type='checkbox'
-            id={`delivery-filter-${delivery.name}`}
-            label={`${delivery.name}`}
-            key={`delivery-filter-${delivery.name}`}
-            checked={delivery.active}
-            onChange={() => handleDeliveryChange(delivery.name)}
-            class='text-uppercase'
-          />}
-      </For>
-    </div>
+        <h3 class='mt-3'>Filter Delivery</h3>
+        <For each={filters().delivery}>
+          {(delivery) =>
+            <Form.Check
+              type='checkbox'
+              id={`delivery-filter-${delivery.name}`}
+              label={`${delivery.name}`}
+              key={`delivery-filter-${delivery.name}`}
+              checked={delivery.active}
+              onChange={() => handleDeliveryChange(delivery.name)}
+              class='text-uppercase'
+            />}
+        </For>
+      </Card.Body>
+    </Card>
   )
 }
 

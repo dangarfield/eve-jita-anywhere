@@ -65,21 +65,21 @@ const AvailableJobsPage = () => {
     <>
 
       <Show when={orders() && orders().length === 0}>
-        <div class='col-6'><Alert variant='border border-light text-center mt-1'>No orders</Alert></div>
+        <div class='col-md-6'><Alert variant='border border-light text-center mt-1'>No orders</Alert></div>
       </Show>
       <Show when={filteredOrders()} fallback={<div class='row'><Loading /></div>}>
 
         <div class='row'>
-          <div class='col-2 mt-3'>
+          <div class='col-md-2 mt-3'>
             <Show when={orders().length > 0}>
               <OrderFilter filters={filters} setFilters={setFilters} />
             </Show>
           </div>
-          <div class='col-10 mt-3'>
+          <div class='col-md-10 mt-3'>
             <div class='row'>
               <For each={filteredOrders()}>
                 {(order) =>
-                  <div class='col-3 mb-4'>
+                  <div class='col-md-3 mb-4'>
                     <OrderCard
                       order={order}
                       actions={

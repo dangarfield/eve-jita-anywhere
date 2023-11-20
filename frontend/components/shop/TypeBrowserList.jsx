@@ -4,11 +4,14 @@ import { useStaticData } from '../../stores/StaticDataProvider'
 import './TypeBrowserList.css'
 import EveTypeIcon from '../common/EveTypeIcon'
 import { Alert, FormControl, InputGroup } from 'solid-bootstrap'
+import { TABS } from './ShopPage'
 
-const createItem = (item, setSelectedType) => {
+const createItem = (item, setSelectedType, setSelectedTab) => {
   const handleClick = () => {
-    // console.log('click item', item)
+    // setSelectedTab('sfdsf')
+    console.log('click item', item)
     setSelectedType(item.type_id)
+    setSelectedTab(TABS.Details)
   }
 
   return (
@@ -23,7 +26,7 @@ const createItem = (item, setSelectedType) => {
   )
 }
 
-const createGroup = (item, setSelectedType) => {
+const createGroup = (item, setSelectedType, setSelectedTab) => {
   const [expanded, setExpanded] = createSignal(false)
   const [drawnOnce, setDrawnOnce] = createSignal(false)
 
@@ -44,14 +47,13 @@ const createGroup = (item, setSelectedType) => {
         <span>{item.name}</span>
       </span>
       <ul style={{ display: expanded() ? 'block' : 'none' }}>
-        {drawnOnce() && item.child_groups?.map((child) => createGroup(child, setSelectedType))}
-        {drawnOnce() && item.types?.map((child) => createItem(child, setSelectedType))}
+        {drawnOnce() && item.child_groups?.map((child) => createGroup(child, setSelectedType, setSelectedTab))}
+        {drawnOnce() && item.types?.map((child) => createItem(child, setSelectedType, setSelectedTab))}
       </ul>
     </li>
   )
 }
-
-const TypeBrowserList = (props) => {
+const TypeBrowserList = ({ setSelectedType, setSelectedTab }) => {
   const [staticData] = useStaticData()
   const [searchResults, setSearchResults] = createSignal(null)
   // const [searchText, setSearchText] = createSignal('')
@@ -87,7 +89,7 @@ const TypeBrowserList = (props) => {
       <Show
         when={searchResults()} fallback={
           <ul class='list-group list-group-root'>
-            {staticData().marketTypes.map((item) => createGroup(item, props.setSelectedType))}
+            {staticData().marketTypes.map((item) => createGroup(item, setSelectedType, setSelectedTab))}
           </ul>
 }
       >
@@ -95,7 +97,7 @@ const TypeBrowserList = (props) => {
         <ul class='list-group list-group-root'>
           <For each={searchResults()} fallback={<Alert variant='dark'>No items found</Alert>}>
             {(item) => (
-              createItem(item, props.setSelectedType)
+              createItem(item, setSelectedType, setSelectedTab)
             // <p>{item.name}</p>
             )}
           </For>
