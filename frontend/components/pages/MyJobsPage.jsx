@@ -99,7 +99,7 @@ const MyJobsPage = () => {
   return (
     <>
       <Show when={orders() && orders().length === 0}>
-        <div class='col-md-6'><Alert variant='border border-light text-center mt-1'>No orders</Alert></div>
+        <div class='col-md-6 mt-3'><Alert variant='border border-light text-center mt-1'>No orders</Alert></div>
       </Show>
       <Show when={filteredOrders()}>
 
