@@ -37,10 +37,6 @@
 
 ## Process Flow Details
 
-<details>
-
-<summary>Process Flow Details</summary>
-
 
 ### Add funds
 
@@ -157,5 +153,3 @@ flowchart TD
     t --> b --> c;
     
 ```
-
-</details>
