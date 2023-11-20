@@ -108,25 +108,25 @@
     background-image:url("https://picsum.photos/seed/info/550/300");
 }
 .image-info {
-    background-image:url("https://picsum.photos/seed/info/550/300");
+    background-image:url("/frontend/assets/bg-0.jpg");
 }
 .image-deposit {
-    background-image:url("https://picsum.photos/seed/deposit/550/300");
+    background-image:url("/frontend/assets/bg-1.jpg");
 }
 .image-browse {
-    background-image:url("https://picsum.photos/seed/browse/550/300");
+    background-image:url("/frontend/assets/bg-2.jpg");
 }
 .image-checkout {
-    background-image:url("https://picsum.photos/seed/checkout/550/300");
+    background-image:url("/frontend/assets/bg-3.jpg");
 }
 .image-jobs {
-    background-image:url("https://picsum.photos/seed/jobs/550/300");
+    background-image:url("/frontend/assets/bg-4.jpg");
 }
 .image-purchase {
-    background-image:url("https://picsum.photos/seed/purchase/550/300");
+    background-image:url("/frontend/assets/bg-5.jpg");
 }
 .image-profit {
-    background-image:url("https://picsum.photos/seed/profit/550/300");
+    background-image:url("/frontend/assets/bg-6.jpg");
 }
 /* .image-logo {
     background-image:url("../../assets/logo-white.png");
@@ -137,7 +137,7 @@
 
 
 .hero-figure-box-06{
-    left:65.5%;
+    left:80%;
     top:6.3%;
     width:30.3%;
     height:40.4%;

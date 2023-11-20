@@ -77,6 +77,9 @@ body::before {
     /* overflow: hidden; */
     /* scale: 2; */
 }
+.root {
+    min-height: calc(100vh - 60px);
+}
 .width-32 {
     width: 32px;
     min-width: 32px;

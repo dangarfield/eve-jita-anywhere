@@ -80,7 +80,7 @@ const InfoPage = () => {
   const [isPaused, setIsPaused] = createSignal(false)
   const [progress, setProgress] = createSignal(0)
 
-  const autoPlayInterval = 5000
+  const autoPlayInterval = 6000
 
   let intervalId
 
@@ -213,25 +213,26 @@ const InfoPage = () => {
         </div>
       </div>
       <div class='container gx-0 py-5 my-5'>
-        {/* TODO - favicon logo */}
         <div class='row row-cols-1 row-cols-md-2 align-items-md-center g-5 py-5'>
           <div class='col d-flex flex-column align-items-start gap-2'>
             <h2 class='fw-bold text-body-emphasis' id='trust'>Why trust us?</h2>
 
-            <div class='d-flex align-items-center'>
+            <div class='d-flex align-items-center mb-2'>
               <i class='bi bi-person-fill text-primary pe-2 fs-5' />
               <span class='text-body-secondary'>Project led by Kukela, CEO of <a href='https://discord.gg/tBJmdmtvQq' target='_blank' rel='noreferrer'>United Standings Improvement Agency</a> - a tried and tested standings raising service operating for the last 14 years</span>
             </div>
-            <div class='d-flex align-items-center'>
+            <div class='d-flex align-items-center mb-2'>
               <i class='bi bi-person-fill text-primary pe-2 fs-5' />
               <span class='text-body-secondary'>Developed by Seraph Sephiroth, behind <a href='https://abyssboard.space' target='_blank' rel='noreferrer'>abyssboard.space</a>. All <a href='https://github.com/dangarfield' target='_blank' rel='noreferrer'>source code</a> is publically available</span>
             </div>
-            <div class='d-flex align-items-center'>
+            <div class='d-flex align-items-center mb-2'>
               <i class='bi bi-person-fill text-primary pe-2 fs-5' />
               <span class='text-body-secondary'>Backend and sponsored by <a href='https://community.eveonline.com/community/csm/current-csm' target='_blank' rel='noreferrer'>CSM member Oz</a> and his team of trillionaire investors at <a href='https://discord.com/invite/FZccntUScP' target='_blank' rel='noreferrer'>Oz Discord</a></span>
             </div>
 
-            <A href='/shop' class='btn btn-primary btn-lg'>Shop Now</A>
+            <div class='d-flex justify-content-center w-100'>
+              <A href='/shop' class='btn btn-primary btn-lg'>Shop Now</A>
+            </div>
           </div>
 
           <div class='col'>

@@ -21,6 +21,7 @@ import { Toaster } from 'solid-toast'
 import MyJobsPage from './components/pages/MyJobsPage'
 import Header from './components/common/Header'
 import AdminWithdrawalRequests from './components/admin/AdminWithdrawalRequests'
+import Footer from './components/common/Footer'
 
 function App () {
   return (
@@ -28,7 +29,7 @@ function App () {
       <BasketProvider>
         <UserProvider>
           <Router>
-            <div class='container-fluid'>
+            <div class='container-fluid root'>
               <div class='row border-bottom'>
                 <div class='col'>
                   <Header />
@@ -57,7 +58,9 @@ function App () {
 
               <InfoModal />
               <Toaster />
+
             </div>
+            <Footer />
           </Router>
         </UserProvider>
       </BasketProvider>
