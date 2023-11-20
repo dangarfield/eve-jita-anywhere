@@ -35,6 +35,8 @@
 - Link netlify to github for automated deployments
 - Heroku is used for scheduled services (polling newly created contracts, checking corp transactions and updating payments etc) - Add heroku scheduler plugin and configure to run `node backend/scheduled-service/job.js` every 10 minutes. Disable web dynos
 
+## Process Flow Details
+
 <details>
 
 <summary>Process Flow Details</summary>
