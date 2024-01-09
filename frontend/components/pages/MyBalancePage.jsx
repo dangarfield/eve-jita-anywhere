@@ -51,7 +51,7 @@ const MyBalancePage = () => {
         <h3>How To Top Up Your Balance</h3>
         {topUpInfoText(staticData)}
 
-        <h3 class='mt-5'>How To Top Withdraw Your ISK</h3>
+        <h3 class='mt-5'>How To Withdraw Your ISK</h3>
         <p>As returning your money to you is a manual process, you have to request a withdrawal.</p>
         <p>We will normally fulfil this within 48 hrs, but it will often be much faster.</p>
         <p>You can only have one active withdrawal at a time.</p>

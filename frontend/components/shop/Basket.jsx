@@ -177,7 +177,7 @@ const Basket = ({ setSelectedType, setSelectedTab }) => {
           Our agents will attempt to buy the cheapest price for you, however, every ISK above these current ESI prizes, they will lose out.
         </p>
         <p class='opacity-50'>
-          If the order becomes too espensive, it will return back to you and you can choose to accept the updated prices.
+          If the order becomes too expensive, it will return back to you and you can choose to accept the updated prices.
         </p>
         <div class='d-flex flex-column'>
           <For each={basket}>
