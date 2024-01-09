@@ -62,9 +62,9 @@ const TypeBrowserList = ({ setSelectedType, setSelectedTab }) => {
     const searchText = event.target.value.toLowerCase()
 
     const filteredTypes = Object.values(staticData().types).filter(t => t.name.toLowerCase().includes(searchText))
-    // console.log('searchText', searchText, filteredTypes)
+    console.log('searchText', searchText, filteredTypes)
 
-    if (searchText.length >= 3 && filteredTypes.length < 20) {
+    if (searchText.length >= 3 && filteredTypes.length <= 100) {
       // console.log('setSearchResults', searchText, filteredTypes)
       setSearchResults(filteredTypes)// .sort((a, b) => a.typeID - b.typeID))
     } else {
