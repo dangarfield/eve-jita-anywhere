@@ -26,7 +26,7 @@ const InfoPage = () => {
       image: 'image-deposit'
     },
     {
-      link: <><b>User:</b> Browse Jita Offline Store</>,
+      link: <><b>User:</b> Browse Jita Anywhere Store</>,
       title: 'Jita Prices accurate to 5 mins',
       content:
   <>
