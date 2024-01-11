@@ -40,7 +40,7 @@ export const getDeliveryCharges = (noOfWarps, noOfWarpsHighsec, noOfWarpsLowSec,
       // console.log('JF', totalCharge, '-', highSecWarpCharge, lowSecWarpCharge, nullSecWarpCharge, collateralCharge, rush)
       return { serviceType, charge: totalCharge, rush }
     } else if (serviceType === SERVICE_TYPES.BR) {
-      const rush = 100e6
+      const rush = 75e6
       const baseCostHighSec = 900000
       const baseCostLowSec = 4e6
       let collateralMultiplier = 1
@@ -63,7 +63,7 @@ export const getDeliveryCharges = (noOfWarps, noOfWarpsHighsec, noOfWarpsLowSec,
       // console.log('BR', totalCharge, '-', collateralMultiplier, collateralCharge, '-', highSecWarpCharge, lowSecWarpCharge, rush)
       return { serviceType, charge: totalCharge, rush }
     } else if (serviceType === SERVICE_TYPES.DST) {
-      const rush = 100e6
+      const rush = 75e6
       const baseCostHighSec = 950000
       let collateralMultiplier = 1
       let collateralCharge = 0
@@ -84,7 +84,7 @@ export const getDeliveryCharges = (noOfWarps, noOfWarpsHighsec, noOfWarpsLowSec,
       // console.log('DST', totalCharge, '-', collateralMultiplier, collateralCharge, '-', highSecWarpCharge, rush)
       return { serviceType, charge: totalCharge, rush }
     } else if (serviceType === SERVICE_TYPES.Freighter) {
-      const rush = 100e6
+      const rush = 75e6
       let baseCostHighSec = 1e6
       if (noOfWarps >= 31) baseCostHighSec = 1250000
       if (volume >= 848000) baseCostHighSec = 2000000
