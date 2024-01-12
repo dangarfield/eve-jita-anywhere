@@ -51,4 +51,3 @@ const beginScrape = async () => {
   fs.writeFileSync(path.join('frontend', 'public', 'generated-delivery-data', 'delivery-data.json'), JSON.stringify(DATA))
 }
 beginScrape()
-// const el = root.querySelector('tr td:nth-child(2)');
