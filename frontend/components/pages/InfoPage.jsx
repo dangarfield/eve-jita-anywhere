@@ -239,7 +239,7 @@ const InfoPage = () => {
             <div class='row row-cols-1 row-cols-sm-2 g-4'>
               <div class='col d-flex flex-column gap-2 text-center'>
                 <div class='feature-icon-small d-inline-flex align-items-center justify-content-center fs-4'>
-                  <i class='bi bi-pin' />
+                  <i class='bi bi bi-person-fill' />
                 </div>
                 <h4 class='fw-semibold mb-0 text-body-emphasis'>Become a User</h4>
                 <p class='text-body-secondary'>Purchase and receive EVE Online items without logging in</p>
@@ -247,7 +247,7 @@ const InfoPage = () => {
 
               <div class='col d-flex flex-column gap-2 text-center'>
                 <div class='feature-icon-small d-inline-flex align-items-center justify-content-center fs-4'>
-                  <i class='bi bi-pin' />
+                  <i class='bi bi bi-headset' />
                 </div>
                 <h4 class='fw-semibold mb-0 text-body-emphasis'>Become an Agent</h4>
                 <p class='text-body-secondary'>Personal shopper: A new career in the EVE universe</p>
@@ -255,7 +255,7 @@ const InfoPage = () => {
 
               <div class='col d-flex flex-column gap-2 text-center'>
                 <div class='feature-icon-small d-inline-flex align-items-center justify-content-center fs-4'>
-                  <i class='bi bi-pin' />
+                  <i class='bi bi-globe' />
                 </div>
                 <h4 class='fw-semibold mb-0 text-body-emphasis'>Plex for Good</h4>
                 <p class='text-body-secondary'>We don't make ISK from this.<br />All profits to Plex for good</p>
@@ -263,7 +263,7 @@ const InfoPage = () => {
 
               <div class='col d-flex flex-column gap-2 text-center'>
                 <div class='feature-icon-small d-inline-flex align-items-center justify-content-center fs-4'>
-                  <i class='bi bi-pin' />
+                  <i class='bi bi-sun' />
                 </div>
                 <h4 class='fw-semibold mb-0 text-body-emphasis'>Low Risk</h4>
                 <p class='text-body-secondary'>Agents have certainty in payment with our hardened process</p>
