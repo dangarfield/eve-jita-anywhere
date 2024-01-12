@@ -51,7 +51,7 @@ const InfoPage = () => {
       content:
   <>
     <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Select the jobs you want</span></p>
-    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Sit back and relax; your goods will come to you</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Complete jobs, get paid</span></p>
   </>,
       image: 'image-jobs'
     },
@@ -71,7 +71,7 @@ const InfoPage = () => {
       content:
   <>
     <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Personal shopper: A new career in the EVE universe</span></p>
-    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Play with game wherever you are</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Affordable convenience</span></p>
   </>,
       image: 'image-profit'
     }]
