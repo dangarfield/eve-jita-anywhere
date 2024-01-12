@@ -1,27 +1,27 @@
+import DELIVERY_DATA from '../public/generated-delivery-data/delivery-data.json'
+
 export const getDeliveryCharges = (noOfWarps, noOfWarpsHighsec, noOfWarpsLowSec, noOfWarpsNullSec, volume, collateral) => {
   // console.log('getDeliveryCharges', noOfWarps, noOfWarpsHighsec, noOfWarpsLowSec, noOfWarpsNullSec, volume, collateral)
-
   const SERVICE_TYPES = { BR: 'Blockade Runner', DST: 'Deep Space Transport', Freighter: 'Freighter', JF: 'Jump Freighter' }
-  const MIN_CHARGE = 4500000
 
   const getServiceType = (noOfWarpsHighsec, noOfWarpsLowSec, noOfWarpsNullSec, volume, collateral) => {
-    if (noOfWarpsNullSec > 0 && volume <= 360000 && collateral <= 50e9) return SERVICE_TYPES.JF
+    if (noOfWarpsNullSec > 0 && volume <= 360000 && collateral <= DELIVERY_DATA.NS_JF_COLLATERAL) return SERVICE_TYPES.JF
 
-    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec > 0 && volume <= 125000 && collateral <= 5e9) return SERVICE_TYPES.BR
-    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec > 0 && volume <= 360000 && collateral <= 50e9) return SERVICE_TYPES.JF
+    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec > 0 && volume <= 125000 && collateral <= DELIVERY_DATA.LS_BR_COLLATERAL) return SERVICE_TYPES.BR
+    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec > 0 && volume <= 360000 && collateral <= DELIVERY_DATA.LS_JF_COLLATERAL) return SERVICE_TYPES.JF
 
-    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec === 0 && volume <= 12500 && collateral <= 30e9) return SERVICE_TYPES.BR
-    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec === 0 && volume <= 62500 && collateral <= 10e9) return SERVICE_TYPES.DST
-    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec === 0 && volume <= 1126500 && collateral <= 3e9) return SERVICE_TYPES.Freighter
-    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec === 0 && volume <= 360000 && collateral <= 50e9) return SERVICE_TYPES.JF
+    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec === 0 && volume <= 12500 && collateral <= DELIVERY_DATA.HS_BR_COLLATERAL) return SERVICE_TYPES.BR
+    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec === 0 && volume <= 62500 && collateral <= DELIVERY_DATA.HS_DST_COLLATERAL) return SERVICE_TYPES.DST
+    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec === 0 && volume <= 1126500 && collateral <= DELIVERY_DATA.HS_FR_COLLATERAL) return SERVICE_TYPES.Freighter
+    if (noOfWarpsNullSec === 0 && noOfWarpsLowSec === 0 && volume <= 360000 && collateral <= DELIVERY_DATA.HS_JF_COLLATERAL) return SERVICE_TYPES.JF
     return null
   }
 
   const getCharge = (serviceType, noOfWarpsHighsec, noOfWarpsLowSec, noOfWarpsNullSec, volume, collateral) => {
     if (serviceType === SERVICE_TYPES.JF) {
-      const rush = 200e6
-      const baseCostHighSec = 200e6
-      const baseCostLowSec = 100e6
+      const rush = DELIVERY_DATA.NS_JF_RUSH
+      const baseCostHighSec = DELIVERY_DATA.HS_JF_BASE
+      const baseCostLowSec = DELIVERY_DATA.LS_JF_BASE
       let collateralCharge = 0
       if (collateral <= 50e9) collateralCharge = 850e6
       if (collateral <= 45e9) collateralCharge = 750e6
@@ -36,13 +36,13 @@ export const getDeliveryCharges = (noOfWarps, noOfWarpsHighsec, noOfWarpsLowSec,
       const highSecWarpCharge = baseCostHighSec
       const lowSecWarpCharge = noOfWarpsLowSec * baseCostLowSec
       const nullSecWarpCharge = noOfWarpsNullSec * baseCostLowSec
-      const totalCharge = Math.max(MIN_CHARGE, highSecWarpCharge + lowSecWarpCharge + nullSecWarpCharge + collateralCharge)
+      const totalCharge = Math.max(DELIVERY_DATA.MIN_CHARGE, highSecWarpCharge + lowSecWarpCharge + nullSecWarpCharge + collateralCharge)
       // console.log('JF', totalCharge, '-', highSecWarpCharge, lowSecWarpCharge, nullSecWarpCharge, collateralCharge, rush)
       return { serviceType, charge: totalCharge, rush }
     } else if (serviceType === SERVICE_TYPES.BR) {
-      const rush = 75e6
-      const baseCostHighSec = 900000
-      const baseCostLowSec = 4e6
+      const rush = DELIVERY_DATA.HS_BR_RUSH
+      const baseCostHighSec = DELIVERY_DATA.HS_BR_WARP
+      const baseCostLowSec = DELIVERY_DATA.LS_BR_WARP
       let collateralMultiplier = 1
       let collateralCharge = 0
       if (collateral <= 30e9) collateralMultiplier = 5
@@ -59,12 +59,12 @@ export const getDeliveryCharges = (noOfWarps, noOfWarpsHighsec, noOfWarpsLowSec,
 
       const highSecWarpCharge = noOfWarpsHighsec * baseCostHighSec * collateralMultiplier
       const lowSecWarpCharge = noOfWarpsLowSec * baseCostLowSec * collateralMultiplier
-      const totalCharge = Math.max(MIN_CHARGE, highSecWarpCharge + lowSecWarpCharge + collateralCharge)
+      const totalCharge = Math.max(DELIVERY_DATA.MIN_CHARGE, highSecWarpCharge + lowSecWarpCharge + collateralCharge)
       // console.log('BR', totalCharge, '-', collateralMultiplier, collateralCharge, '-', highSecWarpCharge, lowSecWarpCharge, rush)
       return { serviceType, charge: totalCharge, rush }
     } else if (serviceType === SERVICE_TYPES.DST) {
-      const rush = 75e6
-      const baseCostHighSec = 950000
+      const rush = DELIVERY_DATA.HS_DST_RUSH
+      const baseCostHighSec = DELIVERY_DATA.HS_DST_WARP
       let collateralMultiplier = 1
       let collateralCharge = 0
       if (collateral <= 10e9) collateralMultiplier = 5
@@ -80,14 +80,14 @@ export const getDeliveryCharges = (noOfWarps, noOfWarpsHighsec, noOfWarpsLowSec,
       }
 
       const highSecWarpCharge = noOfWarpsHighsec * baseCostHighSec * collateralMultiplier
-      const totalCharge = Math.max(MIN_CHARGE, highSecWarpCharge + collateralCharge)
+      const totalCharge = Math.max(DELIVERY_DATA.MIN_CHARGE, highSecWarpCharge + collateralCharge)
       // console.log('DST', totalCharge, '-', collateralMultiplier, collateralCharge, '-', highSecWarpCharge, rush)
       return { serviceType, charge: totalCharge, rush }
     } else if (serviceType === SERVICE_TYPES.Freighter) {
-      const rush = 75e6
-      let baseCostHighSec = 1e6
-      if (noOfWarps >= 31) baseCostHighSec = 1250000
-      if (volume >= 848000) baseCostHighSec = 2000000
+      const rush = DELIVERY_DATA.HS_FR_RUSH
+      let baseCostHighSec = DELIVERY_DATA.HS_FR_WARP_1
+      if (noOfWarps >= 31) baseCostHighSec = DELIVERY_DATA.HS_FR_WARP_2
+      if (volume >= 848000) baseCostHighSec = DELIVERY_DATA.HS_FR_WARP_LARGE
       let collateralMultiplier = 1
       if (collateral <= 3e9) collateralMultiplier = 3
       if (collateral <= 2.5e9) collateralMultiplier = 2.5
@@ -95,7 +95,7 @@ export const getDeliveryCharges = (noOfWarps, noOfWarpsHighsec, noOfWarpsLowSec,
       if (collateral <= 1.5e9) collateralMultiplier = 1
 
       const highSecWarpCharge = noOfWarpsHighsec * baseCostHighSec * collateralMultiplier
-      const totalCharge = Math.max(MIN_CHARGE, highSecWarpCharge)
+      const totalCharge = Math.max(DELIVERY_DATA.MIN_CHARGE, highSecWarpCharge)
       // console.log('Freighter', totalCharge, '-', collateralMultiplier, '-', highSecWarpCharge, rush)
       return { serviceType, charge: totalCharge, rush }
     }
@@ -105,6 +105,5 @@ export const getDeliveryCharges = (noOfWarps, noOfWarpsHighsec, noOfWarpsLowSec,
   if (serviceType === null) return { error: 'No service available' }
   const charge = getCharge(serviceType, noOfWarpsHighsec, noOfWarpsLowSec, noOfWarpsNullSec, volume, collateral)
   // console.log('charge', charge)
-
   return charge
 }

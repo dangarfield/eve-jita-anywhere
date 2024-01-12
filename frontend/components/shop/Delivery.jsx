@@ -7,7 +7,7 @@ import createGraph from 'ngraph.graph'
 import Loading from '../common/Loading'
 import './MultiSelect.css'
 import { getDeliveryCharges } from '../../services/delivery-estimate'
-import { ButtonGroup, ToggleButton } from 'solid-bootstrap'
+import { ButtonGroup, ToggleButton, OverlayTrigger, Tooltip } from 'solid-bootstrap'
 
 const getSystemStations = async () => {
   const systemsData = await get('/generated-data/system-stations.json')
@@ -212,7 +212,17 @@ const Delivery = (props) => {
             <span class=''>{props.totalVolume.toLocaleString()} m<sup>3</sup></span>
           </div>
           <div class='d-flex'>
-            <span class='col-4'>Delivery Fee</span>
+            <span class='col-4'>
+              Delivery Fee
+&nbsp;
+              <OverlayTrigger
+                placement='right'
+                delay={{ hide: 500 }}
+                overlay={<Tooltip id='button-tooltip'>Based on PushX<br />Prices may differ</Tooltip>}
+              >
+                <i class='bi bi-info-circle' style='cursor: pointer;' />
+              </OverlayTrigger>
+            </span>
             <span class='ms-auto'>{props.deliveryCharges().charge.toLocaleString()} ISK</span>
           </div>
           <div class='d-flex'>
