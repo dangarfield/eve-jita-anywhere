@@ -10,6 +10,7 @@ import bz2 from 'unbzip2-stream'
 import tarfs from 'tar-fs'
 import decompress from 'decompress'
 import decompressTarxz from 'decompress-tarxz'
+import { parse } from 'node-html-parser'
 
 const downloadAndUnzip = async (url, unzipPath, folderName) => {
   try {
@@ -76,7 +77,7 @@ const downloadTar = async (url, folder) => {
 const generateTypeData = async () => {
   const marketGroups = JSON.parse(fs.readFileSync('_data/reference-data/market_groups.json'))
   const types = JSON.parse(fs.readFileSync('_data/reference-data/types.json'))
-  console.log('marketGroups', Object.keys(marketGroups).length, 'types', Object.keys(types).length)
+  // console.log('marketGroups', Object.keys(marketGroups).length, 'types', Object.keys(types).length)
 
   // Function to create a recursive structure for a market group
   const createMarketGroupStructure = (marketGroup) => {
@@ -87,18 +88,20 @@ const generateTypeData = async () => {
       parent_group_id: marketGroup.parent_group_id || 0
     }
 
-    if (marketGroup.type_ids) {
+    // console.log('marketGroup', marketGroup)
+    if (marketGroup.type_ids && marketGroup.has_types) {
       group.types = marketGroup.type_ids
         .map(type_id => types[type_id])
         .filter(type => type.published)
         .map(type => {
           return { type_id: type.type_id, name: type.name.en, icon_id: type.icon_id, is_type: true, parent_group_id: marketGroup.market_group_id, volume: type.volume }
         })
+        .sort((a, b) => b.name.localeCompare(b.name))
     }
     if (marketGroup.child_market_group_ids) {
       group.child_groups = marketGroup.child_market_group_ids.map((childId) =>
         createMarketGroupStructure(marketGroups[childId])
-      )
+      ).filter(group => (group.types && group.types.length > 0) || (group.child_groups && group.child_groups.length > 0))
       group.child_groups.sort((a, b) => a.name.localeCompare(b.name))
     }
 
@@ -158,7 +161,7 @@ const generateTypeData = async () => {
   //   return group
   // })
 
-  console.log('rootNodes', rootNodes.length)
+  // console.log('rootNodes', rootNodes.length)
   if (!fs.existsSync('frontend/public')) fs.mkdirSync('frontend/public')
   if (!fs.existsSync('frontend/public/generated-data')) fs.mkdirSync('frontend/public/generated-data')
   fs.writeFileSync('frontend/public/generated-data/market-types.json', JSON.stringify(rootNodes))
@@ -166,32 +169,32 @@ const generateTypeData = async () => {
   if (!fs.existsSync('frontend/public/generated-icons')) fs.mkdirSync('frontend/public/generated-icons')
   const uniqueIconIds = findUniqueIconIds({ child_groups: rootNodes })
   const icons = JSON.parse(fs.readFileSync('_data/reference-data/icons.json'))
-  console.log('uniqueIconIds', uniqueIconIds)
-  uniqueIconIds.forEach(icon_id => {
-    let fromPath = '_data/Icons/items/5_64_10.png' // Default
-    if (icons[icon_id].icon_file.toLowerCase().startsWith('res:/ui/texture/icons/')) {
-      const potentialFromPath = path.join(icons[icon_id].icon_file
-        .replace('res:/ui/texture/icons/', '_data/Icons/items/')
-        .replace('res:/UI/Texture/Icons/', '_data/Icons/items/')
-        .replace('/inventory/', '/Inventory/')
-      )
-      if (icon_id === 20959) {
-        console.log('i', icon_id, 'potentialFromPath', potentialFromPath, fs.existsSync(potentialFromPath), icons[icon_id].icon_file)
-      }
-      if (fs.existsSync(potentialFromPath)) {
-        fromPath = potentialFromPath
-      }
-    // } else {
-    //   fromPath = '_data/Icons/items/5_64_10.png' // Temporary
-    }
+  // console.log('uniqueIconIds', uniqueIconIds)
 
+  const hoboleaksAssets = fs.readFileSync(path.join('_data', 'hoboleaks-assets.txt'), 'utf-8').split('\n')
+  // console.log('hoboleaksAssets', hoboleaksAssets)
+  const gameAssetDir = '/Users/Dan.Garfield/Library/Application Support/EVE Online/SharedCache/ResFiles'
+
+  uniqueIconIds.forEach(icon_id => {
     const toPath = path.join(`frontend/public/generated-icons/${icon_id}.png`)
-    // console.log('i', icon_id, fromPath, toPath, fs.existsSync(fromPath))
-    if (icon_id === 20959) {
-      console.log('i', icon_id, fromPath, fs.existsSync(fromPath), icons[icon_id].icon_file)
-    }
-    if (fs.existsSync(fromPath)) {
-      fs.copyFileSync(fromPath, toPath)
+    const resFile = icons[icon_id].icon_file
+    const resFileLower = resFile.toLowerCase()
+    const potentialLocalFromPath = resFile
+      .replace('res:/ui/texture/icons/', '_data/Icons/items/')
+      .replace('res:/UI/Texture/Icons/', '_data/Icons/items/')
+      .replace('/inventory/', '/Inventory/')
+    if (!fs.existsSync(toPath)) {
+      if (resFileLower.startsWith('res:/ui/texture/icons/') && fs.existsSync(potentialLocalFromPath)) {
+        // console.log('LOCAL YES icon_id', icon_id, resFile, potentialLocalFromPath)
+        fs.copyFileSync(potentialLocalFromPath, toPath)
+      } else {
+        const hoboleaksAssetsFile = hoboleaksAssets.find(a => a.startsWith(resFileLower)).split(',')[1]
+        const gameAssetPath = path.join(gameAssetDir, hoboleaksAssetsFile)
+        // console.log('icon_id', icon_id, resFile, potentialLocalFromPath, hoboleaksAssetsFile, gameAssetPath)
+        fs.copyFileSync(gameAssetPath, toPath)
+      }
+    } else {
+      // console.log('COMPLETE', icon_id, resFile)
     }
   })
 }
@@ -312,14 +315,29 @@ const generateSystemListData = async () => {
   console.log('systems', systems.length)
   fs.writeFileSync('frontend/public/generated-data/system-stations.json', JSON.stringify({ systems, connections, connectionsHighSec }))
 }
+const downloadHoboleaksAssetMappings = async () => {
+  // Download
+  const req = await fetch('https://www.hoboleaks.space/')
+  const res = await req.text()
+  // console.log('res', res)
+  const root = parse(res)
+  const links = root.querySelectorAll('a')
+  const resfileindexLink = links.find(link => link.textContent === 'resfileindex.txt')
+  console.log('hoboleaks-assets', resfileindexLink.getAttribute('href'), resfileindexLink.textContent)
+  const reqFile = await fetch(resfileindexLink.getAttribute('href'))
+  const resFile = await reqFile.text()
+  // console.log('resFile', resFile)
+  fs.writeFileSync(path.join('_data', 'hoboleaks-assets.txt'), resFile)
+}
 const init = async () => {
-  await downloadAndUnzip('https://eve-static-data-export.s3-eu-west-1.amazonaws.com/tranquility/sde.zip', './_data', 'sde')
-  await downloadAndUnzip('https://web.ccpgamescdn.com/aws/developers/Uprising_V21.03_Icons.zip', './_data', 'icons_icosn')
-  await downloadAndUnzip('https://web.ccpgamescdn.com/aws/developers/Uprising_V21.03_Types.zip', './_data', 'icons_types')
+  // await downloadHoboleaksAssetMappings()
+  // await downloadAndUnzip('https://eve-static-data-export.s3-eu-west-1.amazonaws.com/tranquility/sde.zip', './_data', 'sde')
+  // await downloadAndUnzip('https://web.ccpgamescdn.com/aws/developers/Uprising_V21.03_Types.zip', './_data', 'icons_types')
+  // await downloadAndUnzip('https://web.ccpgamescdn.com/aws/developers/Uprising_V21.03_Icons.zip', './_data', 'icons_icons')
 
-  await downloadTar('https://data.everef.net/reference-data/reference-data-latest.tar.xz', './_data/reference-data')
+  // await downloadTar('https://data.everef.net/reference-data/reference-data-latest.tar.xz', './_data/reference-data')
   await generateTypeData()
 
-  await generateSystemListData()
+  // await generateSystemListData()
 }
 init()
