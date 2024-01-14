@@ -1,8 +1,8 @@
 const EveTypeIcon = (props) => {
-  if (props.type.skin_id) {
+  console.log('EveTypeIcon', props)
+  if (props.type.skin_material_id) {
     return (
-      // <img class='width-32' src={`/generated-icons/s-${props.type.skin_id}.png`} />
-      <img class='width-32' src={`https://everef.net/img/Icons/UI/SKINIcons/${props.type.skin_id}.png`} /> // Note: Not all skins are available here
+      <img class='width-32' src={`/generated-icons/skin-${props.type.skin_material_id}.png`} />
     )
   } else {
     return (

@@ -19,6 +19,7 @@ const TypeDetailsSection = ({ selectedType, favourites, toggleFavourites, setSel
   const [history] = createResource(selectedType, getRegionHistory)
 
   const selectedTypeData = createMemo(() => {
+    console.log('selectedTypeData', staticData().types[selectedType()])
     return staticData().types[selectedType()]
   })
 

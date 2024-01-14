@@ -110,8 +110,7 @@ const generateTypeData = async () => {
             const skinID = skinLicense.skinID
             const skinMaterialID = skins[skinID].skinMaterialID
             // console.log('SKIN', type.name.en, skinID, skinMaterialID)
-            // CONTINUE FROM HERE
-            obj.skin_id = skinMaterialID
+            obj.skin_material_id = skinMaterialID
           } else {
             obj.icon_id = type.icon_id
           }
@@ -144,12 +143,12 @@ const generateTypeData = async () => {
     }
     return Array.from(uniqueIconIds).sort((a, b) => a - b)
   }
-  const findUniqueSkinIds = (node) => {
+  const findUniqueSkinMaterialIds = (node) => {
     const uniqueIconIds = new Set()
     if (node.types) {
       for (const type of node.types) {
-        if (type.skin_id !== undefined) {
-          uniqueIconIds.add(type.skin_id)
+        if (type.skin_material_id !== undefined) {
+          uniqueIconIds.add(type.skin_material_id)
           // console.log('skin_id', type.skin_id)
         }
       }
@@ -158,7 +157,7 @@ const generateTypeData = async () => {
     if (node.child_groups) {
       // console.log('child')
       for (const child of node.child_groups) {
-        const childIconIds = findUniqueSkinIds(child)
+        const childIconIds = findUniqueSkinMaterialIds(child)
         childIconIds.forEach((iconId) => uniqueIconIds.add(iconId))
       }
     }
@@ -204,7 +203,7 @@ const generateTypeData = async () => {
 
   if (!fs.existsSync('frontend/public/generated-icons')) fs.mkdirSync('frontend/public/generated-icons')
   const uniqueIconIds = findUniqueIconIds({ child_groups: rootNodes })
-  const uniqueSkinIds = findUniqueSkinIds({ child_groups: rootNodes })
+  const uniqueSkinMaterialIds = findUniqueSkinMaterialIds({ child_groups: rootNodes })
 
   const icons = JSON.parse(fs.readFileSync('_data/reference-data/icons.json'))
   // console.log('uniqueIconIds', uniqueIconIds)
@@ -235,11 +234,20 @@ const generateTypeData = async () => {
       // console.log('COMPLETE', icon_id, resFile)
     }
   })
-  console.log('uniqueSkinIds', uniqueSkinIds)
-  uniqueSkinIds.forEach(skin_id => {
-    const toPath = path.join(`frontend/public/generated-icons/skin-${skin_id}.png`)
+  console.log('uniqueSkinMaterialIds', uniqueSkinMaterialIds)
+  uniqueSkinMaterialIds.forEach(skin_material_id => {
+    const toPath = path.join(`frontend/public/generated-icons/skin-${skin_material_id}.png`)
     if (!fs.existsSync(toPath)) {
-      console.log('skin_id', skin_id, toPath)
+      const hoboleaksAssetsFile = hoboleaksAssets.find(a => a.startsWith(`res:/ui/texture/classes/skins/icons/${skin_material_id}.png`)).split(',')[1]
+      const gameAssetPath = path.join(gameAssetDir, hoboleaksAssetsFile)
+
+      console.log('skin_material_id', skin_material_id, toPath, hoboleaksAssetsFile)
+      fs.copyFileSync(gameAssetPath, toPath)
+      if (fs.existsSync(gameAssetPath)) {
+        // console.log('exists')
+      } else {
+        // console.log('nope')
+      }
     }
   })
 }
@@ -379,6 +387,24 @@ const init = async () => {
   // await downloadAndUnzip('https://eve-static-data-export.s3-eu-west-1.amazonaws.com/tranquility/sde.zip', './_data', 'sde')
   // await downloadAndUnzip('https://web.ccpgamescdn.com/aws/developers/Uprising_V21.03_Types.zip', './_data', 'icons_types')
   // await downloadAndUnzip('https://web.ccpgamescdn.com/aws/developers/Uprising_V21.03_Icons.zip', './_data', 'icons_icons')
+
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/April2019Release_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/ArmsRace_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/August_Release_2018_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/December_Release_2018_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/February2018Release_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/Into_The_Abyss_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/Invasion_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/January2019Release_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/July_Release_2018_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/Lifeblood_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/March2018Release_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/March2019Release_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/October_Release_2018_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/Onslaught_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/September_Release_2018_1.0_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/Uprising_V21.03_Icons.zip', './_data', 'icons_icons')
+  // await downloadAndUnzip('https://data.everef.net/ccp/iec/YC-119.9_1.0_Icons.zip', './_data', 'icons_icons')
 
   // await downloadTar('https://data.everef.net/reference-data/reference-data-latest.tar.xz', './_data/reference-data')
   await generateTypeData()
