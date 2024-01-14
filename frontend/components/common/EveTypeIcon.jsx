@@ -1,5 +1,5 @@
 const EveTypeIcon = (props) => {
-  console.log('EveTypeIcon', props)
+  // console.log('EveTypeIcon', props)
   if (props.type.skin_material_id) {
     return (
       <img class='width-32' src={`/generated-icons/skin-${props.type.skin_material_id}.png`} />

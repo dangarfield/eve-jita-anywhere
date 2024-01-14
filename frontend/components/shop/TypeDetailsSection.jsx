@@ -19,7 +19,7 @@ const TypeDetailsSection = ({ selectedType, favourites, toggleFavourites, setSel
   const [history] = createResource(selectedType, getRegionHistory)
 
   const selectedTypeData = createMemo(() => {
-    console.log('selectedTypeData', staticData().types[selectedType()])
+    // console.log('selectedTypeData', staticData().types[selectedType()])
     return staticData().types[selectedType()]
   })
 
@@ -34,7 +34,16 @@ const TypeDetailsSection = ({ selectedType, favourites, toggleFavourites, setSel
               : (
                 <>
                   <div class='align-items-center d-flex align-items-center mb-2'>
-                    <EveTypeIcon type={selectedTypeData()} />
+                    {/* <EveTypeIcon type={selectedTypeData()} /> */}
+                    {/* TODO - The above icon doesn't update properly when switching between a skin and an asset. Need to investigate */}
+                    {selectedTypeData().skin_material_id
+                      ? (
+                        <img class='width-32' src={`/generated-icons/skin-${selectedTypeData().skin_material_id}.png`} />
+                        )
+                      : (
+                        <img src={`https://images.evetech.net/types/${selectedTypeData().type_id}/${selectedTypeData().name.includes('Blueprint') || selectedTypeData().name.includes('Reaction Formula') ? 'bp' : 'icon'}`} class='width-32' />
+                        )}
+
                     <h3 className='ps-2 mb-0'>
                       {selectedTypeData().name}
                     </h3>
