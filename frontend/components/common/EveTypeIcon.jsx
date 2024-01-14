@@ -1,7 +1,8 @@
 const EveTypeIcon = (props) => {
-  if (props.type.name.includes('SKIN')) {
+  if (props.type.skin_id) {
     return (
-      <img class='width-32' src='/generated-icons/21481.png' /> // Eg, A question mark. Leave this like this for now
+      // <img class='width-32' src={`/generated-icons/s-${props.type.skin_id}.png`} />
+      <img class='width-32' src={`https://everef.net/img/Icons/UI/SKINIcons/${props.type.skin_id}.png`} /> // Note: Not all skins are available here
     )
   } else {
     return (

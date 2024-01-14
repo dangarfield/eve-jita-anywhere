@@ -4,6 +4,7 @@ import path from 'path'
 import { promisify } from 'util'
 import stream from 'stream'
 
+import yaml from 'js-yaml'
 import axios from 'axios'
 import AdmZip from 'adm-zip'
 import bz2 from 'unbzip2-stream'
@@ -11,6 +12,10 @@ import tarfs from 'tar-fs'
 import decompress from 'decompress'
 import decompressTarxz from 'decompress-tarxz'
 import { parse } from 'node-html-parser'
+
+const yamlToJson = (filePath) => {
+  return yaml.load(fs.readFileSync(filePath, 'utf-8'))
+}
 
 const downloadAndUnzip = async (url, unzipPath, folderName) => {
   try {
@@ -77,6 +82,11 @@ const downloadTar = async (url, folder) => {
 const generateTypeData = async () => {
   const marketGroups = JSON.parse(fs.readFileSync('_data/reference-data/market_groups.json'))
   const types = JSON.parse(fs.readFileSync('_data/reference-data/types.json'))
+  const skinLicenses = yamlToJson('./_data/sde/fsd/skinLicenses.yaml')
+  const skinMaterials = yamlToJson('./_data/sde/fsd/skinMaterials.yaml')
+  const skins = yamlToJson('./_data/sde/fsd/skins.yaml')
+
+  // console.log('skinLicenses', skinLicenses, skinLicenses['36312'])
   // console.log('marketGroups', Object.keys(marketGroups).length, 'types', Object.keys(types).length)
 
   // Function to create a recursive structure for a market group
@@ -94,7 +104,18 @@ const generateTypeData = async () => {
         .map(type_id => types[type_id])
         .filter(type => type.published)
         .map(type => {
-          return { type_id: type.type_id, name: type.name.en, icon_id: type.icon_id, is_type: true, parent_group_id: marketGroup.market_group_id, volume: type.volume }
+          const obj = { type_id: type.type_id, name: type.name.en, icon_id: type.icon_id, is_type: true, parent_group_id: marketGroup.market_group_id, volume: type.volume }
+          const skinLicense = skinLicenses['' + type.type_id]
+          if (skinLicense !== undefined) {
+            const skinID = skinLicense.skinID
+            const skinMaterialID = skins[skinID].skinMaterialID
+            // console.log('SKIN', type.name.en, skinID, skinMaterialID)
+            // CONTINUE FROM HERE
+            obj.skin_id = skinMaterialID
+          } else {
+            obj.icon_id = type.icon_id
+          }
+          return obj
         })
         .sort((a, b) => b.name.localeCompare(b.name))
     }
@@ -121,12 +142,27 @@ const generateTypeData = async () => {
         childIconIds.forEach((iconId) => uniqueIconIds.add(iconId))
       }
     }
-    // if (node.types) {
-    //   for (const type of node.types) {
-    //     const typeIconIds = findUniqueIconIds(type)
-    //     typeIconIds.forEach((iconId) => uniqueIconIds.add(iconId))
-    //   }
-    // }
+    return Array.from(uniqueIconIds).sort((a, b) => a - b)
+  }
+  const findUniqueSkinIds = (node) => {
+    const uniqueIconIds = new Set()
+    if (node.types) {
+      for (const type of node.types) {
+        if (type.skin_id !== undefined) {
+          uniqueIconIds.add(type.skin_id)
+          // console.log('skin_id', type.skin_id)
+        }
+      }
+    }
+    // console.log('node', node.child_groups)
+    if (node.child_groups) {
+      // console.log('child')
+      for (const child of node.child_groups) {
+        const childIconIds = findUniqueSkinIds(child)
+        childIconIds.forEach((iconId) => uniqueIconIds.add(iconId))
+      }
+    }
+
     return Array.from(uniqueIconIds).sort((a, b) => a - b)
   }
 
@@ -168,6 +204,8 @@ const generateTypeData = async () => {
 
   if (!fs.existsSync('frontend/public/generated-icons')) fs.mkdirSync('frontend/public/generated-icons')
   const uniqueIconIds = findUniqueIconIds({ child_groups: rootNodes })
+  const uniqueSkinIds = findUniqueSkinIds({ child_groups: rootNodes })
+
   const icons = JSON.parse(fs.readFileSync('_data/reference-data/icons.json'))
   // console.log('uniqueIconIds', uniqueIconIds)
 
@@ -195,6 +233,13 @@ const generateTypeData = async () => {
       }
     } else {
       // console.log('COMPLETE', icon_id, resFile)
+    }
+  })
+  console.log('uniqueSkinIds', uniqueSkinIds)
+  uniqueSkinIds.forEach(skin_id => {
+    const toPath = path.join(`frontend/public/generated-icons/skin-${skin_id}.png`)
+    if (!fs.existsSync(toPath)) {
+      console.log('skin_id', skin_id, toPath)
     }
   })
 }

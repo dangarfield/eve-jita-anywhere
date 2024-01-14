@@ -48,7 +48,7 @@ const createGroup = (item, setSelectedType, setSelectedTab) => {
       </span>
       <ul style={{ display: expanded() ? 'block' : 'none' }}>
         {drawnOnce() && item.child_groups?.map((child) => createGroup(child, setSelectedType, setSelectedTab))}
-        {drawnOnce() && item.types?.map((child) => createItem(child, setSelectedType, setSelectedTab))}
+        {drawnOnce() && item.types?.sort((a, b) => a.name.localeCompare(b.name)).map((child) => createItem(child, setSelectedType, setSelectedTab))}
       </ul>
     </li>
   )
