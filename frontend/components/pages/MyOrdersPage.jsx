@@ -177,8 +177,7 @@ const MyOrdersPage = () => {
       <Show when={orders() && orders().length === 0}>
         <div class='col-md-6 mt-3'><Alert variant='border border-light text-center mt-1'>No orders</Alert></div>
       </Show>
-      <Show when={filteredOrders() && staticData()} fallback={<div class='row'><Loading /></div>}>
-
+      <Show when={filteredOrders() && staticData()} fallback={<div class='row'><Loading class='py-3' /></div>}>
         <div class='row'>
           <div class='col-md-2 mt-3'>
             <Show when={orders() && orders().length > 0}>

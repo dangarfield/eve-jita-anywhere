@@ -33,7 +33,7 @@ const ShopPage = () => {
     }
   })
   return (
-    <Show when={staticData()} fallback={<Loading />}>
+    <Show when={staticData()} fallback={<Loading class='py-3' />}>
       <div>
         <div class='row'>
           <div class='col'>
