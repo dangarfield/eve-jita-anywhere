@@ -14,7 +14,7 @@ const TypeBrowserFavourites = ({ favourites, toggleFavourites, setSelectedType, 
   return (
     <>
       <ul class='favourites'>
-        <For each={items()} fallback={<Alert variant='dark'>No favourites set</Alert>}>
+        <For each={items()} fallback={<Alert variant='dark'>Browse items and click <i class='bi bi-star' /> to add to favourites</Alert>}>
           {(item) => (
             <li class='text-start' data-type-id={item.type_id} data-parent-group-id={item.parent_group_id}>
               <span class='content w-100 h-100 d-block d-flex align-items-center' onClick={() => { setSelectedType(item.type_id); setSelectedTab(TABS.Details) }}>

@@ -1,6 +1,7 @@
 .favourites li .bi-x {
-    opacity: 0.7;
+    opacity: 0.3;
 }
-.favourites li:hover .bi {
+.favourites li:hover .bi-x {
+    color: red;
     opacity: 1;
 }
