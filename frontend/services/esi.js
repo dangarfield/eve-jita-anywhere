@@ -63,10 +63,10 @@ export const openMarketWindow = async (typeID, accessTokenPromise) => {
   await window.fetch(url, options)
   toast.success('Market window opened')
 }
-export const openInformationWindow = async (typeID, accessTokenPromise) => {
+export const openInformationWindow = async (targetID, accessTokenPromise) => {
   const accessToken = await accessTokenPromise
-  console.log('openInformationWindow', typeID, accessToken)
-  const url = `https://esi.evetech.net/latest/ui/openwindow/marketdetails/?datasource=tranquility&type_id=${typeID}`
+  console.log('openInformationWindow', targetID, accessToken)
+  const url = `https://esi.evetech.net/latest/ui/openwindow/information/?datasource=tranquility&target_id=${targetID}`
 
   const options = {
     method: 'POST',
@@ -77,5 +77,5 @@ export const openInformationWindow = async (typeID, accessTokenPromise) => {
   }
   options.headers.Authorization = `Bearer ${accessToken}`
   await window.fetch(url, options)
-  toast.success('Station information window opened')
+  toast.success('Information window opened')
 }

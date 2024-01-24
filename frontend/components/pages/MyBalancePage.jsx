@@ -49,7 +49,7 @@ const MyBalancePage = () => {
       </div>
       <div class='col-md-4 mt-3'>
         <h3>How To Top Up Your Balance</h3>
-        {topUpInfoText(staticData)}
+        {topUpInfoText(staticData, ensureAccessTokenIsValid)}
 
         <h3 class='mt-5'>How To Withdraw Your ISK</h3>
         <p>As returning your money to you is a manual process, you have to request a withdrawal.</p>

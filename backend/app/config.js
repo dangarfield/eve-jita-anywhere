@@ -29,18 +29,20 @@ export const getAppConfig = async (showPrivateFields) => {
     { $setOnInsert: appConfigDefault },
     { upsert: true, returnDocument: 'after' }
   )
-  const [corpName, plexForGoodTotal] = await Promise.all([
+  const [corpName, corpID, plexForGoodTotal] = await Promise.all([
     getAppAuth().then(auth => auth.corpName),
+    getAppAuth().then(auth => auth.corpID),
     getPlexForTotal(appConfig.plexForGoodCharacterID)
   ])
 
-  // console.log('appConfig, corpName, plexForGoodTotal', appConfig, corpName, plexForGoodTotal)
+  // console.log('appConfig, corpName, corpID, plexForGoodTotal', appConfig, corpName, corpID, plexForGoodTotal)
   if (appConfig) {
     delete appConfig._id
     appConfig.corpName = corpName || appConfig.corpName
+    appConfig.corpID = corpID
     appConfig.plexForGoodTotal = plexForGoodTotal
   }
-
+  // console.log('getAppConfig', appConfig)
   // const endTime = new Date()
   // const elapsedTime = endTime - startTime
   // console.log(`Time taken: ${elapsedTime} milliseconds`)
