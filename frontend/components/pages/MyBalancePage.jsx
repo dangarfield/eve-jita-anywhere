@@ -75,12 +75,12 @@ const MyBalancePage = () => {
               <Card>
                 <Card.Body class='pb-0'>
                   <Form.Group as={Row} controlId='withdrawalAmountText'>
-                    <Col sm='4' class='mb-3'>
+                    <Col sm='3' class='mb-3'>
                       <Form.Label>
                         Withdrawal amount
                       </Form.Label>
                     </Col>
-                    <Col sm='3' class='mb-3'>
+                    <Col sm='4' class='mb-3'>
                       <Form.Control type='number' min={1} max={userBalance().balance} value={withdrawalAmount()} onInput={handleWithdrawalChange} />
                     </Col>
                     <Col sm='5' class='mb-3'>
