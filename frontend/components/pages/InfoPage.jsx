@@ -21,7 +21,7 @@ const InfoPage = () => {
       content:
   <>
     <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>We have a proven track record. <a href='#trust'>Why trust us?</a></span></p>
-    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Agents have certainty in payment</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Pay only what you agree on</span></p>
   </>,
       image: 'image-deposit'
     },
@@ -30,8 +30,8 @@ const InfoPage = () => {
       title: 'Jita Prices accurate to 5 mins',
       content:
   <>
-    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Pay only what you agree on</span></p>
-    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Accurate prices mean less wasted time</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Affordable convenience</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Forget about spending time creating hauling contracts</span></p>
   </>,
       image: 'image-browse'
     },
@@ -41,7 +41,7 @@ const InfoPage = () => {
       content:
   <>
     <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>No EVE client? No problem. Buy from your mobile</span></p>
-    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Get notified instantly when an order is requested</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Checked out? Now just sit back, relax and wait for it to arrive</span></p>
   </>,
       image: 'image-checkout'
     },
@@ -50,8 +50,8 @@ const InfoPage = () => {
       title: 'Jobs come to you',
       content:
   <>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Get notified instantly when an order is requested</span></p>
     <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Select the jobs you want</span></p>
-    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Complete jobs, get paid</span></p>
   </>,
       image: 'image-jobs'
     },
@@ -60,8 +60,8 @@ const InfoPage = () => {
       title: 'Purchase',
       content:
   <>
-    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Sell your stockpiled goods at Jita prices</span></p>
-    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Forget about spending time creating hauling contracts</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Accurate prices mean less wasted time</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Personal shopper: A new career in the EVE universe</span></p>
   </>,
       image: 'image-purchase'
     },
@@ -70,8 +70,8 @@ const InfoPage = () => {
       title: 'Gimme that ISK',
       content:
   <>
-    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Personal shopper: A new career in the EVE universe</span></p>
-    <p class='fs-4 ps-3'><i class='bi bi-person-fill text-primary pe-3' /><span class='opacity-75'>Affordable convenience</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>Agents have certainty in payment</span></p>
+    <p class='fs-4 ps-3'><i class='bi bi-headset text-primary pe-3' /><span class='opacity-75'>The easiest job you'll ever have</span></p>
   </>,
       image: 'image-profit'
     }]
