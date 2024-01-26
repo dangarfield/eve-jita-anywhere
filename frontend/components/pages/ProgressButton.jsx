@@ -1,7 +1,7 @@
 import { Button } from 'solid-bootstrap'
 import { Show } from 'solid-js'
 
-const ProgressButton = ({ currentSlide, progress, setIsPaused, setSlide, slideID, children, variant }) => {
+const ProgressButton = ({ currentSlide, progress, setIsPaused, setSlide, slideID, title, children, variant }) => {
   return (
     <Button
       variant={`${currentSlide() === slideID ? 'outline-light' : 'outline-secondary'} w-100 p-0 h-100 position-relative`}
@@ -11,7 +11,7 @@ const ProgressButton = ({ currentSlide, progress, setIsPaused, setSlide, slideID
       <span
         class={`position-absolute top-75 start-0 translate-middles badge ${currentSlide() === slideID ? 'bg-light' : 'bg-secondary'} text-dark fs-6`}
         style={{ 'border-bottom-left-radius': 0, 'border-top-right-radius': 0 }}
-      >Step {slideID}
+      >{title}
       </span>
       <Show when={!variant}>
         <span class='py-4 px-1 d-block fs-5'>{children}</span>

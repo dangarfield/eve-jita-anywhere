@@ -16,7 +16,7 @@ const InfoPage = () => {
       image: 'image-info'
     },
     {
-      link: <><b>User:</b> Deposit ISK</>,
+      link: <>Deposit ISK</>,
       title: 'Add a deposit to secure your purchases',
       content:
   <>
@@ -26,7 +26,7 @@ const InfoPage = () => {
       image: 'image-deposit'
     },
     {
-      link: <><b>User:</b> Browse Jita Anywhere Store</>,
+      link: <>Browse Jita Anywhere Store</>,
       title: 'Jita Prices accurate to 5 mins',
       content:
   <>
@@ -36,7 +36,7 @@ const InfoPage = () => {
       image: 'image-browse'
     },
     {
-      link: <><b>User:</b> Checkout</>,
+      link: <>Checkout</>,
       title: 'Checkout without opening the client',
       content:
   <>
@@ -46,7 +46,7 @@ const InfoPage = () => {
       image: 'image-checkout'
     },
     {
-      link: <><b>Agent:</b> View available jobs</>,
+      link: <>View available jobs</>,
       title: 'Jobs come to you',
       content:
   <>
@@ -56,7 +56,7 @@ const InfoPage = () => {
       image: 'image-jobs'
     },
     {
-      link: <><b>Agent:</b> Purchase and deliver</>,
+      link: <>Purchase and deliver</>,
       title: 'Purchase',
       content:
   <>
@@ -66,7 +66,7 @@ const InfoPage = () => {
       image: 'image-purchase'
     },
     {
-      link: <><b>Agent:</b> Profit</>,
+      link: <>Profit</>,
       title: 'Gimme that ISK',
       content:
   <>
@@ -140,6 +140,7 @@ const InfoPage = () => {
               setIsPaused={setIsPaused}
               setSlide={setSlide}
               slideID={1}
+              title='User Step 1'
             >
               {slides[1].link}
             </ProgressButton>
@@ -151,6 +152,7 @@ const InfoPage = () => {
               setIsPaused={setIsPaused}
               setSlide={setSlide}
               slideID={2}
+              title='User Step 2'
             >
               {slides[2].link}
             </ProgressButton>
@@ -162,6 +164,7 @@ const InfoPage = () => {
               setIsPaused={setIsPaused}
               setSlide={setSlide}
               slideID={3}
+              title='User Step 3'
             >
               {slides[3].link}
             </ProgressButton>
@@ -181,6 +184,7 @@ const InfoPage = () => {
               setIsPaused={setIsPaused}
               setSlide={setSlide}
               slideID={4}
+              title='Agent Step 1'
               variant='top'
             >
               {slides[4].link}
@@ -193,6 +197,7 @@ const InfoPage = () => {
               setIsPaused={setIsPaused}
               setSlide={setSlide}
               slideID={5}
+              title='Agent Step 2'
               variant='top'
             >
               {slides[5].link}
@@ -205,6 +210,7 @@ const InfoPage = () => {
               setIsPaused={setIsPaused}
               setSlide={setSlide}
               slideID={6}
+              title='Agent Step 3'
               variant='top'
             >
               {slides[6].link}
