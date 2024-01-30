@@ -140,7 +140,7 @@ const InfoPage = () => {
               setIsPaused={setIsPaused}
               setSlide={setSlide}
               slideID={1}
-              title='User Step 1'
+              title='Customer Step 1'
             >
               {slides[1].link}
             </ProgressButton>
@@ -152,7 +152,7 @@ const InfoPage = () => {
               setIsPaused={setIsPaused}
               setSlide={setSlide}
               slideID={2}
-              title='User Step 2'
+              title='Customer Step 2'
             >
               {slides[2].link}
             </ProgressButton>
@@ -164,7 +164,7 @@ const InfoPage = () => {
               setIsPaused={setIsPaused}
               setSlide={setSlide}
               slideID={3}
-              title='User Step 3'
+              title='Customer Step 3'
             >
               {slides[3].link}
             </ProgressButton>
@@ -247,7 +247,7 @@ const InfoPage = () => {
                 <div class='feature-icon-small d-inline-flex align-items-center justify-content-center fs-4'>
                   <i class='bi bi bi-person-fill' />
                 </div>
-                <h4 class='fw-semibold mb-0 text-body-emphasis'>Become a User</h4>
+                <h4 class='fw-semibold mb-0 text-body-emphasis'>Become a Customer</h4>
                 <p class='text-body-secondary'>Purchase and receive EVE Online items without logging in</p>
               </div>
 

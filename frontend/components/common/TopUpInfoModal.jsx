@@ -43,7 +43,7 @@ export const topUpInfoText = (staticData, ensureAccessTokenIsValid) => (
       </div>
       <img src={corpImage} class='align-text-top w-100 pb-2' />
       <p><i>Note: Amount can be however much you like, 100,000,000 ISK above is just an example</i></p>
-      <p>Please be careful to fill this information in carefully</p>
+      <p>Please ensure this information is accurate</p>
       <p>It may take up to 1 hour for the transaction to be registered and your balance to be updated, but you will be notified in game</p>
       <p>You can request to withdraw your entire balance at any point</p>
     </>
