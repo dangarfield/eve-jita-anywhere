@@ -37,21 +37,38 @@ Men's 'Crusher' Cybernetic Arm (black and yellow left)  2   120,120.00 232,233.0
 Unstable Gyrostabilizer Mutaplasmid	1	23,800,000.00	23,800,000.00
 Total:			80,724,200.00
 
+Damage Control II    1    660,000.00    660,000.00
+Large Shield Extender II    1    1,300,000.00    1,300,000.00
+Vespa II    2    1,399,000.00    2,798,000.00
+Republic Fleet EMP L    7    -    -
+Optimal Range Script    2    -    -
+Multispectrum Shield Hardener II    1    -    -
+Machariel    1    -    -
+Gyrostabilizer II    3    -    -
+Tracking Enhancer II    2    -    -
+800mm Repeating Cannon II    7    -    -
+Large Hyperspatial Velocity Optimizer II    3    -    -
+500MN Microwarpdrive II    1    -    -
+Small Tractor Beam II    1    -    -
+Tracking Computer II    2    -    -
+Large Shield Booster II    1    -    -
+Total:            4,758,000.00
+
 */
   createEffect(async () => {
-    console.log('createEffect', text())
+    // console.log('createEffect', text())
     setIsFetchingPrices(true)
     const itemList = []
     const lines = text().split('\n').filter(l => !l.startsWith('Total'))
-    console.log('nameMap', nameMap())
+    // console.log('nameMap', nameMap())
     for (const line of lines) {
       // EVE Online strings
       const parts = line.split(/\s+/)
-      const filteredParts = parts.filter(part => !/[,.]/.test(part))
+      const filteredParts = parts.filter(part => !/[,.-]/.test(part))
       const quantity = filteredParts.length > 0 ? parseInt(filteredParts[filteredParts.length - 1]) || 1 : 1
       const name = filteredParts.slice(0, -1).join(' ')
       const typeID = nameMap().get(name)
-      console.log('name', name, 'quantity', quantity, 'item', typeID)
+      // console.log('name', name, 'quantity', quantity, 'item', typeID, 'parts', filteredParts)
       if (typeID !== undefined) {
         const type = staticData().types[typeID]
         itemList.push({
@@ -66,7 +83,7 @@ Total:			80,724,200.00
       // Show prices?!
     }
 
-    console.log('itemsWithPrices START')
+    // console.log('itemsWithPrices START', itemList)
 
     //   console.log('updatePrices START', itemList)
     const itemsWithPrices = await Promise.all(itemList.map(async (item) => {

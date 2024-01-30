@@ -6,7 +6,7 @@ import Basket from './Basket'
 import { useStaticData } from '../../stores/StaticDataProvider'
 import Loading from '../common/Loading'
 
-export const TABS = { Browse: 'Browse', Favourites: 'Favourites', AddBulk: 'Add Bulk', Details: 'Item Details', Basket: 'Basket' }
+export const TABS = { Browse: 'Browse', Favourites: 'Favourites', AddBulk: 'Add Multibuy', Details: 'Item Details', Basket: 'Basket' }
 
 const ShopPage = () => {
   const [selectedType, setSelectedType] = createSignal(27912) // Temporarily set it for debugging to 27912, otherwise null
